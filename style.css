@@ -1,0 +1,60 @@
+* {
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #fafafa;
+  color: #111;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  text-align: center;
+  padding: 20px;
+  max-width: 320px;
+}
+
+#time {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #666;
+  margin-top: 6px;
+}
+
+.message-box {
+  margin-top: 30px;
+  padding: 18px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  transition: all 0.6s ease;
+}
+
+.locked {
+  filter: blur(4px);
+  opacity: 0.6;
+}
+
+#messageText {
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.special {
+  animation: pulse 1.2s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.96); }
+  50% { transform: scale(1); }
+  100% { transform: scale(0.98); }
+}
