@@ -3,22 +3,50 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🤍</title>
-  <link rel="stylesheet" href="style.css">
+  <title>🤍 amore</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f7f7f7;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 14px;
+      color: #999;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+    }
+
+    #message {
+      background: white;
+      padding: 20px 24px;
+      border-radius: 14px;
+      font-size: 16px;
+      color: #222;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      max-width: 280px;
+      line-height: 1.5;
+    }
+  </style>
 </head>
+
 <body>
-
-<div class="container">
-  <div class="counter">
-    <div id="time"></div>
-    <div class="subtitle">Tiempo juntos</div>
+  <div class="container">
+    <h1>Tiempo juntos</h1>
+    <div id="message">Cargando...</div>
   </div>
 
-  <div class="message-box" id="messageBox">
-    <div id="messageText">Cargando…</div>
-  </div>
-</div>
-
-<script src="app.js"></script>
+  <!-- ⚠️ JS EN ALTA, BODY SONUNDA -->
+  <script src="app.js"></script>
 </body>
 </html>
