@@ -1,84 +1,168 @@
-const startDate = new Date("2025-12-27T10:45:00Z");
+// ===============================
+// NOSOTROS WIDGET – app.js
+// ===============================
 
+// 🔹 Sabit başlangıç tarihi
+const startDate = new Date("2025-12-27T10:45:00");
+
+// 🔹 Şu anki zaman
+const now = new Date();
+
+// 🔹 Bogotá saatine çevir (UTC-5)
+const bogotaTime = new Date(
+  now.toLocaleString("en-US", { timeZone: "America/Bogota" })
+);
+
+// 🔹 Bogotá’da bugünün tarihi (00:00 reset)
+const todayBogota = new Date(
+  bogotaTime.getFullYear(),
+  bogotaTime.getMonth(),
+  bogotaTime.getDate()
+);
+
+// 🔹 Gün farkı hesapla
+const diffTime = todayBogota - startDate;
+const dayCount = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+// ===============================
+// 🤍 GÜNLÜK MESAJLAR (0 → 109)
+// ===============================
 const messages = [
-  { day: 0, text: "Este widget no pide nada.\nSolo está aquí.\nIgual que yo." },
-  { day: 1, text: "Buenos días amor ❤️\nPensar en ti hace que el día comience perfecto." },
-  { day: 2, text: "Camila, recuerdo nuestro paseo en Milano, aunque breve, fue mágico." },
-  { day: 3, text: "Amor, tu sonrisa ilumina incluso los días nublados." },
-  { day: 4, text: "Pequeños momentos contigo se vuelven memorias eternas." },
-  { day: 5, text: "Pensar en ti me hace sonreír sin motivo alguno." },
-  { day: 6, text: "Recordando aquel Domo, aunque fue solo un instante, lo atesoro." },
-  { day: 7, text: "Eres poesía viva, Camila, cada pensamiento hacia ti rima con mi corazón." },
-  { day: 8, text: "Amor, cada minuto lejos de ti es una cuenta regresiva para verte." },
-  { day: 9, text: "Tu risa es el sonido que más me gusta escuchar." },
-  { day: 10, text: "Amor, diez días han pasado y cada instante contigo sigue siendo especial.\n\n(Pulse animación aquí)" },
-  { day: 11, text: "Recuerdo tu gesto de ayer, simple pero lleno de ternura." },
-  { day: 12, text: "Incluso en la distancia, siento tu cercanía en cada pensamiento." },
-  { day: 13, text: "Pequeñas cosas, grandes recuerdos: nuestra caminata por Milano sigue viva." },
-  { day: 14, text: "Cada mensaje tuyo me hace sentir afortunado de tenerte." },
-  { day: 15, text: "Quince días juntos y cada día más claro: eres mi elección, mi calma, mi alegría.\n\n(Pulse animación aquí)" },
+"Este widget no pide nada. Solo está aquí. Como yo 🤍",
+"Hoy pensé en ti sin razón. Y me gustó.",
+"Tu nombre se siente tranquilo en mi mente.",
+"Aunque estemos lejos, hay algo que nunca se mueve.",
+"Si supieras cuántas veces sonrío por ti…",
+"No es costumbre. Es elección.",
+"Hay días normales, y días donde apareces tú.",
+"Te pienso en silencio, y eso dice mucho.",
+"No necesito escribirte. Ya estás aquí.",
+"Diez días… y ya pareces una costumbre bonita.",
 
-  // Gün 16-109 → romantik kısa şiirler, Milano/Domo hatıraları, sevgi sözleri
-  { day: 16, text: "Amor, cada amanecer me recuerda lo afortunado que soy de conocerte." },
-  { day: 17, text: "Camila, tu mirada es mi lugar seguro." },
-  { day: 18, text: "Amor, el tiempo contigo se siente eterno y ligero al mismo tiempo." },
-  { day: 19, text: "Recordando nuestra risa compartida en Milano, todavía sonrío solo." },
-  { day: 20, text: "Camila, tus palabras son melodías que quiero escuchar siempre." },
-  { day: 21, text: "Amor, incluso un simple 'hola' tuyo alegra mi día." },
-  { day: 22, text: "Cada detalle tuyo queda guardado en mi corazón como tesoro." },
-  { day: 23, text: "Pensar en ti convierte lo ordinario en extraordinario." },
-  { day: 24, text: "Camila, cada día contigo aunque sea en pensamiento, es un regalo." },
-  { day: 25, text: "Amor, el recuerdo de nuestro Domo sigue siendo especial y dulce." },
+"Hay personas que llegan despacio. Tú te quedaste.",
+"Me gusta cómo existes en mi vida.",
+"No prometo perfección. Prometo verdad.",
+"A veces el amor no habla. Acompaña.",
+"Quince días… y ya te siento hogar.",
+"Milán aún no pasa, pero algo ya empieza.",
+"Hoy el mundo fue un poco más suave.",
+"No hiciste nada especial hoy. Y aún así…",
+"Hay calma cuando pienso en ti.",
+"Si esto es esperar, no me quejo.",
 
-  // ... burada 26-108 arası benzer kısa romantik mesajlar olacak
-  // Örnek olarak tek tek burada yazmayacağım ama tam pakette oluşturulacak
-  // İçerik: Milano/Domo hatıraları, kısa şiirler, romantik sözler, günlük sürprizler
+"Tu recuerdo no pesa. Flota.",
+"Me gustas sin prisa.",
+"El tiempo contigo no corre. Camina.",
+"A veces cierro los ojos y estás ahí.",
+"No necesito entenderlo todo.",
+"Hay conexiones que no piden explicación.",
+"Hoy fue uno de esos días contigo en el fondo.",
+"No eres ruido. Eres fondo.",
+"Si te nombro, sonrío.",
+"Treinta días… y sigo aquí.",
 
-  { day: 109, text: "Amor Camila, hoy celebramos tu día 🎉\nCada instante contigo es un regalo que atesoro.\nFeliz cumpleaños, mi corazón. 💖\n\n(Pulse animación aquí)" }
+"El amor no siempre grita.",
+"A veces solo se sienta al lado.",
+"Pensé en Bogotá hoy.",
+"Pensé en tus manos.",
+"No te pienso menos por no verte.",
+"Hay ausencias que se sienten llenas.",
+"Hoy no pasó nada… excepto tú.",
+"No me canso de elegirte.",
+"Milán se acerca sin saberlo.",
+"Cuarenta días. Tranquilos. Firmes.",
+
+"Me gusta cómo eres sin intentar.",
+"Hay belleza en tu forma de estar.",
+"No todo amor quema. Algunos abrigan.",
+"Hoy el día fue mejor contigo en él.",
+"No necesito razones para pensarte.",
+"El tiempo no nos separa. Nos prueba.",
+"Hay recuerdos que aún no existen.",
+"Y aun así ya duelen bonito.",
+"Me quedo.",
+"Cincuenta días… sigo.",
+
+"Pensarte se volvió natural.",
+"No ocupas espacio. Lo llenas.",
+"A veces el amor es simple.",
+"Y simple no es poco.",
+"Hoy te imaginé sonriendo.",
+"Eso bastó.",
+"No escribo para impresionar.",
+"Escribo porque estás.",
+"Cada día contigo es una decisión.",
+"Sesenta días… presentes.",
+
+"Hay palabras que solo te diría a ti.",
+"Hoy no las escribo. Las guardo.",
+"El amor también sabe esperar.",
+"Y espera bien.",
+"No hay prisa cuando hay certeza.",
+"Tu nombre sigue siendo suave.",
+"Milán ya empieza a doler.",
+"Pero de lo bonito.",
+"Te llevo conmigo.",
+"Setenta días… sin ruido.",
+
+"Hay silencios que dicen todo.",
+"Este es uno de ellos.",
+"Hoy pensé en el Duomo.",
+"En cómo te miré.",
+"En cómo el mundo se calló.",
+"No lo olvido.",
+"No quiero olvidarlo.",
+"Eso también es amor.",
+"Persistir.",
+"Ochenta días… y firmes.",
+
+"No te idealizo.",
+"Te elijo.",
+"Hoy el amor fue tranquilo.",
+"Como tú.",
+"No necesito más.",
+"Ni menos.",
+"Estás.",
+"Eso basta.",
+"Milán vive en mí.",
+"Noventa días… contigo.",
+
+"Hay historias que no gritan.",
+"La nuestra susurra.",
+"Hoy me sentí cerca.",
+"Aunque no lo estemos.",
+"El amor también es memoria.",
+"Y promesa.",
+"No corro.",
+"Espero.",
+"Cien días… aquí.",
+
+"Te pienso sin urgencia.",
+"Eso es nuevo.",
+"Eso es bueno.",
+"El amor maduro no empuja.",
+"Acompaña.",
+"Ya casi es tu día.",
+"Y yo estoy aquí.",
+"Como siempre.",
+"Como quise.",
+"Últimos días…",
+
+// 🔹 109 – 15 de abril – Cumpleaños 🎂
+"Feliz cumpleaños, mi Camila 🤍\nHoy el mundo es mejor porque tú naciste.\nGracias por tu luz, por tu calma, por tu forma de amar.\nSi alguna vez dudas, recuerda esto:\nen algún lugar del mundo, alguien te elige cada día.\nYo."
 ];
 
-function update() {
-  const now = new Date();
-  const diffMs = now - startDate;
+// ===============================
+// 🎯 Mesaj seçimi
+// ===============================
+let message = messages[dayCount] || "Estoy aquí. Siempre.";
 
-  const totalSeconds = Math.floor(diffMs / 1000);
-  const days = Math.floor(totalSeconds / 86400);
-  const hours = Math.floor((totalSeconds % 86400) / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-
-  document.getElementById("time").innerText =
-    `${days} días ${hours} h ${minutes} min ${seconds} s`;
-
-  const messageBox = document.getElementById("messageBox");
-  const messageText = document.getElementById("messageText");
-
-  let activeMessage = null;
-  for (let i = messages.length - 1; i >= 0; i--) {
-    if (days >= messages[i].day) {
-      activeMessage = messages[i];
-      break;
-    }
-  }
-
-  if (activeMessage) {
-    messageBox.classList.remove("locked");
-    messageText.innerText = activeMessage.text;
-
-    if (activeMessage.day === 10 || activeMessage.day === 15 || activeMessage.day === 109) {
-      triggerSpecialEffect();
-    }
-  } else {
-    messageBox.classList.add("locked");
-    messageText.innerText = "Este mensaje aún no es el momento.";
-  }
+// 🔹 12 Ocak 2026 – Milano / Duomo (özel gün)
+if (dayCount === 16) {
+  message = "Milán. El Duomo. Tú y yo. Ese día entendí que el amor también tiene un lugar físico 🤍";
 }
 
-function triggerSpecialEffect() {
-  const box = document.getElementById("messageBox");
-  box.classList.add("special");
-  setTimeout(() => box.classList.remove("special"), 1500);
-}
-
-setInterval(update, 1000);
-update();
+// ===============================
+// 📺 Ekrana yaz
+// ===============================
+document.getElementById("message").innerText = message;
