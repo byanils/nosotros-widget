@@ -3,6 +3,7 @@
   margin: 0;
   padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  transition: background 1.5s ease, color 1.5s ease; /* Mod geçişleri için */
 }
 
 body {
@@ -12,61 +13,75 @@ body {
   align-items: center;
   min-height: 100vh;
   padding: 20px;
+  overflow: hidden; /* Süzülen kalplerin dışarı taşmaması için */
+  position: relative;
+}
+
+/* 🌙 Gece Modu Renkleri */
+body.night-mode {
+  background: #1a1a2e;
+}
+body.night-mode #counter, body.night-mode .heart-container {
+  background: #16213e;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+body.night-mode #counter, body.night-mode #message {
+  color: #e9ecef;
 }
 
 .container {
   text-align: center;
   width: 100%;
   max-width: 380px;
+  z-index: 10; /* Kalplerin önünde kalması için */
 }
 
-/* ❤️ KALP FOTOĞRAF ALANI - DÜZELTİLDİ */
+/* ❤️ KALP FOTOĞRAF ALANI + NABIZ ETKİSİ */
 .heart-container {
-  width: 220px;   /* Genişlik artırıldı */
-  height: 200px;  /* Yükseklik dengelendi */
+  width: 220px;
+  height: 200px;
   margin: 0 auto 30px;
   background: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
-  /* Kalp Maskesi */
+  animation: heartbeat 1.5s ease-in-out infinite; /* Nabız atışı burada */
   -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
   mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
+  mask-size: contain; mask-repeat: no-repeat; mask-position: center;
 }
 
-.heart-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* Resmin yamulmasını engeller */
-  transition: opacity 0.8s ease-in-out;
+.heart-container img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.8s; }
+
+@keyframes heartbeat {
+  0% { transform: scale(1); }
+  15% { transform: scale(1.08); }
+  30% { transform: scale(1); }
+  45% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+/* ✨ SÜZÜLEN KALPLER */
+.floating-heart {
+  position: absolute;
+  color: rgba(255, 77, 77, 0.3);
+  pointer-events: none;
+  z-index: 1;
+  animation: floatUp 6s linear infinite;
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
 }
 
 /* 🔢 SAYAÇ KUTUSU */
 #counter {
-  background: white;
-  padding: 20px 10px;
-  border-radius: 25px;
+  background: white; padding: 20px 10px; border-radius: 25px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.06);
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 35px;
-  font-size: 24px;
-  font-weight: 800;
-  color: #1a1a1a;
+  display: flex; justify-content: space-around; margin-bottom: 35px;
+  font-size: 24px; font-weight: 800; color: #1a1a1a;
 }
 
 /* 💌 MESAJ ALANI */
-#message {
-  font-size: 19px;
-  font-weight: 500;
-  line-height: 1.5;
-  color: #444;
-  white-space: pre-line;
-  padding: 0 15px;
-}
+#message { font-size: 19px; font-weight: 500; line-height: 1.5; color: #444; white-space: pre-line; }
