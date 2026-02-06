@@ -17,28 +17,19 @@ body {
 .container {
   text-align: center;
   width: 100%;
-  max-width: 400px;
+  max-width: 380px;
 }
 
-/* ❤️ KALP FOTOĞRAF ALANI */
+/* ❤️ KALP FOTOĞRAF ALANI - DÜZELTİLDİ */
 .heart-container {
-  width: 200px;
-  height: 180px;
-  margin: 0 auto 35px;
-  position: relative;
-  /* Kalp formunda kesme işlemi */
-  clip-path: path('M10,30 A20,20 0,0,1 50,30 A20,20 0,0,1 90,30 Q90,60 50,90 Q10,60 10,30 Z');
-  /* Not: Yukarıdaki path basit bir kalptir, resmin içine oturması için scale kullanılır */
-  transform: scale(2.2); 
-}
-
-/* Daha garantili kalp yöntemi (Maskeleme) */
-.heart-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: opacity 0.8s ease-in-out;
-  /* Modern tarayıcılar için kalp maskesi */
+  width: 220px;   /* Genişlik artırıldı */
+  height: 200px;  /* Yükseklik dengelendi */
+  margin: 0 auto 30px;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Kalp Maskesi */
   -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
   mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
   -webkit-mask-size: contain;
@@ -49,24 +40,33 @@ body {
   mask-position: center;
 }
 
-#counter {
-  background: white;
-  padding: 25px 10px;
-  border-radius: 30px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 40px;
-  font-size: 26px;
-  font-weight: 900;
-  color: #222;
+.heart-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Resmin yamulmasını engeller */
+  transition: opacity 0.8s ease-in-out;
 }
 
+/* 🔢 SAYAÇ KUTUSU */
+#counter {
+  background: white;
+  padding: 20px 10px;
+  border-radius: 25px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 35px;
+  font-size: 24px;
+  font-weight: 800;
+  color: #1a1a1a;
+}
+
+/* 💌 MESAJ ALANI */
 #message {
-  font-size: 22px;
+  font-size: 19px;
   font-weight: 500;
-  line-height: 1.4;
-  color: #333;
+  line-height: 1.5;
+  color: #444;
   white-space: pre-line;
-  padding: 0 10px;
+  padding: 0 15px;
 }
