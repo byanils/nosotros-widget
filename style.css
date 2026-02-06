@@ -18,7 +18,18 @@ body {
   padding: 20px;
   max-width: 320px;
 }
-
+#counter {
+  font-size: 28px;          /* Büyük sayı */
+  font-weight: 700;         /* Kalın */
+  color: #111;              /* Daha koyu, okunaklı */
+  background: #ffffff;      /* Beyaz kutu */
+  padding: 12px 20px;       /* Kutuyu büyüt */
+  border-radius: 16px;      /* Yuvarlak kenar */
+  display: inline-block;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  letter-spacing: 0.3px;
+  margin-bottom: 18px;
+}
 #time {
   font-size: 20px;
   font-weight: 600;
