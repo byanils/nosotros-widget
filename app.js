@@ -1,5 +1,29 @@
 const startDate = new Date("2025-12-27T10:45:00");
 
+// 📸 Albüm Ayarları
+const photos = [
+    "foto1.jpg", "foto2.jpg", "foto3.jpg", "foto4.jpg", "foto5.jpg",
+    "foto6.jpg", "foto7.jpg", "foto8.jpg", "foto9.jpg", "foto10.jpg"
+];
+let currentPhotoIndex = 0;
+
+function changePhoto() {
+    const photoElement = document.getElementById("album-photo");
+    if (!photoElement) return;
+
+    // Yumuşak geçiş efekti
+    photoElement.style.opacity = 0;
+    
+    setTimeout(() => {
+        currentPhotoIndex = (currentPhotoIndex + 1) % photos.length;
+        photoElement.src = photos[currentPhotoIndex];
+        photoElement.style.opacity = 1;
+    }, 500);
+}
+
+// Her 4 saniyede bir fotoğraf değiştir
+setInterval(changePhoto, 4000);
+
 const messages = [
     "Este widget no pide nada. Solo está aquí. Como yo 🤍", "Hoy pensé en ti sin razón. Y me gustó.",
     "Tu nombre se siente tranquilo en mi mente.", "Aunque estemos lejos, hay algo que nunca se mueve.",
@@ -12,7 +36,7 @@ const messages = [
     "Hoy el mundo fue un poco más suave.", "No hiciste nada especial hoy. Y aún así…",
     "Hay calma cuando pienso en ti.", "Si esto es esperar, no me quejo.",
     "Tu recuerdo no pesa. Flota.", "Me gustas sin prisa.",
-    "El tiempo contigo no corre. Camina.", "A veces cierro los ojos y estás ahí.",
+    "El tempo contigo no corre. Camina.", "A veces cierro los ojos y estás ahí.",
     "No necesito entenderlo todo.", "Hay conexiones que no piden explicación.",
     "Hoy fue uno de esos dıas contigo en el fondo.", "No eres ruido. Eres fondo.",
     "Si te nombro, sonrío.", "Treinta dıas… sigo aquí.",
@@ -23,7 +47,7 @@ const messages = [
     "Milán se acerca sin saberlo.", "Cuarenta dıas. Tranquilos. Firmes.",
     "Me gusta cómo eres sin intentar.", "Hay belleza en tu forma de estar.",
     "No todo amor quema. Algunos abrigan.", "Hoy el dıa fue mejor contigo en él.",
-    "No necesito razones para pensarte.", "El tiempo no nos separa. Nos prueba.",
+    "No necesito razones para pensarte.", "El tempo no nos separa. Nos prueba.",
     "Hay recuerdos ki aún no existen.", "Y aun así ya duelen bonito.",
     "Me quedo.", "Cincuenta dıas… sigo.",
     "A veces no hay que decir nada. Solo estar.", "Eres mi notificación favorita.",
@@ -34,8 +58,8 @@ const messages = [
     "No es la distancia, es lo que sentimos mientras la acortamos.", "A veces el amor es un mensaje a las 3 de la tarde.",
     "Setenta dıas… y sigo eligiéndote a ti.", "No te necesito para vivir, pero contigo vivo mejor.",
     "Eres ese rincón de luz en mis dıas grises.", "Pensarte es como un abrazo a distancia.",
-    "No hay kilómetros que puedan con lo que hemos creado.", "Hoy Bogotá se sintió más cerca de ti.",
-    "Ochenta dıas… y la magia sigue intacta.", "Me gusta cómo me haces sentir, incluso sin estar cerca.",
+    "No hay kilómetros que puedan con lo que hemos creado.", "Hoy Bogotá se sintió daha cerca de ti.",
+    "Ochenta dıas… ve la magia sigue intacta.", "Me gusta cómo me haces sentir, incluso sin estar cerca.",
     "Eres mi pensamiento más recurrente.", "A veces el amor es saber que alguien te espera.",
     "No importa el mapa, importa el destino. Y mi destino eres tú.", "Gracias por ser mi lugar seguro.",
     "Noventa dıas… tres meses de pura verdad.", "Cada dıa es una página nueva. Me gusta nuestra historia.",
@@ -45,13 +69,12 @@ const messages = [
     "Hay dıas que solo se arreglan hablándote.", "Eres el motivo de mi mejor sonrisa hoy.",
     "No importa qué tan lejos, te llevo en cada paso.", "Tu paz es mi refugio favorito.",
     "Eres la casualidad más bonita de mi vida.", "A veces solo necesito saber que estás ahí.",
-    "108 dıas… y esto es solo el comienzo. Mañana es un dıa especial. 🤍"
+    "108 dıas… ve esto es solo el comienzo. Mañana es un dıa especial. 🤍"
 ];
 
 function updateWidget() {
     const now = new Date();
     const bogotaTime = new Date(now.toLocaleString("en-US", { timeZone: "America/Bogota" }));
-
     const today = new Date(bogotaTime.getFullYear(), bogotaTime.getMonth(), bogotaTime.getDate());
     const dayCount = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
 
