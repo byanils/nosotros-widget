@@ -6,11 +6,11 @@
 }
 
 body {
-  background: #f4f4f9;
+  background: #f8f9fa;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   padding: 20px;
 }
 
@@ -20,30 +20,53 @@ body {
   max-width: 400px;
 }
 
+/* ❤️ KALP FOTOĞRAF ALANI */
+.heart-container {
+  width: 200px;
+  height: 180px;
+  margin: 0 auto 35px;
+  position: relative;
+  /* Kalp formunda kesme işlemi */
+  clip-path: path('M10,30 A20,20 0,0,1 50,30 A20,20 0,0,1 90,30 Q90,60 50,90 Q10,60 10,30 Z');
+  /* Not: Yukarıdaki path basit bir kalptir, resmin içine oturması için scale kullanılır */
+  transform: scale(2.2); 
+}
+
+/* Daha garantili kalp yöntemi (Maskeleme) */
+.heart-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.8s ease-in-out;
+  /* Modern tarayıcılar için kalp maskesi */
+  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
+  mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
 #counter {
   background: white;
-  padding: 30px 15px;
-  border-radius: 35px;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+  padding: 25px 10px;
+  border-radius: 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
   display: flex;
   justify-content: space-around;
-  margin-bottom: 50px;
-  font-size: 28px;
+  margin-bottom: 40px;
+  font-size: 26px;
   font-weight: 900;
   color: #222;
 }
 
 #message {
-  font-size: 22px; /* Mesaj oldukça büyük ve net */
+  font-size: 22px;
   font-weight: 500;
-  line-height: 1.5;
+  line-height: 1.4;
   color: #333;
   white-space: pre-line;
-  animation: fadeIn 1s ease-in;
   padding: 0 10px;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
 }
