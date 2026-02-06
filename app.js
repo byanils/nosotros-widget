@@ -52,7 +52,7 @@ Feliz San Valentín, Camila.
 Con amor, siempre.`;
   return;
 }
-document.getElementById("counter").innerText =
+else document.getElementById("counter").innerText =
   `${days} días · ${hours} horas · ${minutes} minutos`;
 
 // ===============================
