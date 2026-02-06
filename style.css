@@ -23,15 +23,15 @@ body {
 
 /* 🔢 SAYAÇ – büyük, net, dikkat çekici */
 #counter {
-  font-size: 40px;              /* Büyük */
-  font-weight: 800;             /* Kalın */
-  color: #111;
+  font-size: 32px;
+  font-weight: 700;
   background: #ffffff;
-  padding: 20px 28px;
-  border-radius: 22px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.18);
-  margin-bottom: 22px;
-  letter-spacing: 0.5px;
+  padding: 16px 22px;
+  border-radius: 18px;
+  box-shadow: 0 10px 26px rgba(0,0,0,0.18);
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+  white-space: nowrap; /* 🔑 tek satır */
 }
 
 /* 💌 Mesaj alanı */
