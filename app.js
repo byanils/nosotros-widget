@@ -1,29 +1,35 @@
 const startDate = new Date("2025-12-27T10:45:00");
-
-// 📸 Albüm Ayarları
-const photos = [
-    "foto1.jpg", "foto2.jpg", "foto3.jpg", "foto4.jpg", "foto5.jpg",
-    "foto6.jpg", "foto7.jpg", "foto8.jpg", "foto9.jpg", "foto10.jpg"
-];
+const photos = ["foto1.jpg", "foto2.jpg", "foto3.jpg", "foto4.jpg", "foto5.jpg", "foto6.jpg", "foto7.jpg", "foto8.jpg", "foto9.jpg", "foto10.jpg"];
 let currentPhotoIndex = 0;
 
+// 📸 Fotoğraf Değişimi (Albüm)
 function changePhoto() {
     const photoElement = document.getElementById("album-photo");
     if (!photoElement) return;
-
-    // Yumuşak geçiş efekti
     photoElement.style.opacity = 0;
-    
     setTimeout(() => {
         currentPhotoIndex = (currentPhotoIndex + 1) % photos.length;
         photoElement.src = photos[currentPhotoIndex];
         photoElement.style.opacity = 1;
     }, 500);
 }
-
-// Her 4 saniyede bir fotoğraf değiştir
 setInterval(changePhoto, 4000);
 
+// ✨ Süzülen Kalp Oluşturucu (Arka Plan Efekti)
+function createFloatingHeart() {
+    const heart = document.createElement("div");
+    heart.innerHTML = "❤️";
+    heart.classList.add("floating-heart");
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = (Math.random() * 10 + 10) + "px";
+    heart.style.animationDuration = (Math.random() * 3 + 4) + "s";
+    heart.style.opacity = Math.random() * 0.5;
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 7000);
+}
+setInterval(createFloatingHeart, 600);
+
+// 💌 108 Günlük Mesaj Listesi
 const messages = [
     "Este widget no pide nada. Solo está aquí. Como yo 🤍", "Hoy pensé en ti sin razón. Y me gustó.",
     "Tu nombre se siente tranquilo en mi mente.", "Aunque estemos lejos, hay algo que nunca se mueve.",
@@ -36,7 +42,7 @@ const messages = [
     "Hoy el mundo fue un poco más suave.", "No hiciste nada especial hoy. Y aún así…",
     "Hay calma cuando pienso en ti.", "Si esto es esperar, no me quejo.",
     "Tu recuerdo no pesa. Flota.", "Me gustas sin prisa.",
-    "El tempo contigo no corre. Camina.", "A veces cierro los ojos y estás ahí.",
+    "El tempo contigo no corre. Camina.", "A veces cierro los ojos ve estás ahí.",
     "No necesito entenderlo todo.", "Hay conexiones que no piden explicación.",
     "Hoy fue uno de esos dıas contigo en el fondo.", "No eres ruido. Eres fondo.",
     "Si te nombro, sonrío.", "Treinta dıas… sigo aquí.",
@@ -57,24 +63,37 @@ const messages = [
     "Me gusta la paz que me das sin pedir nada a cambio.", "Eres el 'te quiero' que nunca me canso de sentir.",
     "No es la distancia, es lo que sentimos mientras la acortamos.", "A veces el amor es un mensaje a las 3 de la tarde.",
     "Setenta dıas… y sigo eligiéndote a ti.", "No te necesito para vivir, pero contigo vivo mejor.",
-    "Eres ese rincón de luz en mis dıas grises.", "Pensarte es como un abrazo a distancia.",
+    "Eres ese rincón de luz en mis dıas grises.", "Pensarte es como un abrazo a dıstancia.",
     "No hay kilómetros que puedan con lo que hemos creado.", "Hoy Bogotá se sintió daha cerca de ti.",
     "Ochenta dıas… ve la magia sigue intacta.", "Me gusta cómo me haces sentir, incluso sin estar cerca.",
     "Eres mi pensamiento más recurrente.", "A veces el amor es saber que alguien te espera.",
     "No importa el mapa, importa el destino. Y mi destino eres tú.", "Gracias por ser mi lugar seguro.",
-    "Noventa dıas… tres meses de pura verdad.", "Cada dıa es una página nueva. Me gusta nuestra historia.",
+    "Noventa dıas… tres meses de pura verdad.", "Cada dıa es una página yeni. Me gusta nuestra historia.",
     "No eres un sueño, eres mi realidad favorita.", "Incluso en el silencio, te escucho.",
     "No te idealizo, te elijo.", "Eres mi pausa favorita en este mundo ruidoso.",
     "Cien dıas… y mi corazón sigue diciendo tu nombre.", "Me gusta lo que somos, ası sin filtros.",
     "Hay dıas que solo se arreglan hablándote.", "Eres el motivo de mi mejor sonrisa hoy.",
     "No importa qué tan lejos, te llevo en cada paso.", "Tu paz es mi refugio favorito.",
     "Eres la casualidad más bonita de mi vida.", "A veces solo necesito saber que estás ahí.",
+    "A veces lo más valiente es quedarse.", "Contigo la vida no pesa.",
+    "Eres mi mejor 'hola' y mi 'adiós' más difícil.", "Tu amor es mi calma en medio del ruido.",
+    "No eres perfecta, eres real. Y eso me encanta.", "Gracias por elegirme a mí también.",
     "108 dıas… ve esto es solo el comienzo. Mañana es un dıa especial. 🤍"
 ];
 
+// 🔢 Widget Güncelleme
 function updateWidget() {
     const now = new Date();
     const bogotaTime = new Date(now.toLocaleString("en-US", { timeZone: "America/Bogota" }));
+    
+    // 🌙 Gece Modu Kontrolü
+    const hour = bogotaTime.getHours();
+    if (hour >= 18 || hour < 6) {
+        document.body.classList.add("night-mode");
+    } else {
+        document.body.classList.remove("night-mode");
+    }
+
     const today = new Date(bogotaTime.getFullYear(), bogotaTime.getMonth(), bogotaTime.getDate());
     const dayCount = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
 
@@ -88,6 +107,7 @@ function updateWidget() {
         <div>${d}d</div><div>${h}h</div><div>${m}m</div><div style="color:#ff4d4d">${s}s</div>
     `;
 
+    // Özel Gün Kontrolleri
     let finalMessage = "";
     if (now.getMonth() === 1 && now.getDate() === 14) {
         finalMessage = "Hoy es San Valentín 🤍\nY no estás aquí, pero estás en todo.\nFeliz San Valentín, Camila.";
