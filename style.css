@@ -1,7 +1,7 @@
 /* ===== GENEL RESET ===== */
 * {
   box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 /* ===== SAYFA ZEMİNİ ===== */
@@ -18,67 +18,52 @@ body {
 .container {
   text-align: center;
   padding: 20px;
-  max-width: 320px;
+  width: 95%; 
+  max-width: 400px;
 }
 
 /* ===== 🔢 CANLI SAYAÇ ===== */
-.container {
-  text-align: center;
-  padding: 20px;
-  width: 90%; /* Mobilde daha iyi görünmesi için */
-  max-width: 400px; /* Genişliği biraz artırdık */
-}
-
 #counter {
-  font-size: 24px; /* Taşmayı önlemek için biraz küçülttük */
+  font-size: 22px; /* Mobilde taşmaması için ideal boyut */
   font-weight: 700;
   color: #111;
   background: #ffffff;
-  padding: 15px 25px;
+  padding: 18px 25px;
   border-radius: 20px;
-  display: inline-block; /* Kutu gibi davranması için */
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-  line-height: 1.4; /* Satır aralığını düzelttik */
-  word-wrap: break-word; /* Uzun metinleri alt satıra atar */
+  display: inline-block;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  line-height: 1.4;
+  word-wrap: break-word;
+  min-width: 200px; /* İçerik yokken kutunun çok küçülmemesi için */
 }
 
 .subtitle {
   font-size: 15px;
   color: #666;
-  margin-top: 20px; /* Sayaçla arasına boşluk ekledik */
+  margin-top: 20px;
   font-style: italic;
+  display: block; /* Alt satıra geçmesi için */
 }
-
 
 /* ===== 💌 MESAJ ===== */
 #message {
   font-size: 15px;
   line-height: 1.75;
   color: #222;
-  padding: 14px 12px;
+  margin-top: 15px;
   animation: fadeIn 1.5s ease;
 }
 
-/* ===== ✨ FADE-IN ANİMASYONU ===== */
+/* ===== ✨ ANİMASYON ===== */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* ===== 📱 KÜÇÜK EKRAN OPTİMİZASYONU ===== */
+/* ===== 📱 KÜÇÜK EKRAN AYARI ===== */
 @media (max-width: 360px) {
   #counter {
-    font-size: 30px;
-    padding: 16px 22px;
-  }
-
-  #message {
-    font-size: 14px;
+    font-size: 18px; /* Çok küçük ekranlarda daha da küçültüyoruz */
+    padding: 15px;
   }
 }
