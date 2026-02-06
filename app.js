@@ -33,6 +33,25 @@ const days = Math.floor(totalSeconds / (3600 * 24));
 const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
 const minutes = Math.floor((totalSeconds % 3600) / 60);
 
+// 💘 14 Şubat – Sevgililer Günü özel mesajı
+if (now.getMonth() === 1 && now.getDate() === 14) {
+  document.getElementById("message").innerText =
+`Hoy es San Valentín 🤍
+Y no estás aquí, pero estás en todo.
+En cada segundo que pasa,
+en cada recuerdo de Milán,
+en cada latido silencioso.
+
+No necesito flores hoy.
+No necesito regalos.
+Solo necesito que sepas
+que incluso desde lejos,
+sigues siendo mi lugar favorito.
+
+Feliz San Valentín, Camila.
+Con amor, siempre.`;
+  return;
+}
 document.getElementById("counter").innerText =
   `${days} días · ${hours} horas · ${minutes} minutos`;
 
