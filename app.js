@@ -2,7 +2,7 @@
 // NOSOTROS WIDGET – app.js
 // ===============================
 
-// 🔹 Sabit başlangıç tarihi
+// 🔹 Başlangıç tarihi
 const startDate = new Date("2025-12-27T10:45:00");
 
 // 🔹 Şu anki zaman
@@ -13,20 +13,33 @@ const bogotaTime = new Date(
   now.toLocaleString("en-US", { timeZone: "America/Bogota" })
 );
 
-// 🔹 Bogotá’da bugünün tarihi (00:00 reset)
+// 🔹 Bugün (Bogotá – 00:00)
 const todayBogota = new Date(
   bogotaTime.getFullYear(),
   bogotaTime.getMonth(),
   bogotaTime.getDate()
 );
 
-// 🔹 Gün farkı hesapla
+// 🔹 Gün farkı
 const diffTime = todayBogota - startDate;
 const dayCount = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
 // ===============================
-// 🤍 GÜNLÜK MESAJLAR (0 → 109)
+// ⏳ Sayaç (gün / saat / dakika)
 // ===============================
+const totalSeconds = Math.floor((bogotaTime - startDate) / 1000);
+
+const days = Math.floor(totalSeconds / (3600 * 24));
+const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+const minutes = Math.floor((totalSeconds % 3600) / 60);
+
+document.getElementById("counter").innerText =
+  `${days} días · ${hours} horas · ${minutes} minutos`;
+
+// ===============================
+// 🤍 Günlük Mesajlar
+// ===============================
+
 const messages = [
 "Este widget no pide nada. Solo está aquí. Como yo 🤍",
 "Hoy pensé en ti sin razón. Y me gustó.",
@@ -148,8 +161,7 @@ const messages = [
 "Como quise.",
 "Últimos días…",
 
-// 🔹 109 – 15 de abril – Cumpleaños 🎂
-"Feliz cumpleaños, mi Camila 🤍\nHoy el mundo es mejor porque tú naciste.\nGracias por tu luz, por tu calma, por tu forma de amar.\nSi alguna vez dudas, recuerda esto:\nen algún lugar del mundo, alguien te elige cada día.\nYo."
+  // … (diğer mesajlar aynen kalıyor)
 ];
 
 // ===============================
@@ -157,9 +169,20 @@ const messages = [
 // ===============================
 let message = messages[dayCount] || "Estoy aquí. Siempre.";
 
-// 🔹 12 Ocak 2026 – Milano / Duomo (özel gün)
+// 🔹 12 Ocak 2026 – Milano / Duomo
 if (dayCount === 16) {
   message = "Milán. El Duomo. Tú y yo. Ese día entendí que el amor también tiene un lugar físico 🤍";
+}
+
+// 🔹 15 Nisan 2026 – Cumpleaños
+if (dayCount === 109) {
+  message =
+    "Feliz cumpleaños, mi Camila 🤍\n" +
+    "Hoy el mundo es mejor porque tú naciste.\n" +
+    "Gracias por tu luz, por tu calma, por tu forma de amar.\n" +
+    "En algún lugar del mundo,\n" +
+    "alguien te elige cada día.\n" +
+    "Yo.";
 }
 
 // ===============================
