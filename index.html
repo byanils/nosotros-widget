@@ -9,23 +9,23 @@
 </head>
 <body>
 
-    <div id="main-page" class="page-content">
+    <div id="main-page" class="page-layer active">
         <div class="container">
             <div class="heart-container">
                 <img id="album-photo" src="foto1.jpg" alt="Nosotros">
             </div>
             <div id="counter"></div>
-            <div id="message">Cargando...</div>
+            <div id="message">Cargando amor...</div>
 
-            <div id="star-portal" onclick="openStarMap()">
+            <div id="star-portal" onclick="goToUniverse()">
                 <span class="portal-star">✨</span>
                 <p class="portal-text">Nuestro Universo</p>
             </div>
         </div>
     </div>
 
-    <div id="star-map-page" class="page-content hidden">
-        <button id="back-btn" onclick="closeStarMap()">← Volver</button>
+    <div id="star-map-page" class="page-layer">
+        <button id="back-btn" onclick="goToHome()">← Volver</button>
         <div id="stars-container"></div>
         <div class="star-content">
             <div class="city-star" id="milan-star">📍 Milán</div>
