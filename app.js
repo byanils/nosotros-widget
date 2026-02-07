@@ -2,7 +2,6 @@ const startDate = new Date("2025-12-27T10:45:00");
 const photos = ["foto1.jpg", "foto2.jpg", "foto3.jpg", "foto4.jpg", "foto5.jpg", "foto6.jpg", "foto7.jpg", "foto8.jpg", "foto9.jpg", "foto10.jpg"];
 let currentIdx = 0;
 
-// Sayfa Yönetimi
 function goToUniverse() {
     document.getElementById("main-page").classList.remove("active");
     document.getElementById("star-map-page").classList.add("active");
@@ -21,7 +20,7 @@ const messages = [
     "Hay días normales, y días donde apareces tú.", "Te pienso en silencio, y eso dice mucho.",
     "No necesito escribirte. Ya estás aquí.", "Diez días... y ya pareces una costumbre bonita.",
     "Hay personas que llegan despacio. Tú te quedaste.", "Me gusta cómo existes en mi vida.",
-    "No prometo perfección. Prometo verdad.", "A veces el amor no habla. Acompaña.",
+    "No promeo perfección. Prometo verdad.", "A veces el amor no habla. Acompaña.",
     "Quince días... y ya te siento hogar.", "Milán aún no pasa, pero algo ya empieza.",
     "Hoy el mundo fue un poco más suave.", "No hiciste nada especial hoy. Y aún así...",
     "Hay calma cuando pienso en ti.", "Si esto es esperar, no me quejo.",
@@ -43,14 +42,14 @@ const messages = [
     "A veces no hay que decir nada. Solo estar.", "Eres mi notificación favorita.",
     "No sé hacia dónde vamos, pero me gusta el camino.", "Hoy el café supo a ti. Dulce y necesario.",
     "Hay personas que son canciones. Tú eres mi playlist entera.", "No te busqué, pero te encontré en el momento exacto.",
-    "Sesenta días... y cada uno ha valido la pena.", "Tu risa es mi sonido favorito en este mundo.",
+    "Sesenta días... ve cada uno ha valido la pena.", "Tu risa es mi sonido favorito en este mundo.",
     "Me gusta la paz que me das sin pedir nada a cambio.", "Eres el 'te quiero' que nunca me canso de sentir.",
     "No es la distancia, es lo que sentimos mientras la acortamos.", "A veces el amor es un mensaje a las 3 de la tarde.",
-    "Setenta días... y sigo eligiéndote a ti.", "No te necesito para vivir, pero contigo vivo mejor.",
+    "Setenta días... ve sigo eligiéndote a ti.", "No te necesito para vivir, pero contigo vivo mejor.",
     "Eres ese rincón de luz en mis días grises.", "Pensarte es como un abrazo a distancia.",
     "No hay kilómetros que puedan con lo que hemos creado.", "Hoy Bogotá se sintió más cerca de ti.",
     "Ochenta días... ve la magia sigue intacta.", "Me gusta cómo me haces sentir, incluso sin estar cerca.",
-    "Eres mi pensamiento más recurrente.", "A veces el amor es saber que alguien te espera.",
+    "Eres mi pensamiento más recurrent.", "A veces el amor es saber que alguien te espera.",
     "No importa el mapa, importa el destino. Y mi destino eres tú.", "Gracias por ser mi lugar seguro.",
     "Noventa días... tres meses de pura verdad.", "Cada día es una página nueva. Me gusta nuestra historia.",
     "No eres un sueño, eres mi realidad favorita.", "Incluso en el silencio, te escucho.",
@@ -84,31 +83,44 @@ function initUniverse() {
 
     if (vaultContainer.children.length > 0) return;
 
-    for (let i = 0; i < 70; i++) {
+    // Sabit Yıldızlar
+    for (let i = 0; i < 80; i++) {
         const s = document.createElement("div");
         s.className = "star";
         s.style.left = Math.random() * 100 + "vw";
         s.style.top = Math.random() * 100 + "vh";
-        s.style.width = s.style.height = Math.random() * 2 + "px";
+        const size = Math.random() * 3 + "px";
+        s.style.width = s.style.height = size;
         s.style.setProperty('--d', (Math.random() * 3 + 2) + "s");
         starContainer.appendChild(s);
     }
 
+    // Kayan Yıldızlar
+    setInterval(() => {
+        const ss = document.createElement("div");
+        ss.className = "shooting-star";
+        ss.style.top = Math.random() * 40 + "vh";
+        ss.style.left = Math.random() * 100 + "vw";
+        starContainer.appendChild(ss);
+        setTimeout(() => ss.remove(), 3000);
+    }, 4000);
+
+    // Sandıklar
     vaults.forEach((v, index) => {
         const div = document.createElement("div");
         div.className = `chest ${v.b ? 'birthday' : ''}`;
-        div.style.backgroundImage = "url('sandik.png')"; // Görsel adı
+        div.style.backgroundImage = "url('sandik.png')";
         
-        const topPos = 15 + (index * 9);
+        const topPos = 20 + (index * 8);
         const curve = Math.sin(index * 1.5) * 20;
         div.style.top = topPos + "%";
         div.style.left = (50 + curve) + "%";
 
         if (now < new Date(v.d)) {
             div.classList.add("locked");
-            div.onclick = () => alert(v.b ? v.lock : "Se abrirá el: " + v.d);
+            div.onclick = (e) => { e.stopPropagation(); alert(v.b ? v.lock : "Se abrirá el: " + v.d); };
         } else {
-            div.onclick = () => alert(v.t);
+            div.onclick = (e) => { e.stopPropagation(); alert(v.t); };
         }
         vaultContainer.appendChild(div);
     });
@@ -118,23 +130,22 @@ function update() {
     const now = new Date();
     const bogota = new Date(now.toLocaleString("en-US", {timeZone: "America/Bogota"}));
     
+    // Gündüz/Gece Kontrolü
     if(bogota.getHours() >= 18 || bogota.getHours() < 6) document.body.classList.add("night-mode");
     else document.body.classList.remove("night-mode");
 
     const diff = Math.floor((bogota - startDate) / 1000);
     const d = Math.floor(diff/86400), h = Math.floor((diff%86400)/3600), m = Math.floor((diff%3600)/60), s = diff%60;
     
-    const counterEl = document.getElementById("counter");
-    if(counterEl) counterEl.innerHTML = `<span>${d}d</span><span>${h}h</span><span>${m}m</span><span style="color:#ff4d4d">${s}s</span>`;
+    document.getElementById("counter").innerHTML = `<span>${d}d</span><span>${h}h</span><span>${m}m</span><span style="color:#ff4d4d">${s}s</span>`;
     
     const dayIdx = Math.floor((new Date(bogota.getFullYear(), bogota.getMonth(), bogota.getDate()) - startDate)/86400000);
-    const msgEl = document.getElementById("message");
-    if(msgEl) msgEl.innerText = messages[dayIdx] || "Contigo, siempre. 🤍";
+    document.getElementById("message").innerText = messages[dayIdx] || "Contigo, siempre. 🤍";
 }
 
 setInterval(() => {
     const img = document.getElementById("album-photo");
-    if(img && img.parentElement.offsetParent !== null) { // Sadece görünürse değiştir
+    if(img && document.getElementById("main-page").classList.contains("active")) {
         img.style.opacity = 0;
         setTimeout(() => {
             currentIdx = (currentIdx + 1) % photos.length;
