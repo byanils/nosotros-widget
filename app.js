@@ -2,6 +2,18 @@ const startDate = new Date("2025-12-27T10:45:00");
 const photos = ["foto1.jpg", "foto2.jpg", "foto3.jpg", "foto4.jpg", "foto5.jpg", "foto6.jpg", "foto7.jpg", "foto8.jpg", "foto9.jpg", "foto10.jpg"];
 let currentIdx = 0;
 
+// Sayfa Geçişleri
+function openStarMap() {
+    document.getElementById("main-page").classList.add("hidden");
+    document.getElementById("star-map-page").classList.remove("hidden");
+}
+
+function closeStarMap() {
+    document.getElementById("star-map-page").classList.add("hidden");
+    document.getElementById("main-page").classList.remove("hidden");
+}
+
+// 108 Mesaj
 const messages = [
     "Este widget no pide nada. Solo está aquí. Como yo 🤍", "Hoy pensé en ti sin razón. Y me gustó.",
     "Tu nombre se siente tranquilo en mi mente.", "Aunque estemos lejos, hay algo que nunca se mueve.",
@@ -65,31 +77,22 @@ const vaults = [
     { d: "2026-04-15", t: "¡Feliz cumpleaños, Camila! 🎂", b: true, lock: "El tesoro más grande espera el día más especial... 🌌✨" }
 ];
 
-function openStarMap() {
-    document.getElementById("main-page").classList.add("hidden");
-    document.getElementById("star-map-page").classList.remove("hidden");
-}
-
-function closeStarMap() {
-    document.getElementById("star-map-page").classList.add("hidden");
-    document.getElementById("main-page").classList.remove("hidden");
-}
-
 function initUniverse() {
     const starContainer = document.getElementById("stars-container");
     const vaultContainer = document.getElementById("vault-container");
     const now = new Date();
 
-    for (let i = 0; i < 80; i++) {
+    // Yıldızlar
+    for (let i = 0; i < 60; i++) {
         const s = document.createElement("div");
         s.className = "star";
         s.style.left = Math.random() * 100 + "vw";
         s.style.top = Math.random() * 100 + "vh";
         s.style.width = s.style.height = Math.random() * 2 + "px";
-        s.style.setProperty('--d', (Math.random() * 3 + 2) + "s");
         starContainer.appendChild(s);
     }
 
+    // Sandıklar
     vaults.forEach((v, index) => {
         const div = document.createElement("div");
         div.className = `chest ${v.b ? 'birthday' : ''}`;
@@ -102,12 +105,7 @@ function initUniverse() {
             div.classList.add("locked");
             div.onclick = () => alert(v.b ? v.lock : "Se abrirá el: " + v.d);
         } else {
-            div.onclick = () => {
-                const modal = document.createElement("div");
-                modal.className = "modal";
-                modal.innerHTML = `<div class="modal-content"><p>${v.t}</p><br><button onclick="this.parentElement.parentElement.remove()" style="padding:10px; background:#ffd700; border:none; border-radius:10px;">Cerrar</button></div>`;
-                document.body.appendChild(modal);
-            };
+            div.onclick = () => alert(v.t);
         }
         vaultContainer.appendChild(div);
     });
@@ -116,17 +114,22 @@ function initUniverse() {
 function update() {
     const now = new Date();
     const bogota = new Date(now.toLocaleString("en-US", {timeZone: "America/Bogota"}));
+    
+    // Gece Modu
     if(bogota.getHours() >= 18 || bogota.getHours() < 6) document.body.classList.add("night-mode");
     else document.body.classList.remove("night-mode");
 
+    // Sayaç
     const diff = Math.floor((bogota - startDate) / 1000);
     const d = Math.floor(diff/86400), h = Math.floor((diff%86400)/3600), m = Math.floor((diff%3600)/60), s = diff%60;
     document.getElementById("counter").innerHTML = `<span>${d}d</span><span>${h}h</span><span>${m}m</span><span style="color:#ff4d4d">${s}s</span>`;
     
+    // Mesaj
     const dayIdx = Math.floor((new Date(bogota.getFullYear(), bogota.getMonth(), bogota.getDate()) - startDate)/86400000);
     document.getElementById("message").innerText = messages[dayIdx] || "Contigo, siempre. 🤍";
 }
 
+// Albüm
 setInterval(() => {
     const img = document.getElementById("album-photo");
     if(img) {
