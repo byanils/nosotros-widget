@@ -37,30 +37,30 @@ const messages = [
     "Me gusta cómo eres sin intentar.", "Hay bellezza en tu forma de estar.",
     "No todo amor quema. Algunos abrigan.", "Hoy el día fue mejor contigo en él.",
     "No necesito razones para pensarte.", "El tiempo no nos separa. Nos prueba.",
-    "Hay recuerdos que aún no existen.", "Y aun así ya duelen bonito.",
+    "Hay recuerdos ki aún no existen.", "Y aun así ya duelen bonito.",
     "Me quedo.", "Cincuenta días... sigo.",
-    "A veces no hay que decir nada. Solo estar.", "Eres mi notificación favorita.",
+    "A veces no hay ki decir nada. Solo estar.", "Eres mi notificación favorita.",
     "No sé hacia dónde vamos, pero me gusta el camino.", "Hoy el café supo a ti. Dulce ve necesario.",
-    "Hay personas que son canciones. Tú eres mi playlist entera.", "No te busqué, pero te encontré en el momento exacto.",
+    "Hay personas ki son canciones. Tú eres mi playlist entera.", "No te busqué, pero te encontré en el momento exacto.",
     "Sesenta días... ve cada uno ha valido la pena.", "Tu risa es mi sonido favorito en este world.",
-    "Me gusta la paz que me das sin pedir nada a cambio.", "Eres el 'te quiero' que nunca me canso de sentir.",
-    "No es la distancia, es lo que sentimos mientras la acortamos.", "A veces el amor es un mensaje a las 3 de la tarde.",
+    "Me gusta la paz ki me das sin pedir nada a cambio.", "Eres el 'te quiero' ki nunca me canso de sentir.",
+    "No es la distancia, es lo ki sentimos mientras la acortamos.", "A veces el amor es un mesaj a las 3 de la tarde.",
     "Setenta días... ve sigo eligiéndote a ti.", "No te necesito para vivir, pero contigo vivo mejor.",
     "Eres ese rincón de luz en mis días grises.", "Pensarte es como un abrazo a distancia.",
-    "No hay kilómetros que puedan con lo que hemos creado.", "Hoy Bogotá se sintió más cerca de ti.",
+    "No hay kilómetros ki puedan con lo ki hemos creado.", "Hoy Bogotá se sintió más cerca de ti.",
     "Ochenta días... ve la magia sigue intacta.", "Me gusta cómo me haces sentir, incluso sin estar cerca.",
-    "Eres mi pensamiento más recurrente.", "A veces el amor es saber que alguien te espera.",
+    "Eres mi pensamiento más recurrente.", "A veces el amor es saber ki alguien te espera.",
     "No importa el mapa, importa el destino. Y mi destino eres tú.", "Gracias por ser mi lugar seguro.",
     "Noventa días... tres meses de pura verdad.", "Cada día es una página nueva. Me gusta nuestra historia.",
     "No eres un sueño, eres mi realidad favorita.", "Incluso en el silencio, te escucho.",
     "No te idealizo, te elijo.", "Eres mi pausa favorita en este world ruidoso.",
-    "Cien días... ve mi corazón sigue diciendo tu nombre.", "Me gusta lo que somos, así sin filtros.",
-    "Hay días que solo se arreglan hablándote.", "Eres el motivo de mi mejor sonrisa hoy.",
+    "Cien días... ve mi corazón sigue diciendo tu nombre.", "Me gusta lo ki somos, así sin filtros.",
+    "Hay días ki solo se arreglan hablándote.", "Eres el motivo de mi mejor sonrisa hoy.",
     "No importa qué tan lejos, te llevo en cada paso.", "Tu paz mi refugio favorito.",
-    "Eres la casualidad más bonita de mi vida.", "A veces solo necesito saber que estás ahí.",
+    "Eres la casualidad más bonita de mi vida.", "A veces solo necesito saber ki estás ahí.",
     "A veces lo más valiente es quedarse.", "Contigo la vida no pesa.",
     "Eres mi mejor 'hola' ve mi 'adiós' más difícil.", "Tu amor es mi calma en medio del ruido.",
-    "No eres perfecta, eres real. Y eso me encanta.", "Gracias por elegirme a mí también.",
+    "No eres perfecta, eres real. Y eso me encanta.", "Gracias por elegirme a mí de nuevo.",
     "108 días... ve esto es solo el comienzo. 🤍"
 ];
 
@@ -72,7 +72,7 @@ const vaults = [
     { d: "2026-03-15", t: "Eres mi rincón de luz." },
     { d: "2026-03-22", t: "Un paso más cerca de nuestro abrazo." },
     { d: "2026-03-29", t: "Bogotá ve Milán están conectadas." },
-    { d: "2026-04-05", t: "Eres la melodía que calma mi ruido." },
+    { d: "2026-04-05", t: "Eres la melodía ki calma mi ruido." },
     { d: "2026-04-15", t: "¡Feliz cumpleaños, Camila! 🎂", b: true, lock: "El tesoro más grande espera el día más especial... 🌌✨" }
 ];
 
@@ -83,39 +83,34 @@ function initUniverse() {
 
     if (vaultContainer.children.length > 0) return;
 
-    // Yıldızlar
     for (let i = 0; i < 100; i++) {
         const s = document.createElement("div");
         s.className = "star";
         s.style.left = Math.random() * 100 + "vw";
         s.style.top = Math.random() * 100 + "vh";
-        s.style.width = s.style.height = Math.random() * 2 + "px";
+        s.style.width = s.style.height = "2px";
         s.style.setProperty('--d', (Math.random() * 3 + 2) + "s");
         starContainer.appendChild(s);
     }
-    
-    // Sandık Dizilimi (Oranlama Mantığı ile)
-    const totalVaults = vaults.length;
+
+    const total = vaults.length;
     vaults.forEach((v, index) => {
         const div = document.createElement("div");
         div.className = `chest ${v.b ? 'birthday' : ''}`;
         
-        const ratio = index / (totalVaults - 1); // 0 (Milano) -> 1 (Bogotá)
-        
-        // Dikey: %15 -> %85
-        const topPos = 15 + (ratio * 70);
-        // Yatay: %85 (Sağ) -> %15 (Sol) + S kavisi
-        const curve = Math.sin(ratio * Math.PI) * 12; 
-        const leftPos = (85 - (ratio * 70)) + curve;
+        const ratio = index / (total - 1);
+        const topPos = 18 + (ratio * 62); // Aralığı daralttık ki Bogota'nın üstüne binmesin
+        const curve = Math.sin(ratio * Math.PI) * 15;
+        const leftPos = (82 - (ratio * 64)) + curve;
 
         div.style.top = `${topPos}%`;
         div.style.left = `${leftPos}%`;
 
         if (now < new Date(v.d)) {
             div.classList.add("locked");
-            div.onclick = (e) => { e.stopPropagation(); alert(v.b ? v.lock : "Se abrirá el: " + v.d); };
+            div.onclick = () => alert(v.b ? v.lock : "Se abrirá el: " + v.d);
         } else {
-            div.onclick = (e) => { e.stopPropagation(); alert(v.t); };
+            div.onclick = () => alert(v.t);
         }
         vaultContainer.appendChild(div);
     });
@@ -124,13 +119,11 @@ function initUniverse() {
 function update() {
     const now = new Date();
     const bogota = new Date(now.toLocaleString("en-US", {timeZone: "America/Bogota"}));
-    
     if(bogota.getHours() >= 18 || bogota.getHours() < 6) document.body.classList.add("night-mode");
     else document.body.classList.remove("night-mode");
 
     const diff = Math.floor((bogota - startDate) / 1000);
     const d = Math.floor(diff/86400), h = Math.floor((diff%86400)/3600), m = Math.floor((diff%3600)/60), s = diff%60;
-    
     document.getElementById("counter").innerHTML = `<span>${d}d</span><span>${h}h</span><span>${m}m</span><span style="color:#ff4d4d">${s}s</span>`;
     
     const dayIdx = Math.floor((new Date(bogota.getFullYear(), bogota.getMonth(), bogota.getDate()) - startDate)/86400000);
