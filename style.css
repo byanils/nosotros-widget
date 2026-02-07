@@ -2,6 +2,7 @@
 body { background: #f8f9fa; min-height: 100vh; overflow: hidden; transition: 1s; }
 body.night-mode { background: #1a1a2e; color: white; }
 
+/* Katman Kontrolleri */
 .page-layer { 
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
     display: flex; justify-content: center; align-items: center; 
@@ -11,10 +12,10 @@ body.night-mode { background: #1a1a2e; color: white; }
 
 #star-map-page { background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%); }
 
-/* Sayfa 1 */
+/* Kalp ve Sayaç */
 .container { text-align: center; width: 100%; max-width: 400px; }
 .heart-container { 
-    width: 220px; height: 200px; margin: 0 auto 20px; animation: heartbeat 1.5s infinite; 
+    width: 200px; height: 180px; margin: 0 auto 20px; animation: heartbeat 1.5s infinite; 
     -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
     mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
     mask-size: contain; mask-repeat: no-repeat; mask-position: center;
@@ -22,40 +23,41 @@ body.night-mode { background: #1a1a2e; color: white; }
 .heart-container img { width: 100%; height: 100%; object-fit: cover; }
 @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 #counter { display: flex; justify-content: space-around; font-size: 24px; font-weight: bold; margin: 20px 0; }
-body.night-mode #counter { color: white; }
-body:not(.night-mode) #counter { color: #333; }
-.portal-text { font-family: 'Dancing Script'; font-size: 22px; color: #ff4d4d; margin-top: 10px; }
+.portal-text { font-family: 'Dancing Script'; font-size: 22px; color: #ff4d4d; }
 
-/* Sayfa 2 - Universe */
-.star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--d) infinite; }
-@keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+/* Universe Detayları */
+.star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--d) infinite ease-in-out; z-index: 1; }
+@keyframes twinkle { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
 
-#plane-container { 
-    position: absolute; width: 100%; height: 100%; 
-    pointer-events: none; z-index: 5; /* Sandıkların arkasında olmalı */
-}
+/* UÇAK */
+#plane-container { position: absolute; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
 #plane { 
-    position: absolute; font-size: 25px; 
-    animation: flightMove 15s infinite linear; 
+    position: absolute; font-size: 35px; 
+    filter: drop-shadow(0 0 10px white);
+    animation: flightMove 12s infinite linear; 
 }
 @keyframes flightMove {
-    0% { left: 90%; top: 10%; transform: rotate(-150deg); opacity: 0; }
+    0% { left: 100%; top: 10%; transform: rotate(-140deg); opacity: 0; }
     10% { opacity: 1; }
-    100% { left: 5%; top: 90%; transform: rotate(-160deg); opacity: 0; }
+    100% { left: -15%; top: 90%; transform: rotate(-150deg); opacity: 0; }
 }
 
-#vault-container { position: absolute; width: 100%; height: 100%; z-index: 10; }
+/* SANDIKLAR */
+#vault-container { position: absolute; width: 100%; height: 100%; z-index: 20; }
 .chest { 
-    position: absolute; width: 50px; height: 50px; 
+    position: absolute; 
+    width: 60px !important; height: 60px !important; 
     background: url('sandik.png') no-repeat center/contain !important;
     cursor: pointer; transform: translate(-50%, -50%);
-    transition: 0.3s; pointer-events: auto;
+    pointer-events: auto; /* Tıklanabilir olmasını sağlar */
+    transition: transform 0.2s;
 }
-.chest.locked { filter: brightness(0.3) grayscale(1); }
-.chest.birthday { width: 90px; height: 90px; filter: drop-shadow(0 0 15px gold); }
+.chest.locked { filter: brightness(0.4) grayscale(1); }
+.chest.birthday { width: 100px !important; height: 100px !important; filter: drop-shadow(0 0 20px gold); }
 
-.city-star { color: white; position: absolute; font-weight: bold; z-index: 20; text-shadow: 0 0 10px black; }
+/* ŞEHİRLER */
+.city-star { color: white; position: absolute; font-weight: bold; z-index: 25; text-shadow: 0 0 10px black; }
 #milan-star { top: 10%; right: 10%; }
-/* Şehir isminin kapanmaması için Bogota'yı biraz daha aşağı aldık */
-#bogota-star { bottom: 5%; left: 10%; }
+#bogota-star { bottom: 5%; left: 10%; } /* Bogota'yı aşağı sabitledik */
+
 #back-btn { position: absolute; top: 40px; left: 20px; color: white; border: none; background: none; font-size: 24px; cursor: pointer; z-index: 100; }
