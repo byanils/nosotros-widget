@@ -3,17 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amore</title>
+    <title>Nuestro Camino</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="main-page">
         <div class="heart-container">
             <img id="album-photo" src="foto1.jpg" alt="Nosotros">
         </div>
+
         <div id="counter">Cargando...</div>
         <div id="message"></div>
+
+        <div class="vault-section">
+            <h3 id="vault-title">Cofres del Tesoro</h3>
+            <div id="vault-container"></div>
+        </div>
+
+        <button id="star-btn">✨ Nuestro Universo</button>
     </div>
+
+    <div id="star-map" class="hidden">
+        <button id="back-btn">← Volver</button>
+        <div class="star-content">
+            <div class="city-star" id="milan-star">📍 Milán</div>
+            <div id="plane">✈️</div> 
+            <div class="connection-line"></div>
+            <div class="city-star" id="bogota-star">📍 Bogotá</div>
+            <p class="star-date">27.12.2025<br>Donde todo empezó</p>
+        </div>
+    </div>
+
     <script src="app.js"></script>
 </body>
 </html>
