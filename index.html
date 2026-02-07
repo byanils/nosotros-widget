@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nuestro Camino</title>
+    <title>Amore</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,20 +12,21 @@
         <div class="heart-container">
             <img id="album-photo" src="foto1.jpg" alt="Nosotros">
         </div>
-
-        <div id="counter">Cargando...</div>
+        <div id="counter"></div>
         <div id="message"></div>
-
+        
         <div class="vault-section">
-            <h3 id="vault-title">Cofres del Tesoro</h3>
             <div id="vault-container"></div>
         </div>
 
-        <button id="star-btn">✨ Nuestro Universo</button>
+        <div id="star-portal" onclick="openStarMap()">
+            <span class="portal-star">✨</span>
+            <p class="portal-text">Nuestro Universo</p>
+        </div>
     </div>
 
-    <div id="star-map" class="hidden">
-        <button id="back-btn">← Volver</button>
+    <div id="star-map-page" class="hidden">
+        <button id="back-btn" onclick="closeStarMap()">← Volver</button>
         <div class="star-content">
             <div class="city-star" id="milan-star">📍 Milán</div>
             <div id="plane">✈️</div> 
