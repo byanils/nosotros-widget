@@ -3,16 +3,17 @@
 body { background: #f8f9fa; min-height: 100vh; overflow: hidden; transition: background 1s; }
 body.night-mode { background: #1a1a2e; }
 
-.page-content { 
-    position: fixed; top: 0; left: 0; 
-    width: 100vw; height: 100vh; 
+/* Sayfa Katmanları */
+.page-layer { 
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
     display: flex; justify-content: center; align-items: center; 
-    transition: opacity 0.5s ease-in-out;
+    opacity: 0; pointer-events: none; transition: opacity 0.6s ease; z-index: 1;
 }
+.page-layer.active { opacity: 1; pointer-events: auto; z-index: 10; }
 
-.hidden { display: none !important; opacity: 0; pointer-events: none; }
+#star-map-page { background: radial-gradient(circle, #0f172a, #000); }
 
-/* ❤️ ANA SAYFA TASARIMI */
+/* ❤️ ANA SAYFA */
 .container { text-align: center; width: 100%; max-width: 400px; padding: 20px; }
 .heart-container { 
     width: 220px; height: 200px; margin: 0 auto 25px; animation: heartbeat 1.5s infinite; 
@@ -31,11 +32,10 @@ body.night-mode #message { color: #ccc; }
 #star-portal { margin-top: 30px; cursor: pointer; }
 .portal-text { font-family: 'Dancing Script', cursive; font-size: 24px; color: #ff4d4d; }
 
-/* 🌌 UNIVERSE SAYFASI */
-#star-map-page { background: radial-gradient(circle, #0f172a, #000); z-index: 1000; }
-.star { position: absolute; background: white; border-radius: 50%; opacity: 0.5; }
+/* 🌌 UNIVERSE */
+.star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--d) infinite; }
+@keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 
-/* ✈️ UÇAK */
 #plane { 
     position: absolute; font-size: 28px; z-index: 1010; 
     offset-path: path('M 50 500 Q 200 100 350 500'); 
@@ -43,14 +43,14 @@ body.night-mode #message { color: #ccc; }
 }
 @keyframes flyArc { 0% { offset-distance: 0%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { offset-distance: 100%; opacity: 0; } }
 
-/* 💰 SANDIKLAR */
+/* 💰 SANDIKLAR (Resim yolunu JS içinde daha güvenli tanımlayacağız) */
 .chest { 
     position: absolute; width: 60px; height: 60px; 
-    background-image: url('sandik.png'); background-size: contain; background-repeat: no-repeat; 
+    background-size: contain; background-repeat: no-repeat; 
     cursor: pointer; z-index: 1020; transform: translateX(-50%); 
 }
 .chest.locked { filter: brightness(0.3) grayscale(1); }
-.chest.birthday { width: 100px; height: 100px; filter: drop-shadow(0 0 20px gold); }
+.chest.birthday { width: 110px; height: 110px; filter: drop-shadow(0 0 20px gold); }
 
 .city-star { color: white; position: absolute; font-weight: bold; text-shadow: 0 0 10px white; }
 #milan-star { top: 10%; right: 10%; }
