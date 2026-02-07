@@ -1,50 +1,65 @@
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; transition: all 0.5s ease; }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; }
 
-body { background: #f8f9fa; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow-x: hidden; position: relative; }
+body { background: #f8f9fa; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow-x: hidden; position: relative; transition: background 1s; }
 body.night-mode { background: #1a1a2e; }
 
 .container { text-align: center; width: 100%; max-width: 400px; padding: 20px; z-index: 10; position: relative; }
 .hidden { display: none !important; opacity: 0; }
 
-/* ❤️ KALP & ALBÜM */
+/* ✨ ŞIK YILDIZ PORTALI (BUTON YERİNE) */
+#star-portal {
+    margin-top: 40px;
+    cursor: pointer;
+    display: inline-block;
+    animation: pulse 2s infinite;
+}
+.portal-star { font-size: 35px; display: block; margin-bottom: 5px; }
+.portal-text {
+    font-family: 'Dancing Script', cursive; /* Zarif el yazısı */
+    font-size: 22px;
+    color: #ff4d4d;
+}
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.8; }
+}
+
+/* ❤️ KALP & SAYAÇ */
 .heart-container {
-    width: 200px; height: 180px; margin: 0 auto 25px; background: #fff; display: flex;
+    width: 200px; height: 180px; margin: 0 auto 25px;
     animation: heartbeat 1.5s ease-in-out infinite;
     -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
     mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
     mask-size: contain; mask-repeat: no-repeat; mask-position: center;
 }
-.heart-container img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.8s; }
-@keyframes heartbeat { 0%, 100% { transform: scale(1); } 15%, 45% { transform: scale(1.08); } }
+.heart-container img { width: 100%; height: 100%; object-fit: cover; }
+@keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
 
-/* ✨ EFEKTLER */
-.floating-heart { position: absolute; color: #ff4d4d; animation: floatUp 6s linear infinite; opacity: 0.5; z-index: 1; }
-@keyframes floatUp { 0% { transform: translateY(100vh); opacity: 0; } 100% { transform: translateY(-10vh); opacity: 0; } }
-
-/* 🔢 SAYAÇ & MESAJ */
-#counter { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); display: flex; justify-content: space-around; font-size: 22px; font-weight: 800; margin-bottom: 25px; }
-#message { font-size: 18px; line-height: 1.5; color: #444; min-height: 60px; margin-bottom: 20px; }
-body.night-mode #counter, body.night-mode #message { color: #eee; background: #16213e; }
+#counter { display: flex; justify-content: space-around; font-size: 24px; font-weight: bold; margin-bottom: 20px; color: #333; }
+body.night-mode #counter { color: white; }
 
 /* 📦 SANDIKLAR */
-.vault-section { margin-top: 20px; border-top: 1px dashed #ccc; padding-top: 20px; }
-#vault-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-.chest { font-size: 30px; cursor: pointer; background: white; border-radius: 12px; padding: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-.chest.locked { filter: grayscale(1); opacity: 0.4; cursor: not-allowed; }
-.chest.birthday { grid-column: span 3; font-size: 45px; background: linear-gradient(45deg, #ffd700, #ff4d4d); animation: b-glow 2s infinite alternate; }
-@keyframes b-glow { from { transform: scale(1); } to { transform: scale(1.05); box-shadow: 0 0 20px #ff4d4d; } }
+#vault-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 20px; }
+.chest { font-size: 25px; cursor: pointer; background: white; border-radius: 10px; padding: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+.chest.locked { opacity: 0.3; filter: grayscale(1); }
+.chest.birthday { grid-column: span 4; font-size: 40px; background: gold; }
 
-/* ✈️ STAR MAP & UÇAK */
-#star-map { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: radial-gradient(circle, #1b2735, #090a0f); z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-#plane { position: absolute; font-size: 24px; animation: fly 10s linear infinite; z-index: 105; }
-@keyframes fly { 0% { transform: translate(-120px, 200px) rotate(-40deg); opacity: 0; } 10%, 90% { opacity: 1; } 100% { transform: translate(150px, -150px) rotate(-40deg); opacity: 0; } }
-.connection-line { position: absolute; width: 2px; height: 280px; background: linear-gradient(to top, #ff4d4d, #fff); top: 50px; left: 130px; transform: rotate(-40deg); opacity: 0.5; box-shadow: 0 0 10px #ff4d4d; }
-.city-star { color: white; position: absolute; font-weight: bold; }
-#milan-star { top: 20px; right: 20px; }
-#bogota-star { bottom: 20px; left: 20px; }
-#star-btn { background: none; border: 1px solid #ff4d4d; color: #ff4d4d; padding: 10px 20px; border-radius: 20px; cursor: pointer; }
-#back-btn { position: absolute; top: 30px; left: 20px; color: white; background: none; border: none; font-size: 20px; cursor: pointer; }
-
-/* MODAL */
-.modal { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:200; display:flex; justify-content:center; align-items:center; }
-.modal-content { background:white; padding:30px; border-radius:20px; max-width:85%; text-align:center; color:#333; }
+/* 🌌 STAR MAP PAGE */
+#star-map-page {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: radial-gradient(circle, #1b2735, #000);
+    z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center;
+}
+#plane { position: absolute; font-size: 24px; animation: fly 8s linear infinite; }
+@keyframes fly {
+    0% { transform: translate(-120px, 150px) rotate(-35deg); opacity: 0; }
+    20% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { transform: translate(120px, -150px) rotate(-35deg); opacity: 0; }
+}
+.connection-line { position: absolute; width: 1px; height: 250px; background: white; transform: rotate(-45deg); opacity: 0.3; box-shadow: 0 0 10px white; }
+.city-star { color: white; position: absolute; font-size: 14px; }
+#milan-star { top: 100px; right: 50px; }
+#bogota-star { bottom: 100px; left: 50px; }
+#back-btn { position: absolute; top: 40px; left: 20px; color: white; background: none; border: none; font-size: 20px; cursor: pointer; }
