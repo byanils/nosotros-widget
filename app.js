@@ -42,7 +42,7 @@ const messages = [
     "A veces no hay que decir nada. Solo estar.", "Eres mi notificación favorita.",
     "No sé hacia dónde vamos, pero me gusta el camino.", "Hoy el café supo a ti. Dulce ve necesario.",
     "Hay personas que son canciones. Tú eres mi playlist entera.", "No te busqué, pero te encontré en el momento exacto.",
-    "Sesenta días... ve cada uno ha valido la pena.", "Tu risa es mi sonido favorito en este mundo.",
+    "Sesenta días... ve cada uno ha valido la pena.", "Tu risa es mi sonido favorito en este world.",
     "Me gusta la paz que me das sin pedir nada a cambio.", "Eres el 'te quiero' que nunca me canso de sentir.",
     "No es la distancia, es lo que sentimos mientras la acortamos.", "A veces el amor es un mensaje a las 3 de la tarde.",
     "Setenta días... ve sigo eligiéndote a ti.", "No te necesito para vivir, pero contigo vivo mejor.",
@@ -83,37 +83,33 @@ function initUniverse() {
 
     if (vaultContainer.children.length > 0) return;
 
-    // Sabit ve Kayan Yıldızlar
+    // Yıldızlar
     for (let i = 0; i < 100; i++) {
         const s = document.createElement("div");
         s.className = "star";
         s.style.left = Math.random() * 100 + "vw";
         s.style.top = Math.random() * 100 + "vh";
-        s.style.width = s.style.height = Math.random() * 3 + "px";
+        s.style.width = s.style.height = Math.random() * 2 + "px";
         s.style.setProperty('--d', (Math.random() * 3 + 2) + "s");
         starContainer.appendChild(s);
     }
     
-    setInterval(() => {
-        const ss = document.createElement("div");
-        ss.className = "shooting-star";
-        ss.style.top = Math.random() * 30 + "vh";
-        ss.style.left = Math.random() * 100 + "vw";
-        starContainer.appendChild(ss);
-        setTimeout(() => ss.remove(), 3000);
-    }, 5000);
-
-    // Sandıkların Konumlandırılması (Milano -> Bogotá Eğrisi)
+    // Sandık Dizilimi (Oranlama Mantığı ile)
+    const totalVaults = vaults.length;
     vaults.forEach((v, index) => {
         const div = document.createElement("div");
         div.className = `chest ${v.b ? 'birthday' : ''}`;
         
-        const topPos = 20 + (index * 7.5); // Dikey dağılım
-        const horizontalShift = index * 6.5; 
-        const leftPos = 85 - horizontalShift; // Sağdan sola çapraz iniş
+        const ratio = index / (totalVaults - 1); // 0 (Milano) -> 1 (Bogotá)
+        
+        // Dikey: %15 -> %85
+        const topPos = 15 + (ratio * 70);
+        // Yatay: %85 (Sağ) -> %15 (Sol) + S kavisi
+        const curve = Math.sin(ratio * Math.PI) * 12; 
+        const leftPos = (85 - (ratio * 70)) + curve;
 
-        div.style.top = topPos + "%";
-        div.style.left = leftPos + "%";
+        div.style.top = `${topPos}%`;
+        div.style.left = `${leftPos}%`;
 
         if (now < new Date(v.d)) {
             div.classList.add("locked");
