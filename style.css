@@ -1,9 +1,8 @@
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; }
-
 body { background: #f8f9fa; min-height: 100vh; overflow: hidden; transition: background 1s, color 1s; }
 body.night-mode { background: #1a1a2e; color: white; }
 
-/* Yazı Okunabilirliği Kontrolü */
+/* Dinamik Yazı Renkleri (Gündüz/Gece Okunabilirlik) */
 body:not(.night-mode) #counter { color: #2d3436; }
 body:not(.night-mode) #message { color: #636e72; }
 body.night-mode #counter { color: #ffffff; }
@@ -28,11 +27,12 @@ body.night-mode #message { color: #dfe6e9; }
 }
 .heart-container img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.8s; }
 @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
-
 #counter { display: flex; justify-content: space-around; font-size: 26px; font-weight: bold; margin-bottom: 20px; }
 #message { font-size: 18px; font-style: italic; min-height: 50px; }
+#star-portal { margin-top: 30px; cursor: pointer; }
+.portal-text { font-family: 'Dancing Script', cursive; font-size: 24px; color: #ff4d4d; }
 
-/* 🌌 HAREKETLİ YILDIZLAR */
+/* 🌌 UNIVERSE */
 .star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--d) infinite ease-in-out; }
 @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
 
@@ -46,32 +46,33 @@ body.night-mode #message { color: #dfe6e9; }
     100% { transform: translate(-500px, 500px) rotate(215deg) scale(1); opacity: 0; }
 }
 
-/* ✈️ UÇAK ROTASI (Yeni ve Garanti Yöntem) */
+/* ✈️ UÇAK */
 #plane-container { position: absolute; width: 100%; height: 100%; pointer-events: none; }
 #plane { 
-    position: absolute; font-size: 30px; 
-    animation: flightMove 12s infinite linear; z-index: 1010;
+    position: absolute; font-size: 30px; z-index: 1010;
+    animation: flightMove 12s infinite linear; 
 }
 @keyframes flightMove {
-    0% { left: -10%; top: 70%; transform: rotate(10deg); opacity: 0; }
+    0% { left: 90%; top: 15%; transform: rotate(-150deg); opacity: 0; }
     10% { opacity: 1; }
-    50% { left: 50%; top: 20%; transform: rotate(-20deg); }
+    50% { left: 50%; top: 50%; transform: rotate(-160deg); }
     90% { opacity: 1; }
-    100% { left: 110%; top: 70%; transform: rotate(-40deg); opacity: 0; }
+    100% { left: -10%; top: 85%; transform: rotate(-170deg); opacity: 0; }
 }
 
 /* 💰 SANDIKLAR */
 #vault-container { position: absolute; width: 100%; height: 100%; pointer-events: none; }
 .chest { 
-    position: absolute; width: 70px; height: 70px; 
+    position: absolute; width: 65px; height: 65px; 
+    background-image: url('sandik.png') !important;
     background-size: contain; background-repeat: no-repeat; 
     cursor: pointer; z-index: 1020; transform: translateX(-50%); 
-    pointer-events: auto; /* Tıklanabilir olması için */
+    pointer-events: auto; transition: transform 0.3s;
 }
-.chest.locked { filter: brightness(0.3) grayscale(1) drop-shadow(0 0 5px gold); }
-.chest.birthday { width: 120px; height: 120px; filter: drop-shadow(0 0 25px gold); }
+.chest.locked { filter: brightness(0.4) grayscale(0.6); }
+.chest.birthday { width: 110px; height: 110px; filter: drop-shadow(0 0 20px gold); }
 
 .city-star { color: white; position: absolute; font-weight: bold; text-shadow: 0 0 10px white; z-index: 1005; }
-#milan-star { top: 15%; right: 15%; }
-#bogota-star { bottom: 15%; left: 15%; }
+#milan-star { top: 10%; right: 10%; }
+#bogota-star { bottom: 10%; left: 10%; }
 #back-btn { position: absolute; top: 40px; left: 20px; color: white; border: none; background: none; font-size: 24px; cursor: pointer; z-index: 1100; }
