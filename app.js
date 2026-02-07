@@ -20,12 +20,12 @@ const messages = [
     "Hay días normales, y días donde apareces tú.", "Te pienso en silencio, y eso dice mucho.",
     "No necesito escribirte. Ya estás aquí.", "Diez días... y ya pareces una costumbre bonita.",
     "Hay personas que llegan despacio. Tú te quedaste.", "Me gusta cómo existes en mi vida.",
-    "No promeo perfección. Prometo verdad.", "A veces el amor no habla. Acompaña.",
-    "Quince días... y ya te siento hogar.", "Milán aún no pasa, pero algo ya empieza.",
+    "No prometo perfección. Prometo verdad.", "A veces el amor no habla. Acompaña.",
+    "Quince días... ve ya te siento hogar.", "Milán aún no pasa, pero algo ya empieza.",
     "Hoy el mundo fue un poco más suave.", "No hiciste nada especial hoy. Y aún así...",
     "Hay calma cuando pienso en ti.", "Si esto es esperar, no me quejo.",
     "Tu recuerdo no pesa. Flota.", "Me gustas sin prisa.",
-    "El tiempo contigo no corre. Camina.", "A veces cierro los ojos y estás ahí.",
+    "El tiempo contigo no corre. Camina.", "A veces cierro los ojos ve estás ahí.",
     "No necesito entenderlo todo.", "Hay conexiones que no piden explicación.",
     "Hoy fue uno de esos días contigo en el fondo.", "No eres ruido. Eres fondo.",
     "Si te nombro, sonrío.", "Treinta días... sigo aquí.",
@@ -34,13 +34,13 @@ const messages = [
     "No te pienso menos por no verte.", "Hay ausencias que se sienten llenas.",
     "Hoy no pasó nada... excepto tú.", "No me canso de elegirte.",
     "Milán se acerca sin saberlo.", "Cuarenta días. Tranquilos. Firmes.",
-    "Me gusta cómo eres sin intentar.", "Hay belleza en tu forma de estar.",
+    "Me gusta cómo eres sin intentar.", "Hay bellezza en tu forma de estar.",
     "No todo amor quema. Algunos abrigan.", "Hoy el día fue mejor contigo en él.",
     "No necesito razones para pensarte.", "El tiempo no nos separa. Nos prueba.",
     "Hay recuerdos que aún no existen.", "Y aun así ya duelen bonito.",
     "Me quedo.", "Cincuenta días... sigo.",
     "A veces no hay que decir nada. Solo estar.", "Eres mi notificación favorita.",
-    "No sé hacia dónde vamos, pero me gusta el camino.", "Hoy el café supo a ti. Dulce y necesario.",
+    "No sé hacia dónde vamos, pero me gusta el camino.", "Hoy el café supo a ti. Dulce ve necesario.",
     "Hay personas que son canciones. Tú eres mi playlist entera.", "No te busqué, pero te encontré en el momento exacto.",
     "Sesenta días... ve cada uno ha valido la pena.", "Tu risa es mi sonido favorito en este mundo.",
     "Me gusta la paz que me das sin pedir nada a cambio.", "Eres el 'te quiero' que nunca me canso de sentir.",
@@ -49,7 +49,7 @@ const messages = [
     "Eres ese rincón de luz en mis días grises.", "Pensarte es como un abrazo a distancia.",
     "No hay kilómetros que puedan con lo que hemos creado.", "Hoy Bogotá se sintió más cerca de ti.",
     "Ochenta días... ve la magia sigue intacta.", "Me gusta cómo me haces sentir, incluso sin estar cerca.",
-    "Eres mi pensamiento más recurrent.", "A veces el amor es saber que alguien te espera.",
+    "Eres mi pensamiento más recurrente.", "A veces el amor es saber que alguien te espera.",
     "No importa el mapa, importa el destino. Y mi destino eres tú.", "Gracias por ser mi lugar seguro.",
     "Noventa días... tres meses de pura verdad.", "Cada día es una página nueva. Me gusta nuestra historia.",
     "No eres un sueño, eres mi realidad favorita.", "Incluso en el silencio, te escucho.",
@@ -83,38 +83,37 @@ function initUniverse() {
 
     if (vaultContainer.children.length > 0) return;
 
-    // Sabit Yıldızlar
-    for (let i = 0; i < 80; i++) {
+    // Sabit ve Kayan Yıldızlar
+    for (let i = 0; i < 100; i++) {
         const s = document.createElement("div");
         s.className = "star";
         s.style.left = Math.random() * 100 + "vw";
         s.style.top = Math.random() * 100 + "vh";
-        const size = Math.random() * 3 + "px";
-        s.style.width = s.style.height = size;
+        s.style.width = s.style.height = Math.random() * 3 + "px";
         s.style.setProperty('--d', (Math.random() * 3 + 2) + "s");
         starContainer.appendChild(s);
     }
-
-    // Kayan Yıldızlar
+    
     setInterval(() => {
         const ss = document.createElement("div");
         ss.className = "shooting-star";
-        ss.style.top = Math.random() * 40 + "vh";
+        ss.style.top = Math.random() * 30 + "vh";
         ss.style.left = Math.random() * 100 + "vw";
         starContainer.appendChild(ss);
         setTimeout(() => ss.remove(), 3000);
-    }, 4000);
+    }, 5000);
 
-    // Sandıklar
+    // Sandıkların Konumlandırılması (Milano -> Bogotá Eğrisi)
     vaults.forEach((v, index) => {
         const div = document.createElement("div");
         div.className = `chest ${v.b ? 'birthday' : ''}`;
-        div.style.backgroundImage = "url('sandik.png')";
         
-        const topPos = 20 + (index * 8);
-        const curve = Math.sin(index * 1.5) * 20;
+        const topPos = 20 + (index * 7.5); // Dikey dağılım
+        const horizontalShift = index * 6.5; 
+        const leftPos = 85 - horizontalShift; // Sağdan sola çapraz iniş
+
         div.style.top = topPos + "%";
-        div.style.left = (50 + curve) + "%";
+        div.style.left = leftPos + "%";
 
         if (now < new Date(v.d)) {
             div.classList.add("locked");
@@ -130,7 +129,6 @@ function update() {
     const now = new Date();
     const bogota = new Date(now.toLocaleString("en-US", {timeZone: "America/Bogota"}));
     
-    // Gündüz/Gece Kontrolü
     if(bogota.getHours() >= 18 || bogota.getHours() < 6) document.body.classList.add("night-mode");
     else document.body.classList.remove("night-mode");
 
