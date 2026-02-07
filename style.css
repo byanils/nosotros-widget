@@ -1,78 +1,61 @@
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; }
-body { background: #f8f9fa; min-height: 100vh; overflow: hidden; transition: background 1s, color 1s; }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+body { background: #f8f9fa; min-height: 100vh; overflow: hidden; transition: 1s; }
 body.night-mode { background: #1a1a2e; color: white; }
-
-/* Dinamik Renkler */
-body:not(.night-mode) #counter { color: #2d3436; }
-body:not(.night-mode) #message { color: #636e72; }
-body.night-mode #counter { color: #ffffff; }
-body.night-mode #message { color: #dfe6e9; }
 
 .page-layer { 
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
     display: flex; justify-content: center; align-items: center; 
-    opacity: 0; pointer-events: none; transition: opacity 0.8s; z-index: 1;
+    opacity: 0; pointer-events: none; transition: 0.8s; z-index: 1;
 }
 .page-layer.active { opacity: 1; pointer-events: auto; z-index: 10; }
 
 #star-map-page { background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%); }
 
-/* ❤️ ANA SAYFA */
-.container { text-align: center; width: 100%; max-width: 400px; padding: 20px; }
+/* Sayfa 1 */
+.container { text-align: center; width: 100%; max-width: 400px; }
 .heart-container { 
-    width: 220px; height: 200px; margin: 0 auto 25px; animation: heartbeat 1.5s infinite; 
+    width: 220px; height: 200px; margin: 0 auto 20px; animation: heartbeat 1.5s infinite; 
     -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
     mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
     mask-size: contain; mask-repeat: no-repeat; mask-position: center;
 }
-.heart-container img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.8s; }
-@keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
-#counter { display: flex; justify-content: space-around; font-size: 26px; font-weight: bold; margin-bottom: 20px; }
-#message { font-size: 18px; font-style: italic; min-height: 50px; }
-#star-portal { margin-top: 30px; cursor: pointer; }
-.portal-text { font-family: 'Dancing Script', cursive; font-size: 24px; color: #ff4d4d; }
+.heart-container img { width: 100%; height: 100%; object-fit: cover; }
+@keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+#counter { display: flex; justify-content: space-around; font-size: 24px; font-weight: bold; margin: 20px 0; }
+body.night-mode #counter { color: white; }
+body:not(.night-mode) #counter { color: #333; }
+.portal-text { font-family: 'Dancing Script'; font-size: 22px; color: #ff4d4d; margin-top: 10px; }
 
-/* 🌌 UNIVERSE */
-.star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--d) infinite ease-in-out; }
-@keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
+/* Sayfa 2 - Universe */
+.star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--d) infinite; }
+@keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 
-.shooting-star {
-    position: absolute; width: 2px; height: 2px; background: linear-gradient(-45deg, white, rgba(0, 0, 255, 0));
-    filter: drop-shadow(0 0 6px white); animation: shoot 3s infinite linear;
+#plane-container { 
+    position: absolute; width: 100%; height: 100%; 
+    pointer-events: none; z-index: 5; /* Sandıkların arkasında olmalı */
 }
-@keyframes shoot {
-    0% { transform: translate(0, 0) rotate(215deg) scale(0); opacity: 1; }
-    10% { transform: translate(-100px, 100px) rotate(215deg) scale(1); }
-    100% { transform: translate(-500px, 500px) rotate(215deg) scale(1); opacity: 0; }
-}
-
-/* ✈️ UÇAK */
-#plane-container { position: absolute; width: 100%; height: 100%; pointer-events: none; }
 #plane { 
-    position: absolute; font-size: 30px; z-index: 1010;
-    animation: flightMove 12s infinite linear; 
+    position: absolute; font-size: 25px; 
+    animation: flightMove 15s infinite linear; 
 }
 @keyframes flightMove {
     0% { left: 90%; top: 10%; transform: rotate(-150deg); opacity: 0; }
     10% { opacity: 1; }
-    50% { left: 50%; top: 50%; transform: rotate(-160deg); }
-    90% { opacity: 1; }
-    100% { left: 5%; top: 85%; transform: rotate(-170deg); opacity: 0; }
+    100% { left: 5%; top: 90%; transform: rotate(-160deg); opacity: 0; }
 }
 
-/* 💰 SANDIKLAR */
-#vault-container { position: absolute; width: 100%; height: 100%; pointer-events: none; }
+#vault-container { position: absolute; width: 100%; height: 100%; z-index: 10; }
 .chest { 
-    position: absolute; width: 55px; height: 55px; 
-    background-image: url('sandik.png') !important;
-    background-size: contain; background-repeat: no-repeat; 
-    cursor: pointer; z-index: 1020; transform: translate(-50%, -50%); 
-    pointer-events: auto; transition: transform 0.3s;
+    position: absolute; width: 50px; height: 50px; 
+    background: url('sandik.png') no-repeat center/contain !important;
+    cursor: pointer; transform: translate(-50%, -50%);
+    transition: 0.3s; pointer-events: auto;
 }
-.chest.locked { filter: brightness(0.4) grayscale(0.8); }
-.chest.birthday { width: 100px; height: 100px; filter: drop-shadow(0 0 15px gold); }
+.chest.locked { filter: brightness(0.3) grayscale(1); }
+.chest.birthday { width: 90px; height: 90px; filter: drop-shadow(0 0 15px gold); }
 
-.city-star { color: white; position: absolute; font-weight: bold; text-shadow: 0 0 10px white; z-index: 1005; }
-#milan-star { top: 8%; right: 8%; }
-#bogota-star { bottom: 8%; left: 8%; }
-#back-btn { position: absolute; top: 40px; left: 20px; color: white; border: none; background: none; font-size: 24px; cursor: pointer; z-index: 1100; }
+.city-star { color: white; position: absolute; font-weight: bold; z-index: 20; text-shadow: 0 0 10px black; }
+#milan-star { top: 10%; right: 10%; }
+/* Şehir isminin kapanmaması için Bogota'yı biraz daha aşağı aldık */
+#bogota-star { bottom: 5%; left: 10%; }
+#back-btn { position: absolute; top: 40px; left: 20px; color: white; border: none; background: none; font-size: 24px; cursor: pointer; z-index: 100; }
