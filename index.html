@@ -12,13 +12,8 @@
         <div class="heart-container">
             <img id="album-photo" src="foto1.jpg" alt="Nosotros">
         </div>
-
-        <div id="counter">Cargando...</div>
-        <div id="message"></div>
-
-        <div class="vault-section">
-            <div id="vault-container"></div>
-        </div>
+        <div id="counter"></div>
+        <div id="message">Cargando amor...</div>
 
         <div id="star-portal" onclick="openStarMap()">
             <span class="portal-star">✨</span>
@@ -28,12 +23,16 @@
 
     <div id="star-map-page" class="hidden">
         <button id="back-btn" onclick="closeStarMap()">← Volver</button>
+        
+        <div id="stars-container"></div>
+
         <div class="star-content">
             <div class="city-star" id="milan-star">📍 Milán</div>
             <div id="plane">✈️</div> 
             <div class="connection-line"></div>
             <div class="city-star" id="bogota-star">📍 Bogotá</div>
-            <p class="star-date">27.12.2025<br>Donde todo empezó</p>
+            
+            <div id="vault-container"></div>
         </div>
     </div>
 
