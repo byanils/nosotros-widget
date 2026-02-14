@@ -9,11 +9,11 @@ const messages = [
     "Hay días normales, y días donde apareces tú.", "Te pienso en silencio, y eso dice mucho.",
     "No necesito escribirte. Ya estás aquí.", "Diez días... y ya pareces una costumbre bonita.",
     "Hay personas que llegan despacio. Tú te quedaste.", "Me gusta cómo existes en mi vida.",
-    "No prometo perfección. Prometo verdad.", "A veces el amor no habla. Acompaña.",
+    "No prome-to perfección. Prometo verdad.", "A veces el amor no habla. Acompaña.",
     "Quince días... ve ya te siento hogar.", "Milán aún no pasa, pero algo ya empieza.",
     "Hoy el world fue un poco más suave.", "No hiciste nada spezial hoy. Y aún así...",
     "Hay calma cuando pienso en ti.", "Si esto es esperar, no me quejo.",
-    "Tu ricordo no pesa. Flota.", "Me gustas sin prisa.",
+    "Tu recuerdo no pesa. Flota.", "Me gustas sin prisa.",
     "El tiempo contigo no corre. Camina.", "A veces cierro los ojos ve estás ahí.",
     "No necesito entenderlo todo.", "Hay conexiones ki no piden explicación.",
     "Hoy fue uno de esos días contigo en el fondo.", "No eres ruido. Eres fondo.",
@@ -25,11 +25,11 @@ const messages = [
     "Milán se acerca sin saberlo.", "Cuarenta días. Tranquilos. Firmes.",
     "Me gusta cómo eres sin intentar.", "Hay bellezza en tu forma de estar.",
     "No todo amor quema. Algunos abrigan.", "Hoy el día fue mejor contigo en él.",
-    "No necesito razones para pensarte.", "El tiempo no nos separa. Nos prueba.",
+    "No nezesito razones para pensarte.", "El tiempo no nos separa. Nos prueba.",
     "Hay recuerdos ki aún no existen.", "Y aun así ya duelen bonito.",
     "Me quedo.", 
     `Hoy es San Valentín 🤍
-And no estás aquí, pero estás en todo.
+Y no estás aquí, pero estás en todo.
 En cada segundo que pasa,
 en cada recuerdo de Milán,
 en cada latido silencioso.
@@ -102,21 +102,41 @@ function createFloatingHeart() {
 }
 
 function initUniverse() {
+    const starContainer = document.getElementById("stars-container");
     const vaultContainer = document.getElementById("vault-container");
+    const now = new Date();
+
     if (vaultContainer.children.length > 0) return;
 
+    // Yıldızlar
+    for (let i = 0; i < 80; i++) {
+        const s = document.createElement("div");
+        s.className = "star";
+        s.style.left = Math.random() * 100 + "vw";
+        s.style.top = Math.random() * 100 + "vh";
+        s.style.width = "2px"; s.style.height = "2px";
+        s.style.setProperty('--d', (Math.random() * 3 + 2) + "s");
+        starContainer.appendChild(s);
+    }
+
+    // Sandıklar
     vaults.forEach((v, index) => {
         const div = document.createElement("div");
         div.className = `chest ${v.b ? 'birthday' : ''}`;
         const ratio = index / (vaults.length - 1);
-        div.style.top = (20 + (ratio * 58)) + "%";
-        div.style.left = (82 - (ratio * 64) + (Math.sin(ratio * Math.PI) * 15)) + "%";
+        const topPos = 20 + (ratio * 58); 
+        const curve = Math.sin(ratio * Math.PI) * 15; 
+        const leftPos = (82 - (ratio * 64)) + curve; 
 
-        div.onclick = (e) => {
+        div.style.top = topPos + "%";
+        div.style.left = leftPos + "%";
+
+        div.addEventListener('click', (e) => {
+            e.preventDefault();
             e.stopPropagation();
-            if (new Date() < new Date(v.d)) alert(v.b ? v.lock : "Se abrirá el: " + v.d);
+            if (now < new Date(v.d)) alert(v.b ? v.lock : "Se abrirá el: " + v.d);
             else alert(v.t);
-        };
+        });
         vaultContainer.appendChild(div);
     });
 }
@@ -148,7 +168,5 @@ setInterval(() => {
     }
 }, 4000);
 
-// 14 Şubat Kalp Efekti Zamanlayıcısı
-setInterval(createFloatingHeart, 500);
-
+setInterval(createFloatingHeart, 600);
 window.onload = () => { update(); setInterval(update, 1000); };
