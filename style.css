@@ -1,5 +1,5 @@
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Dancing Script', cursive; }
-body { background: #f8f9fa; min-height: 100vh; overflow: hidden; transition: 1s; position: relative; }
+body { background: #f8f9fa; min-height: 100vh; overflow: hidden; transition: 1s; }
 body.night-mode { background: #1a1a2e; color: white; }
 
 .page-layer { 
@@ -13,6 +13,7 @@ body.night-mode { background: #1a1a2e; color: white; }
 
 .container { text-align: center; width: 90%; max-width: 400px; z-index: 20; }
 
+/* KALP VE FOTOĞRAF */
 .heart-container { 
     width: 240px; height: 220px; margin: 0 auto 20px; position: relative;
     animation: heartbeat 1.5s infinite; 
@@ -20,25 +21,25 @@ body.night-mode { background: #1a1a2e; color: white; }
     mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
     mask-size: contain; mask-repeat: no-repeat; mask-position: center;
 }
-.heart-container img { width: 100%; height: 100%; object-fit: cover; }
+.heart-container img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 
 #counter { display: flex; justify-content: space-around; font-size: 1.5rem; margin: 15px 0; font-weight: bold; }
 
-/* Uzun mesajlar için düzenleme */
+/* MESAJ ALANI */
 #message { 
     font-size: 1.1rem; 
     margin-bottom: 20px; 
-    white-space: pre-line; /* Alt satırları korur */
+    white-space: pre-line; 
     line-height: 1.4;
-    max-height: 200px;
-    overflow-y: auto;
+    min-height: 50px;
+    padding: 0 10px;
 }
 
-#star-portal { cursor: pointer; border: 1px solid #ff4d4d; padding: 10px 20px; border-radius: 50px; display: inline-block; }
+#star-portal { cursor: pointer; border: 1px solid #ff4d4d; padding: 10px 20px; border-radius: 50px; display: inline-block; background: rgba(255, 77, 77, 0.05); }
 
-/* --- 14 ŞUBAT KALP EFEKTİ --- */
+/* SEVGİLİLER GÜNÜ KALP YAĞMURU */
 .floating-heart {
     position: absolute; color: #ff4d4d; opacity: 0;
     animation: floatUp 4s ease-in forwards; z-index: 5; pointer-events: none;
@@ -49,12 +50,31 @@ body.night-mode { background: #1a1a2e; color: white; }
     100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
 }
 
-/* --- 2. SAYFA --- */
-#vault-container { position: absolute; width: 100%; height: 100%; z-index: 50; }
-.chest { position: absolute; width: 60px; height: 60px; background: url('sandik.png') no-repeat center/contain; cursor: pointer; transform: translate(-50%, -50%); }
-.chest.birthday { width: 90px; height: 90px; filter: drop-shadow(0 0 15px gold); }
-#plane { position: absolute; font-size: 30px; animation: flight 15s infinite linear; z-index: 5; }
-@keyframes flight { 0% { left: 110%; top: 10%; opacity: 0; } 10% { opacity: 1; } 100% { left: -20%; top: 90%; } }
-.city-star { color: white; position: absolute; text-shadow: 0 0 5px black; z-index: 5; }
-#milan-star { top: 10%; right: 10%; } #bogota-star { bottom: 10%; left: 10%; }
-#back-btn { position: absolute; top: 20px; left: 20px; color: white; background: none; border: none; font-size: 20px; z-index: 100; }
+/* 2. SAYFA ELEMENTLERİ */
+#star-content { position: relative; width: 100%; height: 100%; }
+
+#vault-container { 
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+    z-index: 100; pointer-events: none; 
+}
+
+.chest { 
+    position: absolute; width: 60px !important; height: 60px !important; 
+    background: url('sandik.png') no-repeat center/contain !important;
+    cursor: pointer; transform: translate(-50%, -50%); 
+    pointer-events: auto; display: block !important;
+}
+.chest.birthday { width: 95px !important; height: 95px !important; filter: drop-shadow(0 0 15px gold); }
+
+#plane-container { position: absolute; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+#plane { position: absolute; font-size: 35px; filter: drop-shadow(0 0 10px white); animation: flight 15s infinite linear; }
+@keyframes flight {
+    0% { left: 110%; top: 10%; transform: rotate(-140deg); opacity: 0; }
+    10% { opacity: 1; }
+    100% { left: -20%; top: 90%; transform: rotate(-150deg); opacity: 0; }
+}
+
+.city-star { color: white; position: absolute; font-weight: bold; text-shadow: 0 0 10px black; z-index: 10; }
+#milan-star { top: 10%; right: 10%; }
+#bogota-star { bottom: 8%; left: 10%; }
+#back-btn { position: absolute; top: 25px; left: 20px; color: white; background: none; border: none; font-size: 24px; z-index: 200; cursor: pointer; }
