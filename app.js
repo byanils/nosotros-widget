@@ -27,7 +27,21 @@ const messages = [
     "No todo amor quema. Algunos abrigan.", "Hoy el día fue mejor contigo en él.",
     "No necesito razones para pensarte.", "El tiempo no nos separa. Nos prueba.",
     "Hay recuerdos ki aún no existen.", "Y aun así ya duelen bonito.",
-    "Me quedo.", "Cincuenta días... sigo.",
+    "Me quedo.", "Hoy es San Valentín 🤍
+Y no estás aquí, pero estás en todo.
+En cada segundo que pasa,
+en cada recuerdo de Milán,
+en cada latido silencioso.
+
+No necesito flores hoy.
+No necesito regalos.
+Solo necesito que sepas
+que incluso desde lejos,
+sigues siendo mi lugar favorito.
+
+Feliz San Valentín, Camila.
+Con amor, siempre.
+",
     "A veces no hay ki decir nada. Solo estar.", "Eres mi notificación favorita.",
     "No sé hazia dónde vamos, pero me gusta el camino.", "Hoy el café supo a ti. Dulce ve nezesario.",
     "Hay personas ki son canziones. Tú eres mi playlist entera.", "No te busqué, pero te encontré en el momento exacto.",
