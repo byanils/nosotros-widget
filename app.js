@@ -13,7 +13,7 @@ const messages = [
     "Quince días... ve ya te siento hogar.", "Milán aún no pasa, pero algo ya empieza.",
     "Hoy el world fue un poco más suave.", "No hiciste nada spezial hoy. Y aún así...",
     "Hay calma cuando pienso en ti.", "Si esto es esperar, no me quejo.",
-    "Tu recuerdo no pesa. Flota.", "Me gustas sin prisa.",
+    "Tu ricordo no pesa. Flota.", "Me gustas sin prisa.",
     "El tiempo contigo no corre. Camina.", "A veces cierro los ojos ve estás ahí.",
     "No necesito entenderlo todo.", "Hay conexiones ki no piden explicación.",
     "Hoy fue uno de esos días contigo en el fondo.", "No eres ruido. Eres fondo.",
@@ -27,8 +27,9 @@ const messages = [
     "No todo amor quema. Algunos abrigan.", "Hoy el día fue mejor contigo en él.",
     "No necesito razones para pensarte.", "El tiempo no nos separa. Nos prueba.",
     "Hay recuerdos ki aún no existen.", "Y aun así ya duelen bonito.",
-    "Me quedo.", "Hoy es San Valentín 🤍
-Y no estás aquí, pero estás en todo.
+    "Me quedo.", 
+    `Hoy es San Valentín 🤍
+And no estás aquí, pero estás en todo.
 En cada segundo que pasa,
 en cada recuerdo de Milán,
 en cada latido silencioso.
@@ -40,8 +41,7 @@ que incluso desde lejos,
 sigues siendo mi lugar favorito.
 
 Feliz San Valentín, Camila.
-Con amor, siempre.
-",
+Con amor, siempre.`,
     "A veces no hay ki decir nada. Solo estar.", "Eres mi notificación favorita.",
     "No sé hazia dónde vamos, pero me gusta el camino.", "Hoy el café supo a ti. Dulce ve nezesario.",
     "Hay personas ki son canziones. Tú eres mi playlist entera.", "No te busqué, pero te encontré en el momento exacto.",
@@ -55,7 +55,7 @@ Con amor, siempre.
     "Eres mi pensamiento más recurrente.", "A veces el amor es saber ki alguien te espera.",
     "No importa el mapa, importa el destino. Y mi destino eres tú.", "Grazias por ser mi lugar seguro.",
     "Noventa días... tres meses de pura verdad.", "Cada día es una página nueva. Me gusta nuestra historia.",
-    "No eres un sueño, eres mi realidad favorita.", "Incluso en el silenzio, te escucho.",
+    "No eres un sueño, eres mi reality favorita.", "Incluso en el silenzio, te escucho.",
     "No te idealizo, te elijo.", "Eres mi pausa favorita en este world ruidoso.",
     "Cien días... ve mi corazón sigue diziendo tu nombre.", "Me gusta lo ki somos, así sin filtros.",
     "Hay días ki solo se arreglan hablándote.", "Eres el motivo de mi mejor sonrisa hoy.",
@@ -90,42 +90,33 @@ function goToHome() {
     document.getElementById("main-page").classList.add("active");
 }
 
+function createFloatingHeart() {
+    const heart = document.createElement("div");
+    heart.innerHTML = "❤️";
+    heart.className = "floating-heart";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = (Math.random() * 20 + 10) + "px";
+    heart.style.animationDuration = (Math.random() * 3 + 2) + "s";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 4000);
+}
+
 function initUniverse() {
-    const starContainer = document.getElementById("stars-container");
     const vaultContainer = document.getElementById("vault-container");
-    const now = new Date();
-
     if (vaultContainer.children.length > 0) return;
-
-    for (let i = 0; i < 80; i++) {
-        const s = document.createElement("div");
-        s.className = "star";
-        s.style.left = Math.random() * 100 + "vw";
-        s.style.top = Math.random() * 100 + "vh";
-        s.style.width = s.style.height = "2px";
-        s.style.setProperty('--d', (Math.random() * 3 + 2) + "s");
-        starContainer.appendChild(s);
-    }
 
     vaults.forEach((v, index) => {
         const div = document.createElement("div");
         div.className = `chest ${v.b ? 'birthday' : ''}`;
         const ratio = index / (vaults.length - 1);
-        const topPos = 20 + (ratio * 58); 
-        const curve = Math.sin(ratio * Math.PI) * 15; 
-        const leftPos = (82 - (ratio * 64)) + curve; 
+        div.style.top = (20 + (ratio * 58)) + "%";
+        div.style.left = (82 - (ratio * 64) + (Math.sin(ratio * Math.PI) * 15)) + "%";
 
-        div.style.top = `${topPos}%`;
-        div.style.left = `${leftPos}%`;
-
-        div.addEventListener('click', (e) => {
+        div.onclick = (e) => {
             e.stopPropagation();
-            if (now < new Date(v.d)) {
-                alert(v.b ? v.lock : "Se abrirá el: " + v.d);
-            } else {
-                alert(v.t);
-            }
-        });
+            if (new Date() < new Date(v.d)) alert(v.b ? v.lock : "Se abrirá el: " + v.d);
+            else alert(v.t);
+        };
         vaultContainer.appendChild(div);
     });
 }
@@ -139,7 +130,6 @@ function update() {
 
     const diff = Math.floor((bogota - startDate) / 1000);
     const d = Math.floor(diff/86400), h = Math.floor((diff%86400)/3600), m = Math.floor((diff%3600)/60), s = diff%60;
-    
     document.getElementById("counter").innerHTML = `<span>${d}d</span><span>${h}h</span><span>${m}m</span><span style="color:#ff4d4d">${s}s</span>`;
     
     const dayDiff = Math.floor((new Date(bogota.getFullYear(), bogota.getMonth(), bogota.getDate()) - new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate())) / 86400000);
@@ -157,5 +147,8 @@ setInterval(() => {
         }, 500);
     }
 }, 4000);
+
+// 14 Şubat Kalp Efekti Zamanlayıcısı
+setInterval(createFloatingHeart, 500);
 
 window.onload = () => { update(); setInterval(update, 1000); };
