@@ -1,3 +1,4 @@
+const myApiKey = "2e2dcf335d4c97a7c182b0c041eea672";
 const startDate = new Date("2025-12-27T10:45:00");
 const photos = ["foto1.jpg", "foto2.jpg", "foto3.jpg", "foto4.jpg", "foto5.jpg", "foto6.jpg", "foto7.jpg", "foto8.jpg", "foto9.jpg", "foto10.jpg"];
 let currentIdx = 0;
@@ -44,7 +45,7 @@ Feliz San Valentín, Camila.
 Con amor, siempre.`,
     "A veces no hay ki decir nada. Solo estar.", "Eres mi notificación favorita.",
     "No sé hazia dónde vamos, pero me gusta el camino.", "Hoy el café supo a ti. Dulce ve nezesario.",
-    "Hay personas ki son canziones. Tú eres mi playlist entera.", "No te busqué, pero te encontré en el momento exacto.",
+    "Hay personas ki son canziones. Tú eres mi playlist entera.", "No te buzké, pero te encontré en el momento exacto.",
     "Sesenta días... ve cada uno ha valido la pena.", "Tu risa es mi sonido favorito en este world.",
     "Me gusta la paz ki me das sin pedir nada a cambio.", "Eres el 'te quiero' ki nunca me canso de sentir.",
     "No es la distanzia, es lo ki sentimos mientras la acortamos.", "A veces el amor es un mesaj a las 3 de la tarde.",
@@ -62,45 +63,68 @@ Con amor, siempre.`,
     "No importa qué tan lejos, te llevo en cada paso.", "Tu paz mi refugio favorito.",
     "Eres la casualidad más bonita de mi vida.", "A veces solo nezesito saber ki estás ahí.",
     "A veces lo más valiente es quedarse.", "Contigo la vida no pesa.",
-    "Eres mi mejor 'hola' ve mi 'adiós' más diffizil.", "Tu amor es mi calma en medio del ruido.",
+    "Eres mi mejor 'hola' ve mi 'adiós' daha diffizil.", "Tu amor es mi calma en medio del ruido.",
     "No eres perfecta, eres real. Y eso me encanta.", "Grazias por elegirme a mí de nuevo.",
     "108 días... ve esto es solo el comienzo. 🤍"
 ];
 
 const vaults = [
     { d: "2026-02-15", t: "Las distancias solo están en los mapas. Tu lugar en mi corazón es tan firme que ni los kilómetros ni la diferencia horaria pueden alejarte de mí. Te amo en todas tus formas." },
-    { d: "2026-02-22", t: "A veces, solo escuchar tu voz borra todo el cansancio del día. Extrañarte es difícil, pero saber que al final te encontraré es la paciencia más hermosa de este mundo." },
-    { d: "2026-03-01", t: "Hay miles de millones de personas en el mundo, pero mi alma solo se siente 'en casa' a tu lado. Eres mi puerto más seguro y tranquilo." },
+    { d: "2026-02-22", t: "A veces, solo escuchar tu voz borra todo el cansancio del día. Extrañarte es difícil, pero saber que al final te encontraré es la paciencia más hermosa de este world." },
+    { d: "2026-03-01", t: "Hay miles de millones de personas en el world, pero mi alma solo se siente 'en casa' a tu lado. Eres mi puerto más seguro y tranquilo." },
     { d: "2026-03-08", t: "Cada día me despierto y elijo amarte de nuevo. No es coincidencia, es la decisión más consciente y hermosa que he tomado en mi vida." },
     { d: "2026-03-15", t: "Cuando cierro los ojos, el vacío entre Milán y Bogotá desaparece. Solo quedamos tú y yo. Siempre estoy ahí, contigo." },
     { d: "2026-03-22", t: "Nunca había deseado tanto que el tiempo volara. Pero cada segundo que pasa nos acerca un paso más a ese gran abrazo, al primer encuentro real." },
     { d: "2026-03-29", t: "Aunque parezcan dos ciudades y vidas distintas, miramos el mismo cielo y soñamos los mismos sueños. Nuestra historia no conoce fronteras." },
     { d: "2026-04-05", t: "La vida a veces hace mucho ruido, pero tu amor es la melodía más tranquila dentro de mí. Eres esa fuerza secreta que me levanta cada vez que caigo." },
-    { d: "2026-04-15", t: "Hoy el mundo se hizo más bello contigo. Feliz cumpleaños, mi amor. Las distancias hoy son solo un detalle, mi corazón late hoy totalmente a tu lado. ¡Por muchos años más juntos!", b: true, lock: "El tesoro más grande espera el día más especial... 🌌✨" }
+    { d: "2026-04-15", t: "Hoy el world se hizo más bello contigo. Feliz cumpleaños, mi amor. Las distancias hoy son solo un detalle, mi corazón late hoy totalmente a tu lado. ¡Por muchos años más juntos!", b: true, lock: "El tesoro más grande espera el día más especial... 🌌✨" }
 ];
 
-function goToUniverse() {
-    document.getElementById("main-page").classList.remove("active");
-    document.getElementById("star-map-page").classList.add("active");
-    initUniverse();
+function goToUniverse() { document.getElementById("main-page").classList.remove("active"); document.getElementById("star-map-page").classList.add("active"); initUniverse(); }
+function goToHome() { document.getElementById("star-map-page").classList.remove("active"); document.getElementById("main-page").classList.add("active"); }
+
+// SİHİRLİ YILDIZ TOZU (MOUSE & TOUCH)
+document.addEventListener('mousemove', (e) => createSparkle(e.clientX, e.clientY));
+document.addEventListener('touchmove', (e) => createSparkle(e.touches[0].clientX, e.touches[0].clientY));
+
+function createSparkle(x, y) {
+    const s = document.createElement("div");
+    s.className = "sparkle";
+    s.style.left = x + "px"; s.style.top = y + "px";
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 700);
 }
 
-function goToHome() {
-    document.getElementById("star-map-page").classList.remove("active");
-    document.getElementById("main-page").classList.add("active");
-}
-
+// KALP YAĞMURU
 function createFloatingHeart() {
     const heart = document.createElement("div");
-    heart.innerHTML = "❤️";
-    heart.className = "floating-heart";
+    heart.innerHTML = "❤️"; heart.className = "floating-heart";
     heart.style.left = Math.random() * 100 + "vw";
     heart.style.fontSize = (Math.random() * 20 + 10) + "px";
-    heart.style.animationDuration = (Math.random() * 3 + 2) + "s";
+    heart.style.animationDuration = (Math.random() * 2 + 3) + "s";
     document.body.appendChild(heart);
     setTimeout(() => heart.remove(), 4000);
 }
 
+// GERÇEK HAVA DURUMU VERİSİ
+async function fetchWeather() {
+    try {
+        const rMilan = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Milan,it&units=metric&appid=${myApiKey}`);
+        const dMilan = await rMilan.json();
+        const rBogota = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Bogota,co&units=metric&appid=${myApiKey}`);
+        const dBogota = await rBogota.json();
+        
+        if(dMilan.main) document.getElementById("milan-temp").innerText = `${Math.round(dMilan.main.temp)}°C ${getWEmoji(dMilan.weather[0].main)}`;
+        if(dBogota.main) document.getElementById("bogota-temp").innerText = `${Math.round(dBogota.main.temp)}°C ${getWEmoji(dBogota.weather[0].main)}`;
+    } catch(e) { console.log("Hava durumu verisi şu an alınamıyor."); }
+}
+
+function getWEmoji(s) {
+    const m = {"Clear":"☀️","Clouds":"☁️","Rain":"🌧️","Snow":"❄️","Drizzle":"🌦️"};
+    return m[s] || "✨";
+}
+
+// İKİNCİ SAYFA VE SANDIKLARIN OLUŞUMU
 function initUniverse() {
     const starContainer = document.getElementById("stars-container");
     const vaultContainer = document.getElementById("vault-container");
@@ -110,41 +134,39 @@ function initUniverse() {
 
     // Yıldızlar
     for (let i = 0; i < 80; i++) {
-        const s = document.createElement("div");
-        s.className = "star";
-        s.style.left = Math.random() * 100 + "vw";
-        s.style.top = Math.random() * 100 + "vh";
-        s.style.width = "2px"; s.style.height = "2px";
+        const s = document.createElement("div"); s.className = "star";
+        s.style.left = Math.random() * 100 + "vw"; s.style.top = Math.random() * 100 + "vh";
+        s.style.width = "2px"; s.style.height = "2px"; s.style.position = "absolute"; s.style.background = "white"; s.style.borderRadius = "50%";
         s.style.setProperty('--d', (Math.random() * 3 + 2) + "s");
         starContainer.appendChild(s);
     }
 
-    // Sandıklar
+    // Sandıklar (Hatalar düzeltildi)
     vaults.forEach((v, index) => {
-        const div = document.createElement("div");
+        const div = document.createElement("div"); 
         div.className = `chest ${v.b ? 'birthday' : ''}`;
         const ratio = index / (vaults.length - 1);
-        const topPos = 20 + (ratio * 58); 
-        const curve = Math.sin(ratio * Math.PI) * 15; 
-        const leftPos = (82 - (ratio * 64)) + curve; 
+        div.style.top = (20 + (ratio * 58)) + "%";
+        div.style.left = (82 - (ratio * 64) + (Math.sin(ratio * Math.PI) * 15)) + "%";
 
-        div.style.top = topPos + "%";
-        div.style.left = leftPos + "%";
-
-        div.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            if (now < new Date(v.d)) alert(v.b ? v.lock : "Se abrirá el: " + v.d);
-            else alert(v.t);
-        });
+        div.onclick = (e) => { 
+            e.stopPropagation(); 
+            if (new Date() < new Date(v.d)) alert(v.b ? v.lock : "Se abrirá el: " + v.d); 
+            else alert(v.t); 
+        };
         vaultContainer.appendChild(div);
     });
 }
 
+// SAAT VE SAYAÇ GÜNCELLEME
 function update() {
     const now = new Date();
+    const milan = new Date(now.toLocaleString("en-US", {timeZone: "Europe/Rome"}));
     const bogota = new Date(now.toLocaleString("en-US", {timeZone: "America/Bogota"}));
     
+    document.getElementById("milan-time").innerText = milan.getHours() + ":" + String(milan.getMinutes()).padStart(2, '0');
+    document.getElementById("bogota-time").innerText = bogota.getHours() + ":" + String(bogota.getMinutes()).padStart(2, '0');
+
     if(bogota.getHours() >= 18 || bogota.getHours() < 6) document.body.classList.add("night-mode");
     else document.body.classList.remove("night-mode");
 
@@ -156,17 +178,20 @@ function update() {
     document.getElementById("message").innerText = messages[dayDiff] || "Contigo, siempre. 🤍";
 }
 
+// Fotoğraf Değiştirici
 setInterval(() => {
     const img = document.getElementById("album-photo");
     if(img && document.getElementById("main-page").classList.contains("active")) {
         img.style.opacity = 0;
-        setTimeout(() => {
-            currentIdx = (currentIdx + 1) % photos.length;
-            img.src = photos[currentIdx];
-            img.style.opacity = 1;
-        }, 500);
+        setTimeout(() => { currentIdx = (currentIdx + 1) % photos.length; img.src = photos[currentIdx]; img.style.opacity = 1; }, 500);
     }
 }, 4000);
 
+// Döngüsel Başlatıcılar
 setInterval(createFloatingHeart, 600);
-window.onload = () => { update(); setInterval(update, 1000); };
+window.onload = () => { 
+    update(); 
+    setInterval(update, 1000); 
+    fetchWeather(); 
+    setInterval(fetchWeather, 3600000); 
+};
