@@ -8,13 +8,31 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
     <div id="main-page" class="page-layer active">
         <div class="container">
             <div class="heart-container">
                 <img id="album-photo" src="foto1.jpg" alt="Nosotros">
             </div>
+            
             <div id="counter"></div>
+
+            <div class="status-board">
+                <div class="status-card">
+                    <span class="city-name">Milán</span>
+                    <span id="milan-time" class="city-time">00:00</span>
+                    <span id="milan-temp" class="city-weather">--°C</span>
+                </div>
+                <div class="status-divider">✈️</div>
+                <div class="status-card">
+                    <span class="city-name">Bogotá</span>
+                    <span id="bogota-time" class="city-time">00:00</span>
+                    <span id="bogota-temp" class="city-weather">--°C</span>
+                </div>
+            </div>
+
             <div id="message">Cargando...</div>
+            
             <div id="star-portal" onclick="goToUniverse()">
                 <span class="portal-star">✨</span>
                 <p class="portal-text">Nuestro Universo</p>
@@ -25,13 +43,14 @@
     <div id="star-map-page" class="page-layer">
         <button id="back-btn" onclick="goToHome()">← Volver</button>
         <div id="stars-container"></div>
-        <div class="star-content">
+        <div id="star-content">
             <div class="city-star" id="milan-star">📍 Milán</div>
             <div id="plane-container"><div id="plane">✈️</div></div>
             <div id="vault-container"></div>
             <div class="city-star" id="bogota-star">📍 Bogotá</div>
         </div>
     </div>
+
     <script src="app.js"></script>
 </body>
 </html>
