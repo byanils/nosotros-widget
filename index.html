@@ -12,49 +12,22 @@
 
     <div id="login-overlay" class="page-layer active">
         <div class="login-card">
-            <div class="login-header">
-                <span class="sparkle">✨</span>
-                <h1>Nuestro Universo</h1>
-                <p>Anıl & Camila</p>
-            </div>
-            <div class="login-options">
-                <button class="user-select-btn" onclick="loginUser('anil')">
-                    <span class="user-icon">🤵</span> Soy Anıl
-                </button>
-                <button class="user-select-btn" onclick="loginUser('camila')">
-                    <span class="user-icon">👸</span> Soy Camila
-                </button>
-            </div>
+            <h1>Nuestro Universo</h1>
+            <p>Anıl & Camila</p>
+            <button class="user-btn" onclick="loginUser('anil')">🤵 Soy Anıl</button>
+            <button class="user-btn" onclick="loginUser('camila')">👸 Soy Camila</button>
         </div>
     </div>
 
     <div id="main-page" class="page-layer">
         <div class="main-card">
-            <div class="heart-container">
-                <div class="heart-shape">
-                    <img id="album-photo" src="foto1.jpg">
-                </div>
-            </div>
-            
+            <div class="heart-container"><div class="heart-shape"><img id="album-photo" src="foto1.jpg"></div></div>
             <div id="counter"></div>
-
             <div class="weather-clock-row">
-                <div class="city-box">
-                    <span id="milan-icon">☀️</span>
-                    <span class="city-name">Milan</span>
-                    <span id="milan-temp">--°</span>
-                    <span id="milan-time">00:00</span>
-                </div>
-                <div class="city-box">
-                    <span id="bogota-icon">☀️</span>
-                    <span class="city-name">Bogotá</span>
-                    <span id="bogota-temp">--°</span>
-                    <span id="bogota-time">00:00</span>
-                </div>
+                <div class="city-box"><span id="milan-icon">☀️</span><span class="city-name">Milan</span><span id="milan-temp">--°</span><span id="milan-time">00:00</span></div>
+                <div class="city-box"><span id="bogota-icon">☀️</span><span class="city-name">Bogotá</span><span id="bogota-temp">--°</span><span id="bogota-time">00:00</span></div>
             </div>
-
             <div id="message"></div>
-            
             <div class="main-nav">
                 <button class="btn-nav primary" onclick="goToUniverse()">✨ Nuestro Universo</button>
                 <button class="btn-nav secondary" onclick="openPhotoModal()">📸 Nuestro Momento</button>
@@ -64,20 +37,35 @@
 
     <div id="star-map-page" class="page-layer">
         <button id="back-btn" onclick="goToHome()">← Volver</button>
-        <div id="vault-container"></div>
+        
+        <div class="vault-section">
+            <div class="progress-track-container">
+                <div class="progress-line"></div>
+                <div id="vault-grid"></div>
+            </div>
+            <div id="progress-info">Nuestra aventura continúa...</div>
+        </div>
+
+        <div class="game-section">
+            <div class="score-board">
+                <div class="player-score">Anıl (X): <span id="score-anil">0</span></div>
+                <div class="player-score">Camila (O): <span id="score-camila">0</span></div>
+            </div>
+            <div id="game-status">Esperando turno...</div>
+            <div id="tic-tac-toe-grid" class="grid-8x8"></div>
+            <button class="reset-game-btn" onclick="clearBoard()">Reset Board</button>
+        </div>
     </div>
 
     <div id="photo-daily-modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closePhotoModal()">&times;</span>
-            <h3>Nuestro Momento</h3>
-            <p id="photo-status-msg">Sube tu foto de hoy</p>
             <div class="photo-grid">
                 <div class="photo-item"><span>Anıl</span><div class="frame"><img id="img-anil" src="placeholder.png" class="locked"></div></div>
                 <div class="photo-item"><span>Camila</span><div class="frame"><img id="img-camila" src="placeholder.png" class="locked"></div></div>
             </div>
             <input type="file" id="photo-input" hidden accept="image/*" onchange="uploadSelfie(this)">
-            <button class="upload-btn" onclick="document.getElementById('photo-input').click()">Subir Mi Foto</button>
+            <button class="upload-btn" onclick="document.getElementById('photo-input').click()">Subir Foto</button>
         </div>
     </div>
 
