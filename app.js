@@ -20,7 +20,7 @@ const photos = ["foto1.jpg", "foto2.jpg", "foto3.jpg", "foto4.jpg", "foto5.jpg",
 let currentIdx = 0;
 let currentUser = "";
 
-// --- TÜM GÜNLÜK MESAJLAR ---
+// --- TÜM GÜNLÜK MESAJLAR (108 GÜNLÜK) ---
 const messages = [
     "Este widget no pide nada. Solo está aquí. Como yo 🤍", "Hoy pensé en ti sin razón. Y me gustó.",
     "Tu nombre se siente tranquilo en mi mente.", "Aunque estemos lejos, hay algo que nunca se mueve.",
@@ -44,10 +44,10 @@ const messages = [
     "Milán se acerca sin saberlo.", "Cuarenta días. Tranquilos. Firmes.",
     "Me gusta cómo eres sin intentar.", "Hay bellezza en tu forma de estar.",
     "No todo amor quema. Algunos abrigan.", "Hoy el día fue mejor contigo en él.",
-    "No nezesito razones para pensarte.", "El tiempo no nos separa. Nos prueba.",
+    "No nezesito razones para pensarte.", "El tempo no nos separa. Nos prueba.",
     "Hay recuerdos ki aún no existen.", "Y aun así ya duelen bonito.",
     "Me quedo.", 
-    `Hoy es San Valentín 🤍. No estás aquí, pero estás en todo. Feliz San Valentín, Camila.`,
+    "Hoy es San Valentín 🤍. No estás aquí, pero estás en todo. Feliz San Valentín, Camila.",
     "A veces no hay ki decir nada. Solo estar.", "Eres mi notificación favorita.",
     "No sé hazia dónde vamos, pero me gusta el camino.", "Hoy el café supo a ti. Dulce ve nezesario.",
     "Hay personas ki son canziones. Tú eres mi playlist entera.", "No te buzké, pero te encontré en el momento exacto.",
@@ -64,7 +64,7 @@ const messages = [
     "No eres un sueño, eres mi reality favorita.", "Incluso en el silenzio, te escucho.",
     "No te idealizo, te elijo.", "Eres mi pausa favorita en este world ruidoso.",
     "Cien días... ve mi corazón sigue diziendo tu nombre.", "Me gusta lo ki somos, así sin filtros.",
-    "Hay días ki solo se arreglan hablándote.", "Eres el motivo de mi de mejor sonrisa hoy.",
+    "Hay günler ki solo se arreglan hablándote.", "Eres el motivo de mi de mejor sonrisa hoy.",
     "No importa qué tan lejos, te llevo en cada paso.", "Tu paz mi refugio favorito.",
     "Eres la casualidad más bonita de mi vida.", "A veces solo nezesito saber ki estás ahí.",
     "A veces lo más valiente es quedarse.", "Contigo la vida no pesa.",
@@ -73,7 +73,7 @@ const messages = [
     "108 días... ve esto es solo el comienzo. 🤍"
 ];
 
-// --- EVREN SANDIKLARI ---
+// --- EVREN SAYFASI SANDIKLARI ---
 const vaults = [
     { d: "2026-02-15", t: "Las distancias solo están en los mapas. Tu lugar en mi corazón es tan firme. Te amo." },
     { d: "2026-02-22", t: "A veces, solo escuchar tu voz borra todo el cansancio del día." },
@@ -84,7 +84,7 @@ const vaults = [
     { d: "2026-04-15", t: "¡Feliz Cumpleaños, mi amor! Mi tesoro eres tú.", b: true, lock: "Abrir el 15 de Abril... 🌌" }
 ];
 
-// --- INITIALIZE ---
+// --- INITIALIZE APP ---
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
@@ -110,18 +110,18 @@ window.goToHome = () => {
 window.openPhotoModal = () => document.getElementById("photo-daily-modal").style.display = "block";
 window.closePhotoModal = () => document.getElementById("photo-daily-modal").style.display = "none";
 
-// --- SAYAÇ VE SAAT ---
+// --- SAYAÇ VE SAAT GÜNCELLEME ---
 function update() {
     const now = new Date();
     
-    // Saatler
+    // Şehir Saatleri
     const milanTime = new Date(now.toLocaleString("en-US", {timeZone: "Europe/Rome"}));
     const bogotaTime = new Date(now.toLocaleString("en-US", {timeZone: "America/Bogota"}));
     
     document.getElementById("milan-time").innerText = milanTime.getHours() + ":" + String(milanTime.getMinutes()).padStart(2, '0');
     document.getElementById("bogota-time").innerText = bogotaTime.getHours() + ":" + String(bogotaTime.getMinutes()).padStart(2, '0');
 
-    // Büyük Sayaç
+    // Büyük Sayaç (Düzgün Tasarım)
     const diff = Math.floor((now - startDate) / 1000);
     const d = Math.floor(diff/86400);
     const h = Math.floor((diff%86400)/3600);
@@ -135,8 +135,8 @@ function update() {
         <span style="color:#ff4d4d">${s}<small>Sn</small></span>
     `;
 
-    // Günlük Mesaj
-    const dayDiff = Math.floor((now - startDate) / 86400000);
+    // Günlük Romantik Mesaj
+    const dayDiff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
     document.getElementById("message").innerText = messages[dayDiff] || "Contigo, siempre. 🤍";
 }
 
@@ -149,23 +149,24 @@ async function fetchWeather() {
         const dB = await rB.json();
         if(dM.main) document.getElementById("milan-temp").innerText = `${Math.round(dM.main.temp)}°C`;
         if(dB.main) document.getElementById("bogota-temp").innerText = `${Math.round(dB.main.temp)}°C`;
-    } catch(e) { console.error("Hava durumu çekilemedi."); }
+    } catch(e) { console.error("Weather Error"); }
 }
 
-// --- EVREN DÜZENİ ---
+// --- EVREN SAYFASI (SANDIKLARIN DÜZENLENMESİ) ---
 function initUniverse() {
     const vaultContainer = document.getElementById("vault-container");
-    if (vaultContainer.innerHTML !== "") return;
+    if (vaultContainer.innerHTML !== "") return; // Tekrar oluşturma
 
-    // Sandıkları Bogotá'dan Milán'a doğru diyagonal diz
+    // Sandıkları Bogotá'dan Milán'a doğru ÇAPRAZ HATTA diz (Görüntüdeki karmaşayı çözer)
     vaults.forEach((v, index) => {
         const div = document.createElement("div");
         div.className = "chest";
         const ratio = index / (vaults.length - 1);
         
-        // Çapraz pozisyonlama: Sol alt (Bogota) -> Sağ üst (Milan)
+        // Çapraz pozisyon: Bogotá (Sol Alt) -> Milán (Sağ Üst)
         div.style.bottom = (20 + (ratio * 60)) + "%";
         div.style.left = (20 + (ratio * 60)) + "%";
+        div.style.backgroundImage = "url('sandik.png')";
 
         div.onclick = (e) => {
             e.stopPropagation();
@@ -175,9 +176,9 @@ function initUniverse() {
         vaultContainer.appendChild(div);
     });
 
-    // Yıldızlar
+    // Yıldız Arka Planı
     const starWrap = document.getElementById("stars-container");
-    for(let i=0; i<100; i++) {
+    for(let i=0; i<80; i++) {
         const s = document.createElement("div");
         s.className = "star";
         s.style.left = Math.random() * 100 + "vw";
@@ -187,7 +188,7 @@ function initUniverse() {
     }
 }
 
-// --- FOTOĞRAF YÖNETİMİ ---
+// --- FOTOĞRAF YÜKLEME (QUITAPENAS) ---
 window.uploadSelfie = async (input) => {
     if(!input.files[0]) return;
     const status = document.getElementById("photo-status-msg");
@@ -201,7 +202,7 @@ window.uploadSelfie = async (input) => {
         const json = await res.json();
         const today = new Date().toLocaleDateString('en-CA');
         await setDoc(doc(db, "daily", today), { [currentUser]: json.data.url }, { merge: true });
-        status.innerText = "¡Listo! ❤️";
+        status.innerText = "¡Foto subida! ❤️";
     } catch (e) { status.innerText = "Error ❌"; }
 };
 
@@ -215,12 +216,12 @@ function listenToDailyPhotos() {
         if(data.anil && data.camila) {
             imgA.classList.remove("locked");
             imgC.classList.remove("locked");
-            document.getElementById("photo-status-msg").innerText = "✨ ¡Desbloqueado! ✨";
+            document.getElementById("photo-status-msg").innerText = "✨ ¡Ambos subieron foto! ✨";
         }
     });
 }
 
-// --- START ---
+// --- APP START ---
 setInterval(update, 1000);
 fetchWeather();
 update();
