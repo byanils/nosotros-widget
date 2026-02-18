@@ -3,14 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nuestro Universo</title>
+    <title>Nuestro Universo | Anıl & Camila</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div id="main-page" class="page-layer active">
+    <div id="login-overlay" class="page-layer active">
+        <div class="login-box">
+            <h2>¿Quién eres? ❤️</h2>
+            <button onclick="loginUser('anil')">Soy Anıl</button>
+            <button onclick="loginUser('camila')">Soy Camila</button>
+        </div>
+    </div>
+
+    <div id="main-page" class="page-layer">
         <div class="container">
+            
+            <div id="photo-daily-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closePhotoModal()">&times;</span>
+                    <h3>Quitapenas Diario 📸</h3>
+                    <p id="photo-status-msg">Cargando estado...</p>
+                    <div class="photo-display">
+                        <div class="photo-slot">
+                            <p>Anıl</p>
+                            <img id="img-anil" src="https://via.placeholder.com/150?text=Bloqueado" class="locked">
+                        </div>
+                        <div class="photo-slot">
+                            <p>Camila</p>
+                            <img id="img-camila" src="https://via.placeholder.com/150?text=Bloqueado" class="locked">
+                        </div>
+                    </div>
+                    <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="uploadSelfie(this)">
+                    <button class="upload-btn" onclick="document.getElementById('photo-input').click()">Subir mi Selfie</button>
+                </div>
+            </div>
+
             <div class="heart-container">
                 <img id="album-photo" src="foto1.jpg" alt="Nosotros">
             </div>
@@ -31,11 +60,11 @@
                 </div>
             </div>
 
-            <div id="message">Cargando...</div>
+            <div id="message">Eres mi notificación favorita.</div>
             
-            <div id="star-portal" onclick="goToUniverse()">
-                <span class="portal-star">✨</span>
-                <p class="portal-text">Nuestro Universo</p>
+            <div class="action-buttons">
+                <div class="btn-nav" onclick="goToUniverse()">✨ Nuestro Universo</div>
+                <div class="btn-nav" onclick="openPhotoModal()">📸 Quitapenas</div>
             </div>
         </div>
     </div>
@@ -46,11 +75,12 @@
         <div id="star-content">
             <div class="city-star" id="milan-star">📍 Milán</div>
             <div id="plane-container"><div id="plane">✈️</div></div>
-            <div id="vault-container"></div>
+            <div id="vault-container">
+                </div>
             <div class="city-star" id="bogota-star">📍 Bogotá</div>
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>
