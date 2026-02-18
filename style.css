@@ -1,42 +1,93 @@
-:root { --primary-pink: #ff4d4d; --soft-pink: #fdf2f2; }
-body { margin: 0; font-family: 'Dancing Script', cursive; overflow: hidden; background: #fff; }
+:root { 
+    --primary-pink: #ff4d4d; 
+    --soft-pink: #fff5f5; 
+    --bg-light: #fdf2f2;
+}
 
-.page-layer { position: fixed; width: 100%; height: 100%; display: none; transition: 0.5s; }
-.active { display: flex; justify-content: center; align-items: center; }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Dancing Script', cursive; }
 
-/* Login Ekranı */
-#login-overlay { background: var(--soft-pink); z-index: 9999; }
-.login-box { background: white; padding: 40px; border-radius: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
-.login-box button { display: block; width: 200px; margin: 15px auto; padding: 12px; border-radius: 15px; border: 1px solid var(--primary-pink); background: white; color: var(--primary-pink); font-size: 1.2rem; cursor: pointer; transition: 0.3s; }
-.login-box button:hover { background: var(--primary-pink); color: white; }
+body { background: var(--bg-light); min-height: 100vh; overflow: hidden; transition: 1s; position: relative; }
+body.night-mode { background: #1a1a2e; color: white; }
 
-/* Ana Sayfa */
-.container { text-align: center; width: 90%; max-width: 400px; }
-.heart-container img { width: 180px; height: 180px; object-fit: cover; clip-path: path('M90 175c-50-40-90-80-90-120 0-35 25-60 60-60 20 0 35 10 45 25 10-15 25-25 45-25 35 0 60 25 60 60 0 40-40 80-90 120z'); margin-bottom: 20px; }
-#counter { font-size: 1.8rem; margin: 20px 0; color: #333; }
-#counter span { margin: 0 5px; }
+.page-layer { 
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
+    display: none; flex-direction: column; justify-content: center; align-items: center; 
+    z-index: 10; transition: 0.5s;
+}
+.page-layer.active { display: flex; }
 
-.status-board { background: var(--soft-pink); padding: 15px; border-radius: 20px; display: flex; align-items: center; justify-content: space-around; margin-bottom: 20px; }
-.status-card { display: flex; flex-direction: column; }
+/* Login Tasarımı */
+#login-overlay { background: radial-gradient(circle, #ffffff 0%, #ffebeb 100%); z-index: 10000; }
+.login-box { 
+    background: white; padding: 50px 40px; border-radius: 40px; 
+    box-shadow: 0 20px 50px rgba(255, 77, 77, 0.15); text-align: center; 
+}
+.login-box h2 { font-size: 2.2rem; color: var(--primary-pink); margin-bottom: 25px; }
+.login-box button { 
+    display: block; width: 220px; margin: 15px auto; padding: 15px; 
+    border-radius: 50px; border: 2px solid var(--primary-pink); 
+    background: transparent; color: var(--primary-pink); font-size: 1.4rem; 
+    cursor: pointer; transition: 0.3s; font-weight: bold;
+}
+.login-box button:hover { background: var(--primary-pink); color: white; transform: translateY(-3px); }
+
+/* Kalp ve Fotoğraf */
+.heart-container { 
+    width: 240px; height: 220px; margin: 0 auto 20px; position: relative;
+    -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
+    mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
+    mask-size: contain; mask-repeat: no-repeat; mask-position: center;
+}
+.heart-container img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Status Board */
+.status-board { 
+    background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(10px);
+    padding: 15px 25px; border-radius: 25px; display: flex; align-items: center; 
+    justify-content: space-between; margin: 20px 0; border: 1px solid rgba(255, 77, 77, 0.2);
+}
+.status-card { display: flex; flex-direction: column; min-width: 80px; }
 .city-name { font-size: 0.8rem; text-transform: uppercase; color: #888; }
 .city-time { font-size: 1.4rem; font-weight: bold; }
+.city-weather { font-size: 0.9rem; color: var(--primary-pink); }
 
-/* Quitapenas Modal */
-.modal { display: none; position: fixed; z-index: 5000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); }
-.modal-content { background: white; margin: 10% auto; padding: 20px; border-radius: 25px; width: 85%; max-width: 350px; text-align: center; }
-.photo-display { display: flex; gap: 10px; margin: 20px 0; }
+/* Modal Tasarımı */
+.modal { display: none; position: fixed; z-index: 5000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
+.modal-content { 
+    background: white; margin: 10% auto; padding: 30px; border-radius: 35px; 
+    width: 90%; max-width: 380px; text-align: center; position: relative; 
+}
+.close { position: absolute; right: 25px; top: 15px; font-size: 40px; cursor: pointer; color: #aaa; transition: 0.3s; }
+.close:hover { color: var(--primary-pink); }
+.photo-display { display: flex; gap: 15px; margin: 25px 0; }
 .photo-slot { flex: 1; }
-.photo-slot img { width: 100%; height: 150px; object-fit: cover; border-radius: 15px; }
+.photo-slot img { width: 100%; height: 160px; object-fit: cover; border-radius: 20px; border: 3px solid var(--soft-pink); }
 .locked { filter: blur(20px) grayscale(100%); }
-.upload-btn { background: var(--primary-pink); color: white; border: none; padding: 12px 20px; border-radius: 25px; width: 100%; cursor: pointer; font-weight: bold; }
+.upload-btn { background: var(--primary-pink); color: white; border: none; padding: 15px; border-radius: 50px; width: 100%; cursor: pointer; font-size: 1.1rem; font-weight: bold; }
 
-/* Sandıklar ve Yıldızlar */
-#star-map-page { background: #050505; color: white; }
-.city-star { font-size: 1.2rem; margin: 20px; color: #ff4d4d; }
-.vault { font-size: 2.5rem; cursor: pointer; transition: 0.3s; display: inline-block; margin: 10px; }
-.vault:hover { transform: scale(1.2); }
-.sparkle { position: absolute; width: 4px; height: 4px; background: white; border-radius: 50%; pointer-events: none; animation: fly 0.7s linear forwards; }
-@keyframes fly { to { transform: translate(var(--x), var(--y)); opacity: 0; } }
+/* Universe Sayfası */
+#star-map-page { background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%); }
+#stars-container { position: absolute; width: 100%; height: 100%; }
+.chest { 
+    position: absolute; width: 60px; height: 60px; 
+    background: url('sandik.png') no-repeat center/contain;
+    cursor: pointer; transform: translate(-50%, -50%); z-index: 100;
+}
+.chest.birthday { width: 90px; height: 90px; filter: drop-shadow(0 0 15px gold); }
 
-.action-buttons { display: flex; gap: 10px; justify-content: center; }
-.btn-nav { border: 1px solid var(--primary-pink); padding: 10px 20px; border-radius: 50px; color: var(--primary-pink); cursor: pointer; font-weight: bold; }
+/* Diğer Butonlar */
+.action-buttons { display: flex; gap: 10px; margin-top: 10px; }
+.btn-nav { border: 2px solid var(--primary-pink); padding: 12px 20px; border-radius: 50px; color: var(--primary-pink); cursor: pointer; font-weight: bold; transition: 0.3s; }
+.btn-nav:hover { background: var(--primary-pink); color: white; }
+#back-btn { position: absolute; top: 30px; left: 20px; color: white; background: none; border: none; font-size: 30px; cursor: pointer; z-index: 200; }
+
+/* Efektler */
+.sparkle { position: absolute; width: 5px; height: 5px; background: gold; border-radius: 50%; pointer-events: none; animation: sparkle-fade 0.7s forwards; z-index: 9999; }
+@keyframes sparkle-fade { to { transform: scale(0) translateY(20px); opacity: 0; } }
+
+.floating-heart { position: absolute; pointer-events: none; animation: floatUp 4s forwards; z-index: 5; }
+@keyframes floatUp { 
+    0% { transform: translateY(100vh) scale(0); opacity: 0; } 
+    50% { opacity: 0.8; }
+    100% { transform: translateY(-10vh) scale(1.5); opacity: 0; } 
+}
