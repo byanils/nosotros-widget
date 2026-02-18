@@ -3,7 +3,6 @@ import { getFirestore, doc, setDoc, onSnapshot, getDoc, updateDoc } from "https:
 import { messages } from "./messages.js";
 import { vaults } from "./vaults.js";
 
-// --- FIREBASE YAPILANDIRMASI ---
 const firebaseConfig = {
     apiKey: "AIzaSyCv12bIT9P0Ezho4CidHYfRLMqCN3LVq1o",
     authDomain: "nuestro-universo-70d52.firebaseapp.com",
@@ -15,16 +14,14 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
-// --- AYARLAR ---
 const imgbbKey = "072b34aeea28d1eab7f3865e6dcae66b";
 const startDate = new Date("2025-12-27T10:45:00");
 let currentUser = "";
 const todayKey = new Date().toISOString().split('T')[0];
 
-// --- GİRİŞ VE NAVİGASYON ---
-window.loginUser = (user) => {
-    currentUser = user;
+// NAVİGASYON
+window.loginUser = (u) => {
+    currentUser = u;
     document.getElementById("login-overlay").classList.remove("active");
     document.getElementById("main-page").classList.add("active");
     startGlobalSystems();
@@ -33,8 +30,8 @@ window.loginUser = (user) => {
 window.goToUniverse = () => {
     document.getElementById("main-page").classList.remove("active");
     document.getElementById("star-map-page").classList.add("active");
-    renderVaults(); // Sandıkları çizdir
-    initXOXGame();  // Oyunu başlat
+    renderVaults();
+    initXOX();
 };
 
 window.goToHome = () => {
@@ -42,202 +39,131 @@ window.goToHome = () => {
     document.getElementById("main-page").classList.add("active");
 };
 
-// MODAL KONTROLLERİ
+// MODAL
 window.openPhotoModal = () => {
     document.getElementById("photo-daily-modal").style.display = "flex";
     listenDailyPhotos();
 };
-window.closePhotoModal = () => {
-    document.getElementById("photo-daily-modal").style.display = "none";
-};
+window.closePhotoModal = () => document.getElementById("photo-daily-modal").style.display = "none";
 
-// --- SİSTEMLERİ BAŞLAT ---
+// SİSTEMLER
 function startGlobalSystems() {
     updateWeather();
     setInterval(updateClocks, 1000);
     setInterval(updateCounter, 1000);
-    createStars();
 }
 
-// --- HAVA DURUMU VE SAATLER ---
 async function updateWeather() {
-    const cities = [
-        { id: "milan", lat: 45.46, lon: 9.18 },
-        { id: "bogota", lat: 4.71, lon: -74.07 }
-    ];
+    const cities = [{ id: "milan", lat: 45.46, lon: 9.18 }, { id: "bogota", lat: 4.71, lon: -74.07 }];
     for (let c of cities) {
         try {
             const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current_weather=true`);
             const d = await r.json();
-            const tempEl = document.getElementById(`${c.id}-temp`);
-            if (tempEl) tempEl.innerText = Math.round(d.current_weather.temperature) + "°C";
-        } catch (e) { console.error("Hata:", e); }
+            const el = document.getElementById(`${c.id}-temp`);
+            if(el) el.innerText = Math.round(d.current_weather.temperature) + "°C";
+        } catch (e) {}
     }
 }
 
 function updateClocks() {
     const now = new Date();
-    const milanTime = document.getElementById("milan-time");
-    const bogotaTime = document.getElementById("bogota-time");
-    
-    if (milanTime) milanTime.innerText = now.toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit', timeZone: "Europe/Rome" });
-    if (bogotaTime) bogotaTime.innerText = now.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: "America/Bogota" });
+    const milan = document.getElementById("milan-time");
+    if(milan) milan.innerText = now.toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit', timeZone: "Europe/Rome" });
 }
 
-// --- SAYAÇ ---
 function updateCounter() {
     const now = new Date();
     const diff = Math.floor((now - startDate) / 1000);
+    const d = Math.floor(diff/86400), h = Math.floor((diff%86400)/3600), m = Math.floor((diff%3600)/60), s = diff%60;
     
-    const d = Math.floor(diff / 86400);
-    const h = Math.floor((diff % 86400) / 3600);
-    const m = Math.floor((diff % 3600) / 60);
-    const s = diff % 60;
-
-    const counterEl = document.getElementById("counter");
-    if (counterEl) {
-        counterEl.innerHTML = `
-            <div class="time-unit"><span>${d}</span><small>DÍAS</small></div>
-            <div class="time-unit"><span>${h}</span><small>HORAS</small></div>
-            <div class="time-unit"><span>${m}</span><small>MIN</small></div>
-            <div class="time-unit"><span>${s}</span><small>SEG</small></div>
-        `;
-    }
-
-    const msgEl = document.getElementById("message");
-    if (msgEl) {
-        const dayIdx = Math.floor(diff / 86400);
-        msgEl.innerText = messages[dayIdx] || "No sé hacia dónde vamos, pero me gusta el camino.";
-    }
+    document.getElementById("counter").innerHTML = `
+        <div class="time-unit"><span>${d}</span><small>Días</small></div>
+        <div class="time-unit"><span>${h}</span><small>Horas</small></div>
+        <div class="time-unit"><span>${m}</span><small>Min</small></div>
+        <div class="time-unit"><span>${s}</span><small>Seg</small></div>
+    `;
+    document.getElementById("message").innerText = messages[Math.floor(diff/86400)] || "🤍";
 }
 
-// --- SANDIK SİSTEMİ ---
+// SANDIKLAR
 function renderVaults() {
     const grid = document.getElementById("vault-grid");
-    if (!grid) return;
     grid.innerHTML = "";
     const now = new Date();
-
-    // Görseldeki gibi 5 sandık
-    vaults.slice(0, 5).forEach((v) => {
+    vaults.slice(0, 5).forEach(v => {
         const div = document.createElement("div");
         div.className = "chest";
-        const targetDate = new Date(v.d);
-
-        if (now >= targetDate) div.classList.add("unlocked");
-
-        div.setAttribute("data-label", v.secret ? "???" : v.d.split("-").slice(1).join("/"));
-        
+        const target = new Date(v.d);
+        if(now >= target) div.classList.add("unlocked");
         div.onclick = () => {
-            if (now >= targetDate) {
-                alert("💖 " + v.t);
-            } else {
-                alert("🔒 Se abrirá el: " + v.d);
-            }
+            if(now >= target) alert("💖 " + v.t);
+            else alert("🔒 Se abre el: " + v.d);
         };
         grid.appendChild(div);
     });
 }
 
-// --- REAL-TIME XOX (8x8) ---
-async function initXOXGame() {
+// XOX (8x8)
+async function initXOX() {
     const grid = document.getElementById("tic-tac-toe-grid");
-    if (!grid) return;
     grid.innerHTML = "";
-    
-    for (let i = 0; i < 64; i++) {
+    for(let i=0; i<64; i++) {
         const cell = document.createElement("div");
         cell.className = "cell";
-        cell.dataset.index = i;
-        cell.onclick = () => handleXOXMove(i);
+        cell.onclick = () => handleMove(i);
         grid.appendChild(cell);
     }
-
     onSnapshot(doc(db, "games", todayKey), (snap) => {
-        if (snap.exists()) {
-            updateXOXUI(snap.data());
-        } else {
-            setDoc(doc(db, "games", todayKey), {
-                board: Array(64).fill(""),
-                turn: "anil",
-                scoreAnil: 0, scoreCamila: 0
+        if(snap.exists()) {
+            const data = snap.data();
+            const cells = document.querySelectorAll(".cell");
+            data.board.forEach((v, i) => { 
+                cells[i].innerText = v; 
+                cells[i].style.color = v === "X" ? "#ff4d4d" : "#448aff";
             });
+            document.getElementById("game-status").innerText = "Turno de: " + data.turn.toUpperCase();
+        } else {
+            setDoc(doc(db, "games", todayKey), { board: Array(64).fill(""), turn: "anil" });
         }
     });
 }
 
-async function handleXOXMove(idx) {
+async function handleMove(i) {
     const ref = doc(db, "games", todayKey);
     const snap = await getDoc(ref);
     const data = snap.data();
-
-    if (data.board[idx] !== "" || data.turn !== currentUser) return;
-
-    const newBoard = [...data.board];
-    newBoard[idx] = currentUser === "anil" ? "X" : "O";
-    const nextTurn = currentUser === "anil" ? "camila" : "anil";
-
-    await updateDoc(ref, { board: newBoard, turn: nextTurn });
+    if(data.board[i] !== "" || data.turn !== currentUser) return;
+    data.board[i] = currentUser === "anil" ? "X" : "O";
+    data.turn = currentUser === "anil" ? "camila" : "anil";
+    await updateDoc(ref, data);
 }
 
-function updateXOXUI(data) {
-    const cells = document.querySelectorAll(".cell");
-    data.board.forEach((val, i) => {
-        cells[i].innerText = val;
-        cells[i].className = "cell " + (val ? val.toLowerCase() : "");
-    });
-    document.getElementById("score-anil").innerText = data.scoreAnil || 0;
-    document.getElementById("score-camila").innerText = data.scoreCamila || 0;
-    document.getElementById("game-status").innerText = "Turno de: " + data.turn.toUpperCase();
-}
+window.clearBoard = async () => { if(confirm("Reset?")) await setDoc(doc(db, "games", todayKey), { board: Array(64).fill(""), turn: "anil" }); };
 
-window.clearBoard = async () => {
-    if(confirm("¿Reiniciar?")) {
-        await setDoc(doc(db, "games", todayKey), { board: Array(64).fill(""), turn: "anil" }, { merge: true });
-    }
-};
-
-// --- FOTOĞRAF YÜKLEME ---
+// FOTO YÜKLEME VE TAKİP
 window.uploadSelfie = async (input) => {
     if(!input.files[0]) return;
     const status = document.getElementById("photo-status-msg");
-    status.innerText = "Subiendo... ⏳";
-    const formData = new FormData();
-    formData.append("image", input.files[0]);
+    status.innerText = "⏳";
+    const fd = new FormData(); fd.append("image", input.files[0]);
     try {
-        const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbKey}`, { method: "POST", body: formData });
+        const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbKey}`, { method: "POST", body: fd });
         const json = await res.json();
         await setDoc(doc(db, "daily", todayKey), { [currentUser]: json.data.url }, { merge: true });
-        status.innerText = "¡Listo! ✨";
-    } catch (e) { status.innerText = "Error ❌"; }
+        status.innerText = "✅";
+    } catch (e) { status.innerText = "❌"; }
 };
 
 function listenDailyPhotos() {
     onSnapshot(doc(db, "daily", todayKey), (snap) => {
         if (snap.exists()) {
             const d = snap.data();
-            const imgA = document.getElementById("img-anil");
-            const imgC = document.getElementById("img-camila");
-            if(d.anil && imgA) imgA.src = d.anil;
-            if(d.camila && imgC) imgC.src = d.camila;
+            if(d.anil) document.getElementById("img-anil").src = d.anil;
+            if(d.camila) document.getElementById("img-camila").src = d.camila;
             if(d.anil && d.camila) {
-                imgA.classList.remove("locked");
-                imgC.classList.remove("locked");
+                document.getElementById("img-anil").classList.remove("locked");
+                document.getElementById("img-camila").classList.remove("locked");
             }
         }
     });
-}
-
-// --- YILDIZLAR ---
-function createStars() {
-    const container = document.getElementById("stars-container");
-    if(!container || container.children.length > 0) return;
-    for(let i=0; i<100; i++) {
-        const s = document.createElement("div");
-        s.className = "star";
-        s.style.left = Math.random() * 100 + "%";
-        s.style.top = Math.random() * 100 + "%";
-        s.style.opacity = Math.random();
-        container.appendChild(s);
-    }
 }
