@@ -16,9 +16,11 @@ const imgbbKey = "072b34aeea28d1eab7f3865e6dcae66b";
 const myApiKey = "2e2dcf335d4c97a7c182b0c041eea672";
 const startDate = new Date("2025-12-27T10:45:00");
 const photos = ["foto1.jpg", "foto2.jpg", "foto3.jpg", "foto4.jpg", "foto5.jpg", "foto6.jpg", "foto7.jpg", "foto8.jpg", "foto9.jpg", "foto10.jpg"];
+
 let currentIdx = 0;
 let currentUser = "";
 
+// --- ROMANTİK MESAJLAR LİSTESİ ---
 const messages = [
     "Este widget no pide nada. Solo está aquí. Como yo 🤍", "Hoy pensé en ti sin razón. Y me gustó.",
     "Tu nombre se siente tranquilo en mi mente.", "Aunque estemos lejos, hay algo que nunca se mueve.",
@@ -76,6 +78,7 @@ Feliz San Valentín, Camila.`,
     "108 días... ve esto es solo el comienzo. 🤍"
 ];
 
+// --- EVREN SANDIKLARI ---
 const vaults = [
     { d: "2026-02-15", t: "Las distancias solo están en los mapas. Tu lugar en mi corazón es tan firme. Te amo." },
     { d: "2026-02-22", t: "A veces, solo escuchar tu voz borra todo el cansancio del día." },
@@ -88,13 +91,14 @@ const vaults = [
     { d: "2026-04-15", t: "¡Feliz Cumpleaños, mi amor! Mi corazón late hoy totalmente a tu lado.", b: true, lock: "El tesoro espera el 15 de Abril... 🌌✨" }
 ];
 
+// --- INITIALIZE FIREBASE ---
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// --- APP NAVIGATION ---
+// --- NAVIGATION & LOGIN ---
 window.loginUser = (user) => {
     currentUser = user;
-    document.getElementById("login-overlay").classList.remove("active");
+    document.getElementById("login-overlay").style.display = "none";
     document.getElementById("main-page").classList.add("active");
     listenToDailyPhotos();
 };
@@ -113,22 +117,30 @@ window.goToHome = () => {
 window.openPhotoModal = () => document.getElementById("photo-daily-modal").style.display = "block";
 window.closePhotoModal = () => document.getElementById("photo-daily-modal").style.display = "none";
 
-// --- PHOTO LOGIC (IMGBB + FIREBASE) ---
+// --- PHOTO UPLOAD LOGIC ---
 window.uploadSelfie = async (input) => {
     if(!input.files[0]) return;
     const msg = document.getElementById("photo-status-msg");
     msg.innerText = "Subiendo... ⏳";
+    
     const formData = new FormData();
     formData.append("image", input.files[0]);
 
     try {
-        const res = await fetch(`https://api.imgbb.com/1/upload?expiration=86400&key=${imgbbKey}`, { method: "POST", body: formData });
+        const res = await fetch(`https://api.imgbb.com/1/upload?expiration=86400&key=${imgbbKey}`, { 
+            method: "POST", 
+            body: formData 
+        });
         const json = await res.json();
         const url = json.data.url;
+        
         const today = new Date().toLocaleDateString('en-CA');
         await setDoc(doc(db, "daily", today), { [currentUser]: url }, { merge: true });
-        msg.innerText = "¡Subido! ❤️";
-    } catch (e) { msg.innerText = "Error ❌"; }
+        msg.innerText = "¡Subido con éxito! ❤️";
+    } catch (e) { 
+        msg.innerText = "Error al subir ❌";
+        console.error(e);
+    }
 };
 
 function listenToDailyPhotos() {
@@ -142,98 +154,151 @@ function listenToDailyPhotos() {
             const data = snap.data();
             if(data.anil) imgA.src = data.anil;
             if(data.camila) imgC.src = data.camila;
+            
             if(data.anil && data.camila) {
-                imgA.classList.remove("locked"); imgC.classList.remove("locked");
-                statusMsg.innerText = "✨ ¡Desbloqueado! ✨";
-            } else { statusMsg.innerText = "Falta una selfie... 📸"; }
-        } else { statusMsg.innerText = "Ninguna selfie hoy. 🔥"; }
+                imgA.classList.remove("locked"); 
+                imgC.classList.remove("locked");
+                statusMsg.innerText = "✨ ¡Ambos han subido fotos hoy! ✨";
+            } else {
+                statusMsg.innerText = "Falta una selfie para desbloquear... 📸";
+            }
+        } else {
+            statusMsg.innerText = "Nadie ha subido selfie hoy. 🔥";
+        }
     });
 }
 
-// --- UNIVERSE LOGIC ---
-function initUniverse() {
-    const starContainer = document.getElementById("stars-container");
-    const vaultContainer = document.getElementById("vault-container");
-    if (vaultContainer.innerHTML !== "") return;
-
-    for (let i = 0; i < 80; i++) {
-        const s = document.createElement("div"); s.className = "star";
-        s.style.position = "absolute"; s.style.width = "2px"; s.style.height = "2px"; s.style.background = "white";
-        s.style.left = Math.random() * 100 + "vw"; s.style.top = Math.random() * 100 + "vh";
-        starContainer.appendChild(s);
-    }
-
-    vaults.forEach((v, index) => {
-        const div = document.createElement("div"); 
-        div.className = `chest ${v.b ? 'birthday' : ''}`;
-        const ratio = index / (vaults.length - 1);
-        div.style.top = (20 + (ratio * 58)) + "%";
-        div.style.left = (82 - (ratio * 64) + (Math.sin(ratio * Math.PI) * 15)) + "%";
-        div.onclick = (e) => { 
-            e.stopPropagation(); 
-            if (new Date() < new Date(v.d)) alert(v.b ? v.lock : "Se abrirá el: " + v.d); 
-            else alert(v.t); 
-        };
-        vaultContainer.appendChild(div);
-    });
-}
-
-// --- UPDATES ---
+// --- CLOCK & COUNTER ---
 function update() {
     const now = new Date();
-    const milan = new Date(now.toLocaleString("en-US", {timeZone: "Europe/Rome"}));
-    const bogota = new Date(now.toLocaleString("en-US", {timeZone: "America/Bogota"}));
     
-    document.getElementById("milan-time").innerText = milan.getHours() + ":" + String(milan.getMinutes()).padStart(2, '0');
-    document.getElementById("bogota-time").innerText = bogota.getHours() + ":" + String(bogota.getMinutes()).padStart(2, '0');
+    // Saatleri ayarla (Milan ve Bogota)
+    const milanTime = new Date(now.toLocaleString("en-US", {timeZone: "Europe/Rome"}));
+    const bogotaTime = new Date(now.toLocaleString("en-US", {timeZone: "America/Bogota"}));
+    
+    document.getElementById("milan-time").innerText = milanTime.getHours() + ":" + String(milanTime.getMinutes()).padStart(2, '0');
+    document.getElementById("bogota-time").innerText = bogotaTime.getHours() + ":" + String(bogotaTime.getMinutes()).padStart(2, '0');
 
-    if(bogota.getHours() >= 18 || bogota.getHours() < 6) document.body.classList.add("night-mode");
-    else document.body.classList.remove("night-mode");
+    // Gece modu kontrolü (Bogota saatine göre)
+    if(bogotaTime.getHours() >= 18 || bogotaTime.getHours() < 6) {
+        document.body.classList.add("night-mode");
+    } else {
+        document.body.classList.remove("night-mode");
+    }
 
+    // Sayaç Hesaplama
     const diff = Math.floor((now - startDate) / 1000);
-    const d = Math.floor(diff/86400), h = Math.floor((diff%86400)/3600), m = Math.floor((diff%3600)/60), s = diff%60;
-    document.getElementById("counter").innerHTML = `<span>${d}d</span><span>${h}h</span><span>${m}m</span><span style="color:#ff4d4d">${s}s</span>`;
+    const d = Math.floor(diff/86400);
+    const h = Math.floor((diff%86400)/3600);
+    const m = Math.floor((diff%3600)/60);
+    const s = diff%60;
     
-    const dayDiff = Math.floor((now - startDate) / 86400000);
+    // Sayaç HTML güncelleme (Yeni büyük tasarım)
+    document.getElementById("counter").innerHTML = `
+        <span>${d}<small>Gün</small></span>
+        <span>${h}<small>Saat</small></span>
+        <span>${m}<small>Dak</small></span>
+        <span style="color:var(--primary-pink)">${s}<small>Sn</small></span>
+    `;
+    
+    // Günlük Mesaj Seçimi
+    const dayDiff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
     document.getElementById("message").innerText = messages[dayDiff] || "Contigo, siempre. 🤍";
 }
 
+// --- WEATHER & EFFECTS ---
 async function fetchWeather() {
     try {
         const rM = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Milan,it&units=metric&appid=${myApiKey}`);
         const dM = await rM.json();
         const rB = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Bogota,co&units=metric&appid=${myApiKey}`);
         const dB = await rB.json();
+        
         if(dM.main) document.getElementById("milan-temp").innerText = `${Math.round(dM.main.temp)}°C`;
         if(dB.main) document.getElementById("bogota-temp").innerText = `${Math.round(dB.main.temp)}°C`;
-    } catch(e) {}
+    } catch(e) { console.log("Hava durumu hatası."); }
 }
 
 function createFloatingHeart() {
-    const heart = document.createElement("div"); heart.innerHTML = "❤️"; heart.className = "floating-heart";
+    const heart = document.createElement("div");
+    heart.innerHTML = "❤️";
+    heart.className = "floating-heart";
     heart.style.left = Math.random() * 100 + "vw";
     heart.style.fontSize = (Math.random() * 20 + 10) + "px";
+    heart.style.animationDuration = (Math.random() * 2 + 3) + "s";
     document.body.appendChild(heart);
     setTimeout(() => heart.remove(), 4000);
 }
 
+// --- UNIVERSE INITIALIZATION ---
+function initUniverse() {
+    const starContainer = document.getElementById("stars-container");
+    const vaultContainer = document.getElementById("vault-container");
+    
+    if (vaultContainer.innerHTML !== "") return; // Tekrar oluşmasını engelle
+
+    // Yıldızları oluştur
+    for (let i = 0; i < 80; i++) {
+        const s = document.createElement("div");
+        s.style.position = "absolute";
+        s.style.width = "2px";
+        s.style.height = "2px";
+        s.style.background = "white";
+        s.style.borderRadius = "50%";
+        s.style.left = Math.random() * 100 + "vw";
+        s.style.top = Math.random() * 100 + "vh";
+        s.style.opacity = Math.random();
+        starContainer.appendChild(s);
+    }
+
+    // Sandıkları yerleştir
+    vaults.forEach((v, index) => {
+        const div = document.createElement("div");
+        div.className = `chest ${v.b ? 'birthday' : ''}`;
+        
+        const ratio = index / (vaults.length - 1);
+        div.style.top = (20 + (ratio * 58)) + "%";
+        div.style.left = (82 - (ratio * 64) + (Math.sin(ratio * Math.PI) * 15)) + "%";
+
+        div.onclick = (e) => { 
+            e.stopPropagation(); 
+            if (new Date() < new Date(v.d)) {
+                alert(v.b ? v.lock : "Se abrirá el: " + v.d); 
+            } else {
+                alert(v.t); 
+            }
+        };
+        vaultContainer.appendChild(div);
+    });
+}
+
+// --- MOUSE TRACKING SPARKLE ---
 document.addEventListener('mousemove', (e) => {
-    const s = document.createElement("div"); s.className = "sparkle";
-    s.style.left = e.clientX + "px"; s.style.top = e.clientY + "px";
+    const s = document.createElement("div");
+    s.className = "sparkle";
+    s.style.left = e.clientX + "px";
+    s.style.top = e.clientY + "px";
     document.body.appendChild(s);
     setTimeout(() => s.remove(), 700);
 });
 
-// Slideshow
+// --- SLIDESHOW ---
 setInterval(() => {
     const img = document.getElementById("album-photo");
     if(img && document.getElementById("main-page").classList.contains("active")) {
         img.style.opacity = 0;
-        setTimeout(() => { currentIdx = (currentIdx + 1) % photos.length; img.src = photos[currentIdx]; img.style.opacity = 1; }, 500);
+        setTimeout(() => {
+            currentIdx = (currentIdx + 1) % photos.length;
+            img.src = photos[currentIdx];
+            img.style.opacity = 1;
+        }, 500);
     }
 }, 4000);
 
+// --- START APP ---
 setInterval(update, 1000);
 setInterval(createFloatingHeart, 600);
-fetchWeather();
+setInterval(fetchWeather, 3600000); // Saat başı hava durumu güncelle
+
 update();
+fetchWeather();
