@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Nuestro Universo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="stars-container"></div>
 
     <div id="login-overlay" class="page-layer active">
-        <div class="glass-card">
+        <div class="glass-card login-card">
             <h1>Nuestro Universo</h1>
             <p>Anıl & Camila</p>
             <div class="login-options">
@@ -23,29 +23,32 @@
 
     <div id="main-page" class="page-layer">
         <div class="glass-card">
-            <div class="info-header">
-                <span id="milan-time">00:00</span>
-                <span id="milan-temp">--°C</span>
-            </div>
             <div class="heart-container">
-                <div class="heart-shape"><img src="foto1.jpg" id="album-photo"></div>
+                <div class="heart-shape" onclick="triggerUpload()">
+                    <img src="foto1.jpg" id="album-photo">
+                    <input type="file" id="photo-input" style="display:none" onchange="uploadPhoto(event)">
+                </div>
             </div>
+
             <div id="counter"></div>
-            <div class="weather-row">
-                <span>☀️ Milan <b id="m-temp">--°C</b></span>
-                <span>☀️ Bogotá <b id="b-temp">--°C</b></span>
+
+            <div class="info-footer">
+                <div class="weather-item">☀️ Milan <span id="m-temp">--°C</span> <span id="m-time">00:00</span></div>
+                <div class="weather-item">☀️ Bogotá <span id="b-temp">--°C</span> <span id="b-time">00:00</span></div>
             </div>
+
             <p id="message" class="romantic-text"></p>
+
             <div class="main-nav">
                 <button class="btn-nav primary" onclick="goToUniverse()">✨ Nuestro Universo</button>
-                <button class="btn-nav secondary" onclick="openPhotoModal()">📸 Nuestro Momento</button>
+                <button class="btn-nav secondary" onclick="triggerUpload()">📸 Subir Mi Foto</button>
             </div>
         </div>
     </div>
 
     <div id="star-map-page" class="page-layer">
         <div class="glass-card">
-            <button class="back-link" onclick="goToHome()">← Volver</button>
+            <button class="back-btn" onclick="goToHome()">← Volver</button>
             <h3 class="section-title">Nuestra Aventura</h3>
             
             <div class="vault-container">
@@ -54,13 +57,13 @@
             </div>
 
             <div class="game-section">
-                <div class="score-row">
+                <div class="game-info">
                     <span>Anıl (X): <b id="score-anil">0</b></span>
                     <span>Camila (O): <b id="score-camila">0</b></span>
                 </div>
                 <div id="tic-tac-toe-grid"></div>
                 <p id="game-status">Turno de...</p>
-                <button class="reset-btn" onclick="clearBoard()">Reset Game</button>
+                <button class="reset-btn" onclick="clearBoard()">Reset Board</button>
             </div>
         </div>
     </div>
