@@ -1,53 +1,41 @@
 :root { --primary: #ff4d4d; --bg: #05070a; --card-bg: #1a1a24; }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); color: white; font-family: 'Poppins', sans-serif; overflow: hidden; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { background: var(--bg); color: white; font-family: 'Poppins', sans-serif; height: 100vh; overflow: hidden; }
 
-.page-layer { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10; background: var(--bg); }
+.page-layer { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10; padding: 20px; }
 .page-layer.active { display: flex; }
 
-/* ANA KART YAPISI (Paylaştığın görseldeki gibi) */
-.glass-card { 
-    background: var(--card-bg); 
-    border-radius: 40px; 
-    padding: 30px 20px; 
-    width: 90%; 
-    max-width: 360px; 
-    text-align: center;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+/* KART BOYUTU: Görseldeki gibi büyük olması için */
+.main-ui-size {
+    width: 100%;
+    max-width: 380px;
+    min-height: 600px; /* Kartın küçük durmasını engeller */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 35px 25px;
 }
 
-/* KALP VE FOTOĞRAF */
-.heart-shape { 
-    width: 220px; height: 200px; margin: 0 auto 25px; 
-    clip-path: path('M110,30 C110,30 95,0 55,0 C20,0 0,40 0,70 C0,130 110,200 110,200 C110,200 220,130 220,70 C220,40 200,0 165,0 C125,0 110,30 110,30 Z'); 
-    overflow: hidden; background: #111; 
+.glass-card { background: var(--card-bg); border-radius: 45px; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.7); position: relative; }
+
+/* SANDIKLARIN DİZİLİMİ */
+.vault-container { position: relative; margin: 20px 0; padding: 10px 0; }
+.progress-line { position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.1); transform: translateY(-50%); z-index: 1; }
+#vault-grid { display: flex; justify-content: space-between; position: relative; z-index: 2; width: 100%; }
+
+.chest { 
+    width: 45px; height: 45px; 
+    background: url('sandik.png') center/contain no-repeat; 
+    filter: grayscale(1) opacity(0.3); 
+    transition: 0.4s; cursor: pointer;
 }
+.chest.unlocked { filter: grayscale(0) opacity(1) drop-shadow(0 0 10px var(--primary)); transform: scale(1.1); }
+
+/* XOX IZGARASI */
+#tic-tac-toe-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; background: #0c0c12; padding: 8px; border-radius: 15px; margin-top: 10px; }
+.cell { aspect-ratio: 1; background: #1f1f2e; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; }
+
+/* DİĞER DETAYLAR */
+.heart-shape { width: 220px; height: 190px; margin: 0 auto; clip-path: path('M110,30 C110,30 95,0 55,0 C20,0 0,40 0,70 C0,130 110,200 110,200 C110,200 220,130 220,70 C220,40 200,0 165,0 C125,0 110,30 110,30 Z'); overflow: hidden; }
 .heart-shape img { width: 100%; height: 100%; object-fit: cover; }
-
-/* SAYAÇ KUTULARI (Paylaştığın görseldeki koyu kutular) */
-#counter { display: flex; justify-content: center; gap: 8px; margin-bottom: 25px; }
-.time-unit { background: #0c0c12; padding: 12px 8px; border-radius: 15px; min-width: 65px; }
-.time-unit span { display: block; font-size: 1.5rem; font-weight: 700; color: #ff4d4d; }
-.time-unit small { font-size: 0.6rem; opacity: 0.6; text-transform: uppercase; }
-
-/* HAVA DURUMU VE SAAT (Eksik olan kısım) */
-.weather-clock-row { 
-    display: flex; justify-content: space-around; 
-    background: #0c0c12; border-radius: 20px; 
-    padding: 15px 10px; margin-bottom: 20px; 
-}
-.city-box { display: flex; flex-direction: column; gap: 2px; }
-.city-name { font-size: 0.65rem; opacity: 0.5; }
-.city-temp { font-weight: 600; font-size: 0.9rem; color: #ff4d4d; }
-.city-time { font-size: 0.8rem; }
-
-/* BUTONLAR */
-.btn-nav { width: 100%; padding: 16px; border-radius: 50px; border: none; font-weight: 600; cursor: pointer; margin-top: 12px; font-size: 0.9rem; }
-.btn-nav.primary { background: #ff4d4d; color: white; }
-.btn-nav.secondary { background: #2a2a35; color: white; }
-
-/* XOX VE SANDIK ALANI (İkinci sayfa tasarımı) */
-#vault-grid { display: flex; justify-content: space-between; padding: 15px 0; position: relative; z-index: 5; }
-.progress-line { position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.1); z-index: 1; }
-#tic-tac-toe-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 3px; background: #0c0c12; padding: 5px; border-radius: 10px; margin-top: 15px; }
-.cell { aspect-ratio: 1; background: #1a1a24; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+.romantic-text { font-style: italic; font-size: 0.9rem; margin: 15px 0; opacity: 0.9; line-height: 1.4; color: #f8d7da; }
