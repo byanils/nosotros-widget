@@ -16,49 +16,68 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 const startDate = new Date("2025-12-27T10:45:00");
 let currentUser = "";
-const gameKey = new Date().toISOString().split('T')[0]; // Günlük oyun odası
+const gameKey = new Date().toISOString().split('T')[0];
 
-// --- GİRİŞ VE SİSTEM BAŞLATMA ---
+// GİRİŞ
 window.loginUser = (u) => {
     currentUser = u;
     document.getElementById("login-overlay").classList.remove("active");
     document.getElementById("main-page").classList.add("active");
     
-    // Anlık veri dinlemelerini başlat
+    // Dinlemeleri başlat
     syncAlbum();
-    startClockAndWeather();
+    startAppSystems();
 };
 
-// --- FOTOĞRAF ALBÜMÜ SENKRONİZASYONU ---
+// ALBÜM SENKRONİZASYONU (FOTOĞRAF ÇALIŞMIYOR DEDİĞİN KISIM)
 function syncAlbum() {
-    // Firestore'daki 'settings/album' dokümanını dinle
+    // Firestore'u anlık dinle: biri 'album' dokümanını güncellerse resim anında değişir
     onSnapshot(doc(db, "settings", "album"), (snap) => {
         if(snap.exists()) {
             const url = snap.data().url;
-            document.getElementById("album-photo").src = url;
+            const imgElement = document.getElementById("album-photo");
+            imgElement.src = url;
         }
     });
 }
 
-window.triggerUpload = () => document.getElementById("photo-input").click();
+// FOTOĞRAF YÜKLEME TETİKLEYİCİSİ
+window.triggerUpload = () => {
+    document.getElementById("photo-input").click();
+};
 
 window.uploadPhoto = async (e) => {
     const file = e.target.files[0];
     if(!file) return;
     
+    // Buton metnini değiştir (feedback için)
+    const btn = document.querySelector(".btn-secondary");
+    const originalText = btn.innerText;
+    btn.innerText = "Yükleniyor...";
+
     try {
+        // Storage'a yükle (ismini her seferinde aynı tutarsak üzerine yazar)
         const sRef = ref(storage, 'shared/current_selfie.jpg');
         await uploadBytes(sRef, file);
         const url = await getDownloadURL(sRef);
-        // Firestore'a yaz ki karşı taraf snapshot ile anında görsün
-        await setDoc(doc(db, "settings", "album"), { url: url, by: currentUser, time: Date.now() });
+        
+        // Firestore'a linki kaydet (Bunu yapınca onSnapshot sayesinde diğer kişide de anında değişir)
+        await setDoc(doc(db, "settings", "album"), { 
+            url: url, 
+            uploadedBy: currentUser, 
+            timestamp: Date.now() 
+        });
+        
+        btn.innerText = "¡Listo! ✨";
+        setTimeout(() => btn.innerText = originalText, 2000);
     } catch (err) {
-        console.error("Yükleme hatası:", err);
+        console.error(err);
+        btn.innerText = "Hata oluştu!";
     }
 };
 
-// --- SAAT, HAVA VE SAYAÇ ---
-function startClockAndWeather() {
+// SİSTEMLER (SAAT, HAVA, SAYAÇ)
+function startAppSystems() {
     updateWeather();
     setInterval(() => {
         const now = new Date();
@@ -71,23 +90,23 @@ function startClockAndWeather() {
             <div class="time-unit"><span>${d}</span><small>Días</small></div>
             <div class="time-unit"><span>${h}</span><small>Hrs</small></div>
             <div class="time-unit"><span>${m}</span><small>Min</small></div>
-            <div class="time-unit"><span>${s}</span><small>Seg</small></div>`;
+            <div class="time-unit ="><span>${s}</span><small>Seg</small></div>`;
     }, 1000);
 }
 
 async function updateWeather() {
     const fetchTemp = async (lat, lon) => {
-        const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-        const d = await r.json();
-        return Math.round(d.current_weather.temperature) + "°C";
+        try {
+            const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+            const d = await r.json();
+            return Math.round(d.current_weather.temperature) + "°C";
+        } catch(e) { return "--°C"; }
     };
-    try {
-        document.getElementById("m-temp").innerText = await fetchTemp(45.46, 9.18);
-        document.getElementById("b-temp").innerText = await fetchTemp(4.71, -74.07);
-    } catch(e) {}
+    document.getElementById("m-temp").innerText = await fetchTemp(45.46, 9.18);
+    document.getElementById("b-temp").innerText = await fetchTemp(4.71, -74.07);
 }
 
-// --- XOX OYUNU (GÜNLÜK VE SENKRON) ---
+// OYUN MANTIĞI
 window.initXOX = () => {
     const grid = document.getElementById("tic-tac-toe-grid");
     grid.innerHTML = "";
@@ -97,7 +116,6 @@ window.initXOX = () => {
         c.onclick = () => makeMove(i);
         grid.appendChild(c);
     }
-    
     onSnapshot(doc(db, "games", gameKey), (snap) => {
         const data = snap.exists() ? snap.data() : { board: Array(64).fill(""), turn: "anil" };
         const cells = document.querySelectorAll(".cell");
@@ -113,7 +131,6 @@ async function makeMove(i) {
     const ref = doc(db, "games", gameKey);
     const snap = await getDoc(ref);
     const data = snap.exists() ? snap.data() : { board: Array(64).fill(""), turn: "anil" };
-    
     if(data.board[i] === "" && data.turn === currentUser) {
         data.board[i] = currentUser === "anil" ? "X" : "O";
         data.turn = currentUser === "anil" ? "camila" : "anil";
@@ -121,7 +138,7 @@ async function makeMove(i) {
     }
 }
 
-// --- NAVİGASYON ---
+// NAVİGASYON
 window.goToUniverse = () => {
     document.getElementById("main-page").classList.remove("active");
     document.getElementById("star-map-page").classList.add("active");
