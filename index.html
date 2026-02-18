@@ -1,38 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nuestro Universo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
 <body>
     <div id="stars-container"></div>
 
-    <div id="main-page" class="page-layer active">
+    <div id="login-overlay" class="page-layer active">
+        <div class="glass-card">
+            <h1>Nuestro Universo</h1>
+            <p>Anıl & Camila</p>
+            <div class="login-options">
+                <button class="user-btn" onclick="loginUser('anil')">🤵 Soy Anıl</button>
+                <button class="user-btn" onclick="loginUser('camila')">👸 Soy Camila</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-page" class="page-layer">
         <div class="glass-card">
             <div class="info-header">
                 <span id="milan-time">05:11</span>
                 <span id="milan-temp">9.7°C</span>
             </div>
 
-            <div class="heart-shape"><img id="album-photo" src="foto1.jpg"></div>
+            <div class="heart-container">
+                <div class="heart-shape">
+                    <img id="album-photo" src="foto1.jpg">
+                </div>
+            </div>
 
             <div id="counter">
                 </div>
 
-            <p class="romantic-text">No sé hacia dónde vamos, pero me gusta el camino.</p>
+            <p id="message" class="romantic-text"></p>
 
-            <button class="btn-nav primary" onclick="goToUniverse()">✨ Nuestro Universo</button>
-            <button class="btn-nav secondary" onclick="openPhotoModal()">📸 Nuestro Momento</button>
+            <div class="main-nav">
+                <button class="btn-nav primary" onclick="goToUniverse()">✨ Nuestro Universo</button>
+                <button class="btn-nav secondary" onclick="openPhotoModal()">📸 Nuestro Momento</button>
+            </div>
         </div>
     </div>
 
     <div id="star-map-page" class="page-layer">
         <div class="glass-card">
-            <button onclick="goToHome()" style="background:none; border:none; color:white; align-self:start;">← Volver</button>
-            <h3 style="font-size:1rem; margin-bottom:10px;">Nuestra Aventura</h3>
+            <button class="back-link" onclick="goToHome()">← Volver</button>
+            <h3 class="section-title">Nuestra Aventura</h3>
             
-            <div class="vault-area">
+            <div class="vault-container">
                 <div class="vault-line"></div>
                 <div id="vault-grid"></div>
             </div>
 
-            <div id="tic-tac-toe-grid"></div>
-            <div id="game-status" style="font-size:0.7rem; color:var(--primary);">Turno de...</div>
-            <button onclick="clearBoard()" style="font-size:0.6rem; opacity:0.5; background:none; color:white; border:none;">Reset</button>
+            <div class="game-section">
+                <div class="score-row">
+                    <span>Anıl (X): <b id="score-anil">0</b></span>
+                    <span>Camila (O): <b id="score-camila">0</b></span>
+                </div>
+                <div id="tic-tac-toe-grid"></div>
+                <p id="game-status">Turno de...</p>
+                <button class="reset-btn" onclick="clearBoard()">Reset</button>
+            </div>
         </div>
     </div>
+
+    <div id="photo-daily-modal" class="modal">
+        <div class="glass-card modal-content">
+            <span class="close-btn" onclick="closePhotoModal()">&times;</span>
+            <h3 style="margin-bottom: 20px;">Nuestro Momento</h3>
+            <div class="photo-grid">
+                <div class="photo-item">
+                    <span>Anıl</span>
+                    <div class="frame"><img id="img-anil" src="placeholder.png" class="locked"></div>
+                </div>
+                <div class="photo-item">
+                    <span>Camila</span>
+                    <div class="frame"><img id="img-camila" src="placeholder.png" class="locked"></div>
+                </div>
+            </div>
+            <input type="file" id="photo-input" hidden accept="image/*" onchange="uploadSelfie(this)">
+            <button class="upload-btn" onclick="document.getElementById('photo-input').click()">Subir Mi Foto</button>
+            <p id="photo-status-msg"></p>
+        </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
 </body>
+</html>
