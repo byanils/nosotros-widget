@@ -3,33 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nuestro Universo - Premium</title>
+    <title>Nuestro Universo</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div id="stars-container"></div>
+
     <div id="login-overlay" class="page-layer active">
-        <div class="glass-card main-ui">
-            <h1 class="hero-title">Nuestro Universo</h1>
-            <p class="hero-subtitle">Anıl & Camila</p>
-            <div class="login-options">
-                <button class="user-btn" onclick="loginUser('anil')">🤵 Soy Anıl</button>
-                <button class="user-btn" onclick="loginUser('camila')">👸 Soy Camila</button>
+        <div class="login-glass-card">
+            <div class="login-header">
+                <span class="sparkle">✨</span>
+                <h1>Nuestro Universo</h1>
+                <p>Anıl & Camila</p>
+            </div>
+            <div class="user-selection">
+                <button class="choice-btn anil" onclick="loginUser('anil')">🤵 Soy Anıl</button>
+                <div class="divider"><span>o</span></div>
+                <button class="choice-btn camila" onclick="loginUser('camila')">👸 Soy Camila</button>
             </div>
         </div>
     </div>
 
     <div id="main-page" class="page-layer">
-        <div class="glass-card main-ui">
+        <div class="glass-card">
             <div class="heart-container" onclick="triggerUpload()">
                 <div class="heart-shape">
                     <img src="placeholder.jpg" id="album-photo">
-                    <div class="photo-overlay">📸</div>
+                    <div class="upload-hint">Toca para cambiar 📸</div>
                 </div>
                 <input type="file" id="photo-input" style="display:none" onchange="uploadPhoto(event)">
             </div>
 
-            <div id="counter" class="info-grid"></div>
+            <div id="counter" class="counter-row"></div>
 
             <div class="info-grid">
                 <div class="info-box">
@@ -44,30 +50,21 @@
                 </div>
             </div>
 
-            <p id="message" class="romantic-quote">No sé hacia dónde vamos, pero me gusta el camino.</p>
+            <p id="message" class="romantic-quote"></p>
 
             <div class="nav-stack">
-                <button class="btn-primary" onclick="goToUniverse()">✨ Nuestro Universo</button>
-                <button class="btn-secondary" onclick="triggerUpload()">📸 Nuestro Momento</button>
+                <button class="btn-main" onclick="goToUniverse()">✨ Nuestro Universo</button>
             </div>
         </div>
     </div>
 
     <div id="star-map-page" class="page-layer">
-        <div class="glass-card main-ui">
-            <div class="header-row">
-                <button class="back-link" onclick="goToHome()">← Volver</button>
-                <h3 class="section-title">Nuestra Aventura</h3>
-            </div>
-            
-            <div class="game-container">
-                <div class="game-header">
-                    <span>X: <b id="score-anil">0</b></span>
-                    <span id="game-status">Turno de: --</span>
-                    <span>O: <b id="score-camila">0</b></span>
-                </div>
-                <div id="tic-tac-toe-grid"></div>
-                <button class="reset-link" onclick="clearBoard()">Reiniciar Tablero</button>
+        <div class="glass-card">
+            <button class="back-link" onclick="goToHome()">← Volver</button>
+            <div id="tic-tac-toe-grid"></div>
+            <div class="game-footer">
+                <p id="game-status">Cargando...</p>
+                <button class="reset-btn" onclick="clearBoard()">Reset</button>
             </div>
         </div>
     </div>
