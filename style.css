@@ -1,37 +1,153 @@
-:root { --red: #ff4d4d; --bg: #0a0a0c; --card: rgba(30, 30, 40, 0.95); }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); color: white; font-family: 'Poppins', sans-serif; overflow: hidden; }
-
-.page-layer { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; padding: 20px; }
-.page-layer.active { display: flex; flex-direction: column; }
-
-.glass-card { background: var(--card); width: 100%; max-width: 380px; padding: 30px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.1); text-align: center; }
-
-/* KALP VE FOTOĞRAF */
-.heart-shape { 
-    width: 240px; height: 210px; margin: 0 auto 20px; 
-    clip-path: path('M120,40 C120,40 105,0 60,0 C25,0 0,45 0,80 C0,145 120,210 120,210 C120,210 240,145 240,80 C240,45 215,0 180,0 C135,0 120,40 120,40 Z');
-    background: #15151a; position: relative;
+:root { 
+    --red: #ff4d4d; 
+    --bg: #050508; 
+    --card: rgba(26, 26, 36, 0.98); 
+    --glass: rgba(255, 255, 255, 0.05);
 }
-#album-photo { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: 0.5s; }
 
-/* SAYAÇ */
-.counter-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
-.unit { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 15px; }
-.unit b { display: block; font-size: 1.4rem; color: var(--red); }
-.unit small { font-size: 0.6rem; opacity: 0.6; text-transform: uppercase; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-/* HAVA DURUMU */
-.info-row { display: flex; justify-content: space-around; margin-bottom: 20px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 20px; }
-.info-item .temp { display: block; font-size: 1.2rem; font-weight: 600; color: var(--red); }
-.info-item .time { font-size: 0.8rem; opacity: 0.7; }
+body { 
+    background: var(--bg); 
+    color: #fff; 
+    font-family: 'Poppins', sans-serif; 
+    height: 100vh; 
+    overflow: hidden; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+}
 
-/* BUTONLAR */
-.actions { display: flex; flex-direction: column; gap: 12px; }
-button { padding: 16px; border-radius: 50px; border: none; font-weight: 600; cursor: pointer; transition: 0.3s; }
-.btn-primary { background: var(--red); color: white; box-shadow: 0 10px 20px rgba(255,77,77,0.3); }
-.btn-secondary { background: rgba(255,255,255,0.1); color: white; }
+/* Sayfa Katmanları */
+.page-layer { 
+    position: fixed; 
+    inset: 0; 
+    display: none; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    padding: 15px; 
+    z-index: 10; 
+}
+.page-layer.active { display: flex; }
 
-/* OYUN */
-#tic-tac-toe-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 2px; background: #333; margin: 20px 0; }
-.cell { aspect-ratio: 1; background: #1a1a24; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+/* Kart Yapısı */
+.glass-card { 
+    background: var(--card); 
+    border-radius: 40px; 
+    padding: 25px; 
+    width: 100%; 
+    max-width: 370px; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 15px; 
+    text-align: center; 
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+/* Kalp ve Fotoğraf */
+.heart-container { cursor: pointer; transition: transform 0.2s; }
+.heart-container:active { transform: scale(0.95); }
+.heart-shape { 
+    width: 220px; 
+    height: 190px; 
+    margin: 0 auto; 
+    clip-path: path('M110,30 C110,30 95,0 55,0 C20,0 0,40 0,70 C0,130 110,200 110,200 C110,200 220,130 220,70 C220,40 200,0 165,0 C125,0 110,30 110,30 Z'); 
+    background: #111; 
+}
+#album-photo { width: 100%; height: 100%; object-fit: cover; }
+
+/* Sayaç Izgarası */
+.counter-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.unit { background: var(--glass); padding: 12px 2px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.03); }
+.unit b { display: block; font-size: 1.3rem; font-weight: 700; color: var(--red); }
+.unit small { font-size: 0.6rem; opacity: 0.5; text-transform: uppercase; }
+
+/* Selfie Bölümü (Yeni) */
+.selfie-slots { display: flex; justify-content: center; gap: 15px; margin: 10px 0; }
+.slot { display: flex; flex-direction: column; gap: 5px; align-items: center; }
+.slot small { font-size: 0.7rem; opacity: 0.7; }
+.slot-img { 
+    width: 65px; 
+    height: 65px; 
+    border-radius: 18px; 
+    background: var(--glass); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    overflow: hidden; 
+    border: 1px solid rgba(255,255,255,0.1);
+    font-size: 1.2rem;
+}
+.slot-img img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Butonlar */
+.actions { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+button { 
+    border: none; 
+    font-family: inherit; 
+    font-weight: 600; 
+    cursor: pointer; 
+    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+}
+.btn-primary { 
+    background: var(--red); 
+    color: white; 
+    padding: 18px; 
+    border-radius: 50px; 
+    box-shadow: 0 8px 15px rgba(255, 77, 77, 0.2); 
+}
+.btn-secondary { 
+    background: rgba(255,255,255,0.08); 
+    color: white; 
+    padding: 15px; 
+    border-radius: 50px; 
+    font-size: 0.9rem;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+button:active { transform: scale(0.98); opacity: 0.9; }
+
+/* Oyun ve Sandıklar */
+.adventure-row { 
+    display: flex; 
+    justify-content: center; 
+    gap: 8px; 
+    margin: 15px 0; 
+    background: rgba(0,0,0,0.2); 
+    padding: 10px; 
+    border-radius: 20px;
+}
+.chest { 
+    width: 32px; 
+    height: 32px; 
+    opacity: 0.2; 
+    filter: grayscale(1); 
+    transition: 0.5s; 
+}
+.chest.active { 
+    opacity: 1; 
+    filter: grayscale(0) drop-shadow(0 0 8px gold); 
+    transform: scale(1.1);
+}
+
+/* Tic Tac Toe Grid */
+#tic-tac-toe-grid { 
+    display: grid; 
+    grid-template-columns: repeat(8, 1fr); 
+    gap: 2px; 
+    background: rgba(255,255,255,0.1); 
+    padding: 5px; 
+    border-radius: 10px;
+    margin: 15px 0;
+}
+.cell { 
+    aspect-ratio: 1; 
+    background: #1a1a24; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 0.8rem; 
+    font-weight: bold;
+    border-radius: 2px;
+}
