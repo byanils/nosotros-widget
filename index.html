@@ -19,12 +19,11 @@
 
     <div id="main-page" class="page-layer">
         <div class="container">
-            
             <div id="photo-daily-modal" class="modal">
                 <div class="modal-content">
                     <span class="close" onclick="closePhotoModal()">&times;</span>
                     <h3>Quitapenas Diario 📸</h3>
-                    <p id="photo-status-msg">Cargando estado...</p>
+                    <p id="photo-status-msg">Cargando...</p>
                     <div class="photo-display">
                         <div class="photo-slot">
                             <p>Anıl</p>
@@ -41,7 +40,7 @@
             </div>
 
             <div class="heart-container">
-                <img id="album-photo" src="foto1.jpg" alt="Nosotros">
+                <img id="album-photo" src="foto1.jpg">
             </div>
             
             <div id="counter"></div>
@@ -49,18 +48,18 @@
             <div class="status-board">
                 <div class="status-card">
                     <span class="city-name">Milán</span>
-                    <span id="milan-time" class="city-time">00:00</span>
-                    <span id="milan-temp" class="city-weather">--°C</span>
+                    <span id="milan-time">00:00</span>
+                    <span id="milan-temp">--°C</span>
                 </div>
                 <div class="status-divider">✈️</div>
                 <div class="status-card">
                     <span class="city-name">Bogotá</span>
-                    <span id="bogota-time" class="city-time">00:00</span>
-                    <span id="bogota-temp" class="city-weather">--°C</span>
+                    <span id="bogota-time">00:00</span>
+                    <span id="bogota-temp">--°C</span>
                 </div>
             </div>
 
-            <div id="message">Eres mi notificación favorita.</div>
+            <div id="message"></div>
             
             <div class="action-buttons">
                 <div class="btn-nav" onclick="goToUniverse()">✨ Nuestro Universo</div>
@@ -75,8 +74,7 @@
         <div id="star-content">
             <div class="city-star" id="milan-star">📍 Milán</div>
             <div id="plane-container"><div id="plane">✈️</div></div>
-            <div id="vault-container">
-                </div>
+            <div id="vault-container"></div>
             <div class="city-star" id="bogota-star">📍 Bogotá</div>
         </div>
     </div>
