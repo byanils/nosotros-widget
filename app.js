@@ -16,27 +16,25 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// --- AYARLAR VE DEĞİŞKENLER ---
+// --- AYARLAR ---
 const imgbbKey = "072b34aeea28d1eab7f3865e6dcae66b";
 const startDate = new Date("2025-12-27T10:45:00");
-const photoList = ["foto1.jpg", "foto2.jpg", "foto3.jpg"]; // Slayt gösterisi resimleri
-let photoIdx = 0;
 let currentUser = "";
-const todayKey = new Date().toISOString().split('T')[0]; // Günlük oyun ve foto takibi için
+const todayKey = new Date().toISOString().split('T')[0];
 
-// --- NAVİGASYON VE GİRİŞ ---
+// --- GİRİŞ VE NAVİGASYON ---
 window.loginUser = (user) => {
     currentUser = user;
     document.getElementById("login-overlay").classList.remove("active");
     document.getElementById("main-page").classList.add("active");
-    initGlobalSystems();
+    startGlobalSystems();
 };
 
 window.goToUniverse = () => {
     document.getElementById("main-page").classList.remove("active");
     document.getElementById("star-map-page").classList.add("active");
-    renderVaults();
-    initXOXGame();
+    renderVaults(); // Sandıkları çizdir
+    initXOXGame();  // Oyunu başlat
 };
 
 window.goToHome = () => {
@@ -44,16 +42,20 @@ window.goToHome = () => {
     document.getElementById("main-page").classList.add("active");
 };
 
-window.openPhotoModal = () => document.getElementById("photo-daily-modal").style.display = "block";
-window.closePhotoModal = () => document.getElementById("photo-daily-modal").style.display = "none";
+// MODAL KONTROLLERİ
+window.openPhotoModal = () => {
+    document.getElementById("photo-daily-modal").style.display = "flex";
+    listenDailyPhotos();
+};
+window.closePhotoModal = () => {
+    document.getElementById("photo-daily-modal").style.display = "none";
+};
 
 // --- SİSTEMLERİ BAŞLAT ---
-function initGlobalSystems() {
+function startGlobalSystems() {
     updateWeather();
     setInterval(updateClocks, 1000);
     setInterval(updateCounter, 1000);
-    setInterval(slideshow, 5000);
-    listenDailyPhotos();
     createStars();
 }
 
@@ -69,9 +71,7 @@ async function updateWeather() {
             const d = await r.json();
             const tempEl = document.getElementById(`${c.id}-temp`);
             if (tempEl) tempEl.innerText = Math.round(d.current_weather.temperature) + "°C";
-            const iconEl = document.getElementById(`${c.id}-icon`);
-            if (iconEl) iconEl.innerText = d.current_weather.weathercode <= 3 ? "☀️" : "☁️";
-        } catch (e) { console.error("Hava durumu hatası:", e); }
+        } catch (e) { console.error("Hata:", e); }
     }
 }
 
@@ -84,7 +84,7 @@ function updateClocks() {
     if (bogotaTime) bogotaTime.innerText = now.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: "America/Bogota" });
 }
 
-// --- SAYAÇ VE MESAJ ---
+// --- SAYAÇ ---
 function updateCounter() {
     const now = new Date();
     const diff = Math.floor((now - startDate) / 1000);
@@ -107,17 +107,18 @@ function updateCounter() {
     const msgEl = document.getElementById("message");
     if (msgEl) {
         const dayIdx = Math.floor(diff / 86400);
-        msgEl.innerText = messages[dayIdx] || "No sé hazia dónde vamos, pero me gusta el camino.";
+        msgEl.innerText = messages[dayIdx] || "No sé hacia dónde vamos, pero me gusta el camino.";
     }
 }
 
-// --- SANDIK SİSTEMİ (AÇILIR DURUMDA) ---
+// --- SANDIK SİSTEMİ ---
 function renderVaults() {
     const grid = document.getElementById("vault-grid");
     if (!grid) return;
     grid.innerHTML = "";
     const now = new Date();
 
+    // Görseldeki gibi 5 sandık
     vaults.slice(0, 5).forEach((v) => {
         const div = document.createElement("div");
         div.className = "chest";
@@ -129,9 +130,9 @@ function renderVaults() {
         
         div.onclick = () => {
             if (now >= targetDate) {
-                alert("💖 Mensaje: " + v.t);
+                alert("💖 " + v.t);
             } else {
-                alert(v.secret ? "✨ Algo especial se está preparando..." : "🔒 Estará disponible el: " + v.d);
+                alert("🔒 Se abrirá el: " + v.d);
             }
         };
         grid.appendChild(div);
@@ -159,7 +160,7 @@ async function initXOXGame() {
             setDoc(doc(db, "games", todayKey), {
                 board: Array(64).fill(""),
                 turn: "anil",
-                sA: 0, sC: 0
+                scoreAnil: 0, scoreCamila: 0
             });
         }
     });
@@ -185,12 +186,13 @@ function updateXOXUI(data) {
         cells[i].innerText = val;
         cells[i].className = "cell " + (val ? val.toLowerCase() : "");
     });
-    const status = document.getElementById("game-status");
-    if (status) status.innerText = "Turno de: " + data.turn.toUpperCase();
+    document.getElementById("score-anil").innerText = data.scoreAnil || 0;
+    document.getElementById("score-camila").innerText = data.scoreCamila || 0;
+    document.getElementById("game-status").innerText = "Turno de: " + data.turn.toUpperCase();
 }
 
 window.clearBoard = async () => {
-    if(confirm("¿Reiniciar tablero?")) {
+    if(confirm("¿Reiniciar?")) {
         await setDoc(doc(db, "games", todayKey), { board: Array(64).fill(""), turn: "anil" }, { merge: true });
     }
 };
@@ -199,15 +201,15 @@ window.clearBoard = async () => {
 window.uploadSelfie = async (input) => {
     if(!input.files[0]) return;
     const status = document.getElementById("photo-status-msg");
-    status.innerText = "⏳";
+    status.innerText = "Subiendo... ⏳";
     const formData = new FormData();
     formData.append("image", input.files[0]);
     try {
         const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbKey}`, { method: "POST", body: formData });
         const json = await res.json();
         await setDoc(doc(db, "daily", todayKey), { [currentUser]: json.data.url }, { merge: true });
-        status.innerText = "✨";
-    } catch (e) { status.innerText = "❌"; }
+        status.innerText = "¡Listo! ✨";
+    } catch (e) { status.innerText = "Error ❌"; }
 };
 
 function listenDailyPhotos() {
@@ -219,26 +221,14 @@ function listenDailyPhotos() {
             if(d.anil && imgA) imgA.src = d.anil;
             if(d.camila && imgC) imgC.src = d.camila;
             if(d.anil && d.camila) {
-                if(imgA) imgA.classList.remove("locked");
-                if(imgC) imgC.classList.remove("locked");
+                imgA.classList.remove("locked");
+                imgC.classList.remove("locked");
             }
         }
     });
 }
 
-// --- SLAYT VE YILDIZLAR ---
-function slideshow() {
-    photoIdx = (photoIdx + 1) % photoList.length;
-    const el = document.getElementById("album-photo");
-    if(el) {
-        el.style.opacity = 0.5;
-        setTimeout(() => {
-            el.src = photoList[photoIdx];
-            el.style.opacity = 1;
-        }, 500);
-    }
-}
-
+// --- YILDIZLAR ---
 function createStars() {
     const container = document.getElementById("stars-container");
     if(!container || container.children.length > 0) return;
@@ -248,7 +238,6 @@ function createStars() {
         s.style.left = Math.random() * 100 + "%";
         s.style.top = Math.random() * 100 + "%";
         s.style.opacity = Math.random();
-        s.style.animationDuration = (Math.random() * 3 + 2) + "s";
         container.appendChild(s);
     }
 }
