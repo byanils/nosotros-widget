@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Nuestro Universo | Anıl & Camila</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+    <div id="stars-container"></div>
 
     <div id="login-overlay" class="page-layer active">
         <div class="login-box">
@@ -20,23 +22,23 @@
     </div>
 
     <div id="main-page" class="page-layer">
-        <div class="heart-container">
-            <img id="album-photo" src="foto1.jpg">
-        </div>
-        
-        <div id="counter"></div>
-
-        <div id="message"></div>
-        
-        <div class="main-nav">
-            <button class="btn-nav" onclick="goToUniverse()">✨ Nuestro Universo</button>
-            <button class="btn-nav" onclick="openPhotoModal()">📸 Nuestro Momento</button>
+        <div class="glass-card">
+            <div class="heart-container">
+                <img id="album-photo" src="foto1.jpg" alt="Nuestro Amor">
+            </div>
+            
+            <div id="counter"></div>
+            <div id="message"></div>
+            
+            <div class="main-nav">
+                <button class="btn-nav primary" onclick="goToUniverse()">✨ Nuestro Universo</button>
+                <button class="btn-nav secondary" onclick="openPhotoModal()">📸 Nuestro Momento</button>
+            </div>
         </div>
     </div>
 
     <div id="star-map-page" class="page-layer">
         <button id="back-btn" onclick="goToHome()">← Volver</button>
-        <div id="stars-container"></div>
         <div id="vault-container"></div>
     </div>
 
@@ -45,16 +47,22 @@
             <span class="close" onclick="closePhotoModal()">&times;</span>
             <h3>Nuestro Momento 📸</h3>
             <p id="photo-status-msg">Sube tu foto para desbloquear la de hoy</p>
+            
             <div class="photo-display">
                 <div class="photo-slot">
-                    <p>Anıl</p>
-                    <img id="img-anil" src="placeholder.png" class="locked">
+                    <span>Anıl</span>
+                    <div class="img-wrapper">
+                        <img id="img-anil" src="placeholder.png" class="locked">
+                    </div>
                 </div>
                 <div class="photo-slot">
-                    <p>Camila</p>
-                    <img id="img-camila" src="placeholder.png" class="locked">
+                    <span>Camila</span>
+                    <div class="img-wrapper">
+                        <img id="img-camila" src="placeholder.png" class="locked">
+                    </div>
                 </div>
             </div>
+            
             <input type="file" id="photo-input" style="display:none" accept="image/*" onchange="uploadSelfie(this)">
             <button class="upload-button" onclick="document.getElementById('photo-input').click()">Subir mi Foto</button>
         </div>
