@@ -19,20 +19,18 @@
             </div>
             <div class="login-options">
                 <button class="user-select-btn" onclick="loginUser('anil')">
-                    <span class="user-icon">🤵</span>
-                    Soy Anıl
+                    <span class="user-icon">🤵</span> Soy Anıl
                 </button>
                 <button class="user-select-btn" onclick="loginUser('camila')">
-                    <span class="user-icon">👸</span>
-                    Soy Camila
+                    <span class="user-icon">👸</span> Soy Camila
                 </button>
             </div>
         </div>
     </div>
 
     <div id="main-page" class="page-layer">
-        <div class="glass-card main-card">
-            <div class="heart-box">
+        <div class="main-card">
+            <div class="heart-container">
                 <div class="heart-shape">
                     <img id="album-photo" src="foto1.jpg">
                 </div>
@@ -59,12 +57,12 @@
             
             <div class="main-nav">
                 <button class="btn-nav primary" onclick="goToUniverse()">✨ Nuestro Universo</button>
-                <button class="btn-nav secondary" id="momento-btn" onclick="openPhotoModal()">📸 Nuestro Momento</button>
+                <button class="btn-nav secondary" onclick="openPhotoModal()">📸 Nuestro Momento</button>
             </div>
         </div>
     </div>
 
-    <div id="star-map-page" class="page-layer map-layer">
+    <div id="star-map-page" class="page-layer">
         <button id="back-btn" onclick="goToHome()">← Volver</button>
         <div id="vault-container"></div>
     </div>
@@ -72,17 +70,11 @@
     <div id="photo-daily-modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closePhotoModal()">&times;</span>
-            <h3>Nuestro Momento 📸</h3>
+            <h3>Nuestro Momento</h3>
             <p id="photo-status-msg">Sube tu foto de hoy</p>
             <div class="photo-grid">
-                <div class="photo-item">
-                    <p>Anıl</p>
-                    <div class="frame"><img id="img-anil" src="placeholder.png" class="locked"></div>
-                </div>
-                <div class="photo-item">
-                    <p>Camila</p>
-                    <div class="frame"><img id="img-camila" src="placeholder.png" class="locked"></div>
-                </div>
+                <div class="photo-item"><span>Anıl</span><div class="frame"><img id="img-anil" src="placeholder.png" class="locked"></div></div>
+                <div class="photo-item"><span>Camila</span><div class="frame"><img id="img-camila" src="placeholder.png" class="locked"></div></div>
             </div>
             <input type="file" id="photo-input" hidden accept="image/*" onchange="uploadSelfie(this)">
             <button class="upload-btn" onclick="document.getElementById('photo-input').click()">Subir Mi Foto</button>
