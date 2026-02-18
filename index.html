@@ -13,13 +13,13 @@
     <div id="login-overlay" class="page-layer active">
         <div class="login-glass-card">
             <div class="login-header">
-                <span class="sparkle">✨</span>
+                <div class="glow-circle">✨</div>
                 <h1>Nuestro Universo</h1>
                 <p>Anıl & Camila</p>
             </div>
             <div class="user-selection">
                 <button class="choice-btn anil" onclick="loginUser('anil')">🤵 Soy Anıl</button>
-                <div class="divider"><span>o</span></div>
+                <div class="divider"><span>❤</span></div>
                 <button class="choice-btn camila" onclick="loginUser('camila')">👸 Soy Camila</button>
             </div>
         </div>
@@ -29,10 +29,10 @@
         <div class="glass-card">
             <div class="heart-container" onclick="triggerUpload()">
                 <div class="heart-shape">
-                    <img src="placeholder.jpg" id="album-photo">
-                    <div class="upload-hint">Toca para cambiar 📸</div>
+                    <img src="https://via.placeholder.com/300x300?text=Cargando..." id="album-photo">
+                    <div class="upload-overlay">📸 Click para Selfie</div>
                 </div>
-                <input type="file" id="photo-input" style="display:none" onchange="uploadPhoto(event)">
+                <input type="file" id="photo-input" style="display:none" accept="image/*" onchange="uploadPhoto(event)">
             </div>
 
             <div id="counter" class="counter-row"></div>
@@ -53,18 +53,20 @@
             <p id="message" class="romantic-quote"></p>
 
             <div class="nav-stack">
-                <button class="btn-main" onclick="goToUniverse()">✨ Nuestro Universo</button>
+                <button class="btn-main" onclick="goToUniverse()">✨ Nuestro Universo (Juego)</button>
             </div>
         </div>
     </div>
 
     <div id="star-map-page" class="page-layer">
-        <div class="glass-card">
-            <button class="back-link" onclick="goToHome()">← Volver</button>
+        <div class="glass-card game-card">
+            <div class="game-header-top">
+                <button class="back-link" onclick="goToHome()">← Volver</button>
+                <span id="game-status">Cargando...</span>
+            </div>
             <div id="tic-tac-toe-grid"></div>
             <div class="game-footer">
-                <p id="game-status">Cargando...</p>
-                <button class="reset-btn" onclick="clearBoard()">Reset</button>
+                <button class="reset-btn" onclick="clearBoard()">Reiniciar Tablero</button>
             </div>
         </div>
     </div>
