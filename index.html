@@ -11,11 +11,21 @@
     <div id="stars-container"></div>
 
     <div id="login-overlay" class="page-layer active">
-        <div class="glass-card">
-            <h2>¿Quién eres hoy? ❤️</h2>
-            <div class="login-btns">
-                <button class="btn-login" onclick="loginUser('anil')">Soy Anıl</button>
-                <button class="btn-login" onclick="loginUser('camila')">Soy Camila</button>
+        <div class="login-card">
+            <div class="login-header">
+                <span class="sparkle">✨</span>
+                <h1>Nuestro Universo</h1>
+                <p>Anıl & Camila</p>
+            </div>
+            <div class="login-options">
+                <button class="user-select-btn" onclick="loginUser('anil')">
+                    <span class="user-icon">🤵</span>
+                    Soy Anıl
+                </button>
+                <button class="user-select-btn" onclick="loginUser('camila')">
+                    <span class="user-icon">👸</span>
+                    Soy Camila
+                </button>
             </div>
         </div>
     </div>
@@ -49,7 +59,7 @@
             
             <div class="main-nav">
                 <button class="btn-nav primary" onclick="goToUniverse()">✨ Nuestro Universo</button>
-                <button class="btn-nav secondary" onclick="openPhotoModal()">📸 Nuestro Momento</button>
+                <button class="btn-nav secondary" id="momento-btn" onclick="openPhotoModal()">📸 Nuestro Momento</button>
             </div>
         </div>
     </div>
