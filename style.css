@@ -1,78 +1,46 @@
-:root { 
-    --primary: #ff4d4d; 
-    --gold: #ffd700;
-    --bg: #05070a;
-}
-
+:root { --primary: #ff4d4d; --gold: #ffd700; --bg: #05070a; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: var(--bg); color: white; font-family: 'Poppins', sans-serif; overflow: hidden; height: 100vh; }
 
-#stars-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
-
-/* BİLGİ ÇUBUĞU */
-#info-bar { 
-    position: fixed; top: 15px; width: 100%; display: flex; 
-    justify-content: space-between; padding: 0 25px; z-index: 100;
-    font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
-}
-#info-bar.hidden { display: none; }
-
-.page-layer { 
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    display: none; flex-direction: column; align-items: center; justify-content: center;
-    background: radial-gradient(circle, #1a1a2e 0%, #05070a 100%);
-    z-index: 10;
-}
+.page-layer { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10; background: radial-gradient(circle, #1a1a2e, #05070a); }
 .page-layer.active { display: flex; }
 
-.glass-card {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(15px);
-    border-radius: 35px; padding: 30px; text-align: center;
-    width: 90%; max-width: 380px; border: 1px solid rgba(255,255,255,0.1);
+.glass-card { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(20px); border-radius: 30px; padding: 25px; text-align: center; width: 90%; max-width: 380px; border: 1px solid rgba(255,255,255,0.1); }
+
+.heart-shape { width: 180px; height: 160px; margin: 0 auto 15px; clip-path: path('M90,27 C90,27 82,0 45,0 C12,0 0,32 0,55 C0,105 90,160 90,160 C90,160 180,105 180,55 C180,32 168,0 135,0 C102,0 90,27 90,27 Z'); }
+.heart-shape img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.8s; }
+
+/* HAVA DURUMU PANELİ - SAYAÇ ALTINDAKİ SİYAH KUTU */
+.weather-clock-row { 
+    background: rgba(0, 0, 0, 0.5); 
+    border-radius: 20px; 
+    padding: 12px; 
+    display: flex; 
+    justify-content: space-around; 
+    margin: 15px 0;
+    border: 1px solid rgba(255,255,255,0.05);
 }
+.city-box { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.city-name { font-size: 0.65rem; opacity: 0.6; text-transform: uppercase; }
+.city-box span[id*="temp"] { font-weight: 600; color: var(--primary); font-size: 0.9rem; }
+.city-box span[id*="time"] { font-size: 0.8rem; letter-spacing: 1px; }
 
-/* KALP VE FOTOĞRAF GEÇİŞİ */
-.heart-shape {
-    width: 220px; height: 200px; margin: 0 auto 20px;
-    clip-path: path('M110,35 C110,35 100,0 55,0 C15,0 0,40 0,70 C0,130 110,200 110,200 C110,200 220,130 220,70 C220,40 205,0 165,0 C125,0 110,35 110,35 Z');
-    background: #111;
-}
-#album-photo { 
-    width: 100%; height: 100%; object-fit: cover; 
-    transition: opacity 0.8s ease-in-out; 
-}
+#counter { display: flex; justify-content: center; gap: 8px; margin-bottom: 10px; }
+.time-unit { background: rgba(0,0,0,0.4); padding: 8px; border-radius: 12px; min-width: 60px; }
+.time-unit span { display: block; font-size: 1.3rem; font-weight: 700; color: var(--primary); }
+.time-unit small { font-size: 0.5rem; opacity: 0.6; }
 
-#counter { display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; }
-.time-unit { background: rgba(0,0,0,0.4); padding: 8px; border-radius: 12px; min-width: 65px; }
-.time-unit span { display: block; font-size: 1.5rem; font-weight: 700; color: var(--primary); }
-.time-unit small { font-size: 0.5rem; opacity: 0.7; }
+/* MODAL DÜZENLEME */
+.modal-content { background: #1a1a1a; color: white; margin: 10% auto; padding: 25px; border-radius: 25px; width: 92%; max-width: 380px; text-align: center; position: relative; border: 1px solid var(--primary); }
+.photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
+.frame { aspect-ratio: 1; border-radius: 15px; overflow: hidden; background: #333; border: 1px solid rgba(255,255,255,0.1); }
+.frame img { width: 100%; height: 100%; object-fit: cover; }
+.locked { filter: blur(15px) grayscale(1); }
+.upload-btn { width: 100%; padding: 15px; border-radius: 50px; border: none; background: var(--primary); color: white; font-weight: 600; cursor: pointer; }
 
-#message { font-family: 'Dancing Script', cursive; font-size: 1.2rem; color: #ffb3b3; min-height: 50px; }
-
-.btn-login, .btn-nav { width: 100%; padding: 15px; border-radius: 50px; border: none; cursor: pointer; font-weight: 600; transition: 0.3s; }
-.btn-login { background: white; color: black; margin-top: 10px; }
-.btn-nav.primary { background: var(--primary); color: white; margin-bottom: 10px; }
-.btn-nav.secondary { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.1); }
-
-/* UNIVERSE MAP */
-#vault-container { position: relative; width: 100%; height: 85vh; max-width: 500px; }
-.chest { 
-    position: absolute; width: 60px; height: 60px;
-    background: url('sandik.png') no-repeat center/contain;
-    transform: translate(-50%, -50%); cursor: pointer; z-index: 100;
-}
-.chest::after { 
-    content: attr(data-date); position: absolute; top: 100%; left: 50%;
-    transform: translateX(-50%); font-size: 0.6rem; color: var(--gold);
-    white-space: nowrap; font-weight: bold;
-}
-
-.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; }
-.modal-content { background: white; color: #333; margin: 15% auto; padding: 25px; border-radius: 25px; width: 90%; max-width: 350px; text-align: center; position: relative; }
-.img-frame { width: 100%; aspect-ratio: 1; border-radius: 12px; overflow: hidden; background: #eee; }
-.img-frame img { width: 100%; height: 100%; object-fit: cover; }
-.locked { filter: blur(15px); }
-.upload-button { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; }
-.close { position: absolute; right: 20px; top: 10px; font-size: 28px; cursor: pointer; }
-#back-btn { position: fixed; top: 20px; left: 20px; z-index: 200; padding: 8px 15px; border-radius: 20px; border: none; background: var(--primary); color: white; cursor: pointer; }
+/* DİĞER */
+.btn-nav { width: 100%; padding: 14px; border-radius: 50px; border: none; font-weight: 600; cursor: pointer; margin-top: 10px; transition: 0.3s; }
+.btn-nav.primary { background: var(--primary); color: white; }
+.btn-nav.secondary { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); }
+#vault-container { position: relative; width: 100%; height: 85vh; }
+.chest { position: absolute; width: 55px; height: 55px; background: url('sandik.png') center/contain no-repeat; transform: translate(-50%, -50%); }
