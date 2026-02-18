@@ -27,12 +27,10 @@
 
     <div id="main-page" class="page-layer">
         <div class="glass-card">
-            <div class="heart-container" onclick="triggerUpload()">
+            <div class="heart-container">
                 <div class="heart-shape">
                     <img src="https://via.placeholder.com/300x300?text=Cargando..." id="album-photo">
-                    <div class="upload-overlay">📸 Click para Selfie</div>
                 </div>
-                <input type="file" id="photo-input" style="display:none" accept="image/*" onchange="uploadPhoto(event)">
             </div>
 
             <div id="counter" class="counter-row"></div>
@@ -50,10 +48,13 @@
                 </div>
             </div>
 
-            <p id="message" class="romantic-quote"></p>
+            <p class="romantic-quote">No sé hacia dónde vamos, pero me gusta el camino.</p>
 
             <div class="nav-stack">
                 <button class="btn-main" onclick="goToUniverse()">✨ Nuestro Universo (Juego)</button>
+                
+                <button class="btn-secondary" onclick="triggerUpload()">📸 Subir Nuestro Momento</button>
+                <input type="file" id="photo-input" style="display:none" accept="image/*" onchange="uploadPhoto(event)">
             </div>
         </div>
     </div>
