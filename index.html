@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Nuestro Universo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -21,8 +22,16 @@
     <div id="main-page" class="page-layer">
         <div class="glass-card">
             <div class="top-info">
-                <span id="m-time">00:00</span>
-                <span id="m-temp">--°C</span>
+                <div class="city-box">
+                    <span>🇮🇹 Milan</span>
+                    <b id="m-temp">--°C</b>
+                    <small id="m-time">00:00</small>
+                </div>
+                <div class="city-box">
+                    <span>🇨🇴 Bogotá</span>
+                    <b id="b-temp">--°C</b>
+                    <small id="b-time">00:00</small>
+                </div>
             </div>
 
             <div class="heart-container" onclick="nextPhoto()">
@@ -33,7 +42,9 @@
 
             <div id="counter" class="counter-grid"></div>
 
-            <div class="selfie-slots">
+            <p class="quote">"No sé hacia dónde vamos, pero me gusta el camino."</p>
+
+            <div class="selfie-section">
                 <div class="slot">
                     <small>Anıl</small>
                     <div class="slot-img" id="slot-anil">📸</div>
@@ -53,15 +64,21 @@
     </div>
 
     <div id="game-page" class="page-layer">
-        <div class="glass-card">
+        <div class="glass-card game-card">
             <button class="back-btn" onclick="goToHome()">← Volver</button>
             
-            <div class="adventure-row" id="chest-container">
-                </div>
+            <div class="adventure-header">
+                <h3>Nuestra Aventura</h3>
+                <div class="chests-grid" id="chest-container"></div>
+            </div>
 
-            <h3 id="game-status">Turno de: --</h3>
+            <div class="game-info">
+                <span id="game-status">Cargando...</span>
+            </div>
+
             <div id="tic-tac-toe-grid"></div>
-            <button class="reset-btn" onclick="clearBoard()">Reset</button>
+            
+            <button class="reset-btn" onclick="clearBoard()">Reset Game</button>
         </div>
     </div>
 
