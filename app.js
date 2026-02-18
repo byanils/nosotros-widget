@@ -26,16 +26,19 @@ window.loginUser = (u) => {
     document.getElementById("main-page").classList.add("active"); 
     startSystems(); 
 };
+
 window.goToUniverse = () => { 
     document.getElementById("main-page").classList.remove("active"); 
     document.getElementById("star-map-page").classList.add("active"); 
     renderVaults(); 
     initXOX();
 };
+
 window.goToHome = () => { 
     document.getElementById("star-map-page").classList.remove("active"); 
     document.getElementById("main-page").classList.add("active"); 
 };
+
 window.openPhotoModal = () => document.getElementById("photo-daily-modal").style.display = "block";
 window.closePhotoModal = () => document.getElementById("photo-daily-modal").style.display = "none";
 
@@ -48,26 +51,32 @@ function startSystems() {
     createStars();
 }
 
-// SANDIK YOLU
 function renderVaults() {
     const grid = document.getElementById("vault-grid");
     grid.innerHTML = "";
     const now = new Date();
+    // Vaults listesinden ilk 5 sandığı Amazon stili yolda göster
     vaults.slice(0, 5).forEach(v => {
         const div = document.createElement("div");
         div.className = "chest";
         const target = new Date(v.d);
+        
         if (now >= target) div.classList.add("unlocked");
+        
         div.setAttribute("data-label", v.secret ? "???" : v.d.split("-").slice(1).join("/"));
+        
         div.onclick = () => {
-            if (now < target) alert(v.secret ? "✨ Hay que saber esperar..." : "🔒 " + v.d);
-            else alert("💖 " + v.t);
+            // Tarih kontrolü: Bugünün tarihi sandık tarihinden büyük veya eşitse açılır
+            if (now >= target) {
+                alert("💖 " + v.t);
+            } else {
+                alert(v.secret ? "✨ Hay que saber esperar..." : "🔒 " + v.d);
+            }
         };
         grid.appendChild(div);
     });
 }
 
-// XOX OYUNU
 async function initXOX() {
     const grid = document.getElementById("tic-tac-toe-grid");
     grid.innerHTML = "";
@@ -102,9 +111,9 @@ function updateUI(data) {
     document.getElementById("game-status").innerText = "Turno: " + data.turn.toUpperCase();
 }
 
-window.clearBoard = async () => { if(confirm("Reset?")) await updateDoc(doc(db, "games", todayKey), { board: Array(64).fill(""), turn: "anil" }); };
+window.clearBoard = async () => { if(confirm("Reset?")) await setDoc(doc(db, "games", todayKey), { board: Array(64).fill(""), turn: "anil" }, {merge: true}); };
 
-// HAVA DURUMU, SAAT, FOTOĞRAF (Stabil Fonksiyonlar)
+// DİĞER FONKSİYONLAR (Hava durumu, saat, foto yükleme vs.)
 async function updateWeather() {
     const cities = [{ id: "milan", lat: 45.46, lon: 9.18 }, { id: "bogota", lat: 4.71, lon: -74.07 }];
     for (let c of cities) {
@@ -116,11 +125,13 @@ async function updateWeather() {
         } catch (e) {}
     }
 }
+
 function updateClocks() {
     const now = new Date();
     document.getElementById("milan-time").innerText = now.toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit', timeZone: "Europe/Rome" });
     document.getElementById("bogota-time").innerText = now.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: "America/Bogota" });
 }
+
 function updateCounter() {
     const now = new Date();
     const diff = Math.floor((now - startDate) / 1000);
@@ -128,7 +139,9 @@ function updateCounter() {
     document.getElementById("counter").innerHTML = `<div class="time-unit"><span>${d}</span><small>DÍAS</small></div><div class="time-unit"><span>${h}</span><small>HORAS</small></div><div class="time-unit"><span>${m}</span><small>MIN</small></div><div class="time-unit"><span>${s}</span><small>SEG</small></div>`;
     document.getElementById("message").innerText = messages[Math.floor((now - startDate) / 86400000)] || "🤍";
 }
+
 function slideshow() { photoIdx = (photoIdx + 1) % photoList.length; const el = document.getElementById("album-photo"); if(el){ el.style.opacity = 0; setTimeout(() => { el.src = photoList[photoIdx]; el.style.opacity = 1; }, 800); } }
+
 window.uploadSelfie = async (input) => {
     if(!input.files[0]) return;
     const status = document.getElementById("photo-status-msg");
@@ -141,6 +154,7 @@ window.uploadSelfie = async (input) => {
         status.innerText = "✨";
     } catch (e) { status.innerText = "❌"; }
 };
+
 function listenPhotos() {
     onSnapshot(doc(db, "daily", todayKey), (snap) => {
         if (snap.exists()) {
@@ -151,6 +165,7 @@ function listenPhotos() {
         }
     });
 }
+
 function createStars() {
     const c = document.getElementById("stars-container");
     if(c.children.length > 0) return;
