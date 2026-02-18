@@ -18,13 +18,22 @@ const imgbbKey = "072b34aeea28d1eab7f3865e6dcae66b";
 const startDate = new Date("2025-12-27T10:45:00");
 let currentUser = "";
 
+// FOTOĞRAF LİSTESİ (Kendi fotoğraflarını buraya ekle)
+const photoList = ["foto1.jpg", "foto2.jpg", "foto3.jpg"];
+let photoIdx = 0;
+
 // GLOBAL FUNCTIONS
 window.loginUser = (user) => {
     currentUser = user;
     document.getElementById("login-overlay").classList.remove("active");
     document.getElementById("main-page").classList.add("active");
-    listenToDailyPhotos();
+    document.getElementById("info-bar").classList.remove("hidden");
+    
+    startSlideshow();
+    fetchWeather();
+    updateClock();
     createStars();
+    listenToDailyPhotos();
 };
 
 window.goToUniverse = () => {
@@ -41,7 +50,40 @@ window.goToHome = () => {
 window.openPhotoModal = () => document.getElementById("photo-daily-modal").style.display = "block";
 window.closePhotoModal = () => document.getElementById("photo-daily-modal").style.display = "none";
 
-function update() {
+// FOTOĞRAF SLAYT GÖSTERİSİ
+function startSlideshow() {
+    const imgEl = document.getElementById("album-photo");
+    setInterval(() => {
+        photoIdx = (photoIdx + 1) % photoList.length;
+        imgEl.style.opacity = 0;
+        setTimeout(() => {
+            imgEl.src = photoList[photoIdx];
+            imgEl.style.opacity = 1;
+        }, 800);
+    }, 5000);
+}
+
+// SAAT VE HAVA DURUMU
+function updateClock() {
+    setInterval(() => {
+        const now = new Date();
+        document.getElementById("local-time").innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    }, 1000);
+}
+
+async function fetchWeather() {
+    try {
+        // İstanbul koordinatları (Kendi koordinatlarınla değiştirebilirsin)
+        const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=41.0082&longitude=28.9784&current_weather=true");
+        const data = await res.json();
+        document.getElementById("weather").innerText = `${data.current_weather.temperature}°C`;
+    } catch (e) {
+        document.getElementById("weather").innerText = "Error";
+    }
+}
+
+// SAYAÇ VE MESAJLAR
+function updateCounter() {
     const now = new Date();
     const diff = Math.floor((now - startDate) / 1000);
     if (diff < 0) return;
@@ -57,54 +99,26 @@ function update() {
     document.getElementById("message").innerText = messages[dayDiff] || "Cada día es un regalo... 🤍";
 }
 
-function createStars() {
-    const container = document.getElementById("stars-container");
-    if (container.innerHTML !== "") return;
-    for(let i=0; i<100; i++) {
-        const s = document.createElement("div");
-        s.style.position = "absolute";
-        s.style.width = "2px"; s.style.height = "24px";
-        s.style.width = s.style.height = Math.random() * 3 + "px";
-        s.style.background = "white";
-        s.style.left = Math.random() * 100 + "%"; s.style.top = Math.random() * 100 + "%";
-        s.style.opacity = Math.random(); s.style.borderRadius = "50%";
-        container.appendChild(s);
-    }
-}
-
+// EVREN HARİTASI
 function initUniverse() {
     const container = document.getElementById("vault-container");
     if (container.children.length > 0) return;
-
     vaults.forEach((v, i) => {
         const div = document.createElement("div");
         div.className = "chest";
-        
-        // Tek sayfaya sığması için koordinat hesaplama
         const progress = i / (vaults.length - 1 || 1);
-        const yPos = 15 + (progress * 70); // %15 - %85 arası dikey
-        const xPos = 50 + (Math.sin(progress * Math.PI * 2.5) * 30); // Daha dar bir S kıvrımı
-        
-        div.style.top = yPos + "%";
-        div.style.left = xPos + "%";
-        
-        const displayName = v.secret ? "✨ Secreto ✨" : v.d;
-        div.setAttribute("data-date", displayName);
-
-        div.onclick = (e) => {
-            e.stopPropagation();
-            const now = new Date();
-            const target = new Date(v.d);
-            if (now < target) {
-                alert(v.secret ? "🔒 Shhh... Es una sorpresa especial." : "🔒 Bloqueado hasta: " + v.d);
-            } else {
-                alert("💖 " + v.t);
-            }
+        div.style.top = (15 + progress * 70) + "%";
+        div.style.left = (50 + Math.sin(progress * Math.PI * 2.5) * 30) + "%";
+        div.setAttribute("data-date", v.secret ? "✨ Secreto" : v.d);
+        div.onclick = () => {
+            if (new Date() < new Date(v.d)) alert(v.secret ? "🔒 Shhh... Sorpresa." : "🔒 Bloqueado.");
+            else alert("💖 " + v.t);
         };
         container.appendChild(div);
     });
 }
 
+// FOTOĞRAF YÜKLEME (Firebase & ImgBB)
 window.uploadSelfie = async (input) => {
     if(!input.files[0]) return;
     const status = document.getElementById("photo-status-msg");
@@ -125,15 +139,28 @@ function listenToDailyPhotos() {
     onSnapshot(doc(db, "daily", today), (snap) => {
         if (snap.exists()) {
             const data = snap.data();
-            const imgA = document.getElementById("img-anil"), imgC = document.getElementById("img-camila");
-            if(data.anil) imgA.src = data.anil;
-            if(data.camila) imgC.src = data.camila;
+            if(data.anil) document.getElementById("img-anil").src = data.anil;
+            if(data.camila) document.getElementById("img-camila").src = data.camila;
             if(data.anil && data.camila) {
-                imgA.classList.remove("locked"); imgC.classList.remove("locked");
+                document.getElementById("img-anil").classList.remove("locked");
+                document.getElementById("img-camila").classList.remove("locked");
             }
         }
     });
 }
 
-setInterval(update, 1000);
-update();
+function createStars() {
+    const container = document.getElementById("stars-container");
+    for(let i=0; i<100; i++) {
+        const s = document.createElement("div");
+        s.style.position = "absolute";
+        s.style.width = s.style.height = Math.random() * 3 + "px";
+        s.style.background = "white";
+        s.style.left = Math.random() * 100 + "%"; s.style.top = Math.random() * 100 + "%";
+        s.style.opacity = Math.random(); s.style.borderRadius = "50%";
+        container.appendChild(s);
+    }
+}
+
+setInterval(updateCounter, 1000);
+updateCounter();
