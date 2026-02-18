@@ -9,6 +9,14 @@ body { background: var(--bg); color: white; font-family: 'Poppins', sans-serif; 
 
 #stars-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
 
+/* BİLGİ ÇUBUĞU */
+#info-bar { 
+    position: fixed; top: 15px; width: 100%; display: flex; 
+    justify-content: space-between; padding: 0 25px; z-index: 100;
+    font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+}
+#info-bar.hidden { display: none; }
+
 .page-layer { 
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     display: none; flex-direction: column; align-items: center; justify-content: center;
@@ -24,11 +32,16 @@ body { background: var(--bg); color: white; font-family: 'Poppins', sans-serif; 
     width: 90%; max-width: 380px; border: 1px solid rgba(255,255,255,0.1);
 }
 
+/* KALP VE FOTOĞRAF GEÇİŞİ */
 .heart-shape {
-    width: 200px; height: 180px; margin: 0 auto 20px;
-    clip-path: path('M100,30 C100,30 90,0 50,0 C15,0 0,35 0,60 C0,115 100,180 100,180 C100,180 200,115 200,60 C200,35 185,0 150,0 C110,0 100,30 100,30 Z');
+    width: 220px; height: 200px; margin: 0 auto 20px;
+    clip-path: path('M110,35 C110,35 100,0 55,0 C15,0 0,40 0,70 C0,130 110,200 110,200 C110,200 220,130 220,70 C220,40 205,0 165,0 C125,0 110,35 110,35 Z');
+    background: #111;
 }
-.heart-shape img { width: 100%; height: 100%; object-fit: cover; }
+#album-photo { 
+    width: 100%; height: 100%; object-fit: cover; 
+    transition: opacity 0.8s ease-in-out; 
+}
 
 #counter { display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; }
 .time-unit { background: rgba(0,0,0,0.4); padding: 8px; border-radius: 12px; min-width: 65px; }
@@ -42,37 +55,24 @@ body { background: var(--bg); color: white; font-family: 'Poppins', sans-serif; 
 .btn-nav.primary { background: var(--primary); color: white; margin-bottom: 10px; }
 .btn-nav.secondary { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.1); }
 
-/* UNIVERSE MAP FIX */
-#vault-container { 
-    position: relative; 
-    width: 100%; 
-    height: 90vh; /* Kaydırmasız tam ekran */
-    max-width: 500px;
-}
+/* UNIVERSE MAP */
+#vault-container { position: relative; width: 100%; height: 85vh; max-width: 500px; }
 .chest { 
-    position: absolute; 
-    width: 65px; height: 65px;
+    position: absolute; width: 60px; height: 60px;
     background: url('sandik.png') no-repeat center/contain;
-    transform: translate(-50%, -50%);
-    cursor: pointer;
-    z-index: 100;
-    transition: transform 0.3s ease;
+    transform: translate(-50%, -50%); cursor: pointer; z-index: 100;
 }
-.chest:hover { transform: translate(-50%, -50%) scale(1.2); }
 .chest::after { 
-    content: attr(data-date); 
-    position: absolute; top: 100%; left: 50%;
-    transform: translateX(-50%);
-    font-size: 0.65rem; color: var(--gold);
+    content: attr(data-date); position: absolute; top: 100%; left: 50%;
+    transform: translateX(-50%); font-size: 0.6rem; color: var(--gold);
     white-space: nowrap; font-weight: bold;
 }
 
 .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; }
 .modal-content { background: white; color: #333; margin: 15% auto; padding: 25px; border-radius: 25px; width: 90%; max-width: 350px; text-align: center; position: relative; }
-.photo-display { display: flex; gap: 10px; margin-bottom: 20px; }
 .img-frame { width: 100%; aspect-ratio: 1; border-radius: 12px; overflow: hidden; background: #eee; }
 .img-frame img { width: 100%; height: 100%; object-fit: cover; }
 .locked { filter: blur(15px); }
 .upload-button { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; }
 .close { position: absolute; right: 20px; top: 10px; font-size: 28px; cursor: pointer; }
-#back-btn { position: fixed; top: 20px; left: 20px; z-index: 200; padding: 10px 20px; border-radius: 20px; border: none; background: var(--primary); color: white; cursor: pointer; }
+#back-btn { position: fixed; top: 20px; left: 20px; z-index: 200; padding: 8px 15px; border-radius: 20px; border: none; background: var(--primary); color: white; cursor: pointer; }
