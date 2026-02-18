@@ -2,86 +2,55 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nuestro Universo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="login-overlay" class="page-layer active">
-        <div class="login-card">
-            <h1>Nuestro Universo</h1>
-            <p>Anıl & Camila</p>
-            <div class="user-selection">
-                <button onclick="loginUser('anil')">🤵 Soy Anıl</button>
-                <button onclick="loginUser('camila')">👸 Soy Camila</button>
+
+    <div id="main-page" class="page-layer active">
+        <div class="container">
+            <div class="heart-container">
+                <img id="album-photo" src="foto1.jpg" alt="Nosotros">
             </div>
-        </div>
-    </div>
-
-    <div id="main-page" class="page-layer">
-        <div class="glass-card">
-            <div class="top-info">
-                <div class="city-box">
-                    <span>🇮🇹 Milan</span>
-                    <b id="m-temp">--°C</b>
-                    <small id="m-time">00:00</small>
-                </div>
-                <div class="city-box">
-                    <span>🇨🇴 Bogotá</span>
-                    <b id="b-temp">--°C</b>
-                    <small id="b-time">00:00</small>
-                </div>
-            </div>
-
-            <div class="heart-container" onclick="nextPhoto()">
-                <div class="heart-shape">
-                    <img src="foto1.jpg" id="album-photo">
-                </div>
-            </div>
-
-            <div id="counter" class="counter-grid"></div>
-
-            <p class="quote">"No sé hacia dónde vamos, pero me gusta el camino."</p>
-
-            <div class="selfie-section">
-                <div class="slot">
-                    <small>Anıl</small>
-                    <div class="slot-img" id="slot-anil">📸</div>
-                </div>
-                <div class="slot">
-                    <small>Camila</small>
-                    <div class="slot-img" id="slot-camila">📸</div>
-                </div>
-            </div>
-
-            <div class="actions">
-                <button class="btn-primary" onclick="goToUniverse()">✨ Nuestro Universo (Juego)</button>
-                <button class="btn-secondary" onclick="triggerUpload()">📸 Subir Nuestro Momento</button>
-                <input type="file" id="photo-input" style="display:none" accept="image/*" onchange="uploadPhoto(event)">
-            </div>
-        </div>
-    </div>
-
-    <div id="game-page" class="page-layer">
-        <div class="glass-card game-card">
-            <button class="back-btn" onclick="goToHome()">← Volver</button>
             
-            <div class="adventure-header">
-                <h3>Nuestra Aventura</h3>
-                <div class="chests-grid" id="chest-container"></div>
+            <div id="counter"></div>
+
+            <div class="status-board">
+                <div class="status-card">
+                    <span class="city-name">Milán</span>
+                    <span id="milan-time" class="city-time">00:00</span>
+                    <span id="milan-temp" class="city-weather">--°C</span>
+                </div>
+                <div class="status-divider">✈️</div>
+                <div class="status-card">
+                    <span class="city-name">Bogotá</span>
+                    <span id="bogota-time" class="city-time">00:00</span>
+                    <span id="bogota-temp" class="city-weather">--°C</span>
+                </div>
             </div>
 
-            <div class="game-info">
-                <span id="game-status">Cargando...</span>
-            </div>
-
-            <div id="tic-tac-toe-grid"></div>
+            <div id="message">Cargando...</div>
             
-            <button class="reset-btn" onclick="clearBoard()">Reset Game</button>
+            <div id="star-portal" onclick="goToUniverse()">
+                <span class="portal-star">✨</span>
+                <p class="portal-text">Nuestro Universo</p>
+            </div>
         </div>
     </div>
 
-    <script type="module" src="app.js"></script>
+    <div id="star-map-page" class="page-layer">
+        <button id="back-btn" onclick="goToHome()">← Volver</button>
+        <div id="stars-container"></div>
+        <div id="star-content">
+            <div class="city-star" id="milan-star">📍 Milán</div>
+            <div id="plane-container"><div id="plane">✈️</div></div>
+            <div id="vault-container"></div>
+            <div class="city-star" id="bogota-star">📍 Bogotá</div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
 </body>
 </html>
