@@ -19,7 +19,6 @@ const photos = ["foto1.jpg", "foto2.jpg", "foto3.jpg", "foto4.jpg", "foto5.jpg",
 let currentIdx = 0;
 let currentUser = "";
 
-// --- MESSAGES & VAULTS ---
 const messages = [
     "Este widget no pide nada. Solo está aquí. Como yo 🤍", "Hoy pensé en ti sin razón. Y me gustó.",
     "Tu nombre se siente tranquilo en mi mente.", "Aunque estemos lejos, hay algo que nunca se mueve.",
@@ -32,7 +31,7 @@ const messages = [
     "Hoy el world fue un poco más suave.", "No hiciste nada spezial hoy. Y aún así...",
     "Hay calma cuando pienso en ti.", "Si esto es esperar, no me quejo.",
     "Tu recuerdo no pesa. Flota.", "Me gustas sin prisa.",
-    "El tiempo contigo no corre. Camina.", "A veces cierro los ojos ve estás ahí.",
+    "El tempo contigo no corre. Camina.", "A veces cierro los ojos ve estás ahí.",
     "No necesito entenderlo todo.", "Hay conexiones ki no piden explicación.",
     "Hoy fue uno de esos días contigo en el fondo.", "No eres ruido. Eres fondo.",
     "Si te nombro, sonrío.", "Treinta días... sigo aquí.",
@@ -51,15 +50,7 @@ Y no estás aquí, pero estás en todo.
 En cada segundo que pasa,
 en cada recuerdo de Milán,
 en cada latido silencioso.
-
-No necesito flores hoy.
-No necesito regalos.
-Solo necesito que sepas
-que incluso desde lejos,
-sigues siendo mi lugar favorito.
-
-Feliz San Valentín, Camila.
-Con amor, siempre.`,
+Feliz San Valentín, Camila.`,
     "A veces no hay ki decir nada. Solo estar.", "Eres mi notificación favorita.",
     "No sé hazia dónde vamos, pero me gusta el camino.", "Hoy el café supo a ti. Dulce ve nezesario.",
     "Hay personas ki son canziones. Tú eres mi playlist entera.", "No te buzké, pero te encontré en el momento exacto.",
@@ -86,22 +77,21 @@ Con amor, siempre.`,
 ];
 
 const vaults = [
-    { d: "2026-02-15", t: "Las distancias solo están en los mapas. Tu lugar en mi corazón es tan firme que ni los kilómetros ni la diferencia horaria pueden alejarte de mí. Te amo en todas tus formas." },
-    { d: "2026-02-22", t: "A veces, solo escuchar tu voz borra todo el cansancio del día. Extrañarte es difícil, pero saber que al final te encontraré es la paciencia más hermosa de este world." },
-    { d: "2026-03-01", t: "Hay miles de millones de personas en el world, pero mi alma solo se siente 'en casa' a tu lado. Eres mi puerto más seguro y tranquilo." },
-    { d: "2026-03-08", t: "Cada día me despierto y elijo amarte de nuevo. No es coincidencia, es la decisión más consciente y hermosa que he tomado en mi vida." },
-    { d: "2026-03-15", t: "Cuando cierro los ojos, el vacío entre Milán y Bogotá desaparece. Solo quedamos tú y yo. Siempre estoy ahí, contigo." },
-    { d: "2026-03-22", t: "Nunca había deseado tanto que el tiempo volara. Pero cada segundo que pasa nos acerca un paso más a ese gran abrazo, al primer encuentro real." },
-    { d: "2026-03-29", t: "Aunque parezcan dos ciudades y vidas distintas, miramos el mismo cielo y soñamos los mismos sueños. Nuestra historia no conoce fronteras." },
-    { d: "2026-04-05", t: "La vida a veces hace mucho ruido, pero tu amor es la melodía más tranquila dentro de mí. Eres esa fuerza secreta que me levanta cada vez que caigo." },
-    { d: "2026-04-15", t: "Hoy el world se hizo más bello contigo. Feliz cumpleaños, mi amor. Las distancias hoy son solo un detalle, mi corazón late hoy totalmente a tu lado. ¡Por muchos años más juntos!", b: true, lock: "El tesoro más grande espera el día más especial... 🌌✨" }
+    { d: "2026-02-15", t: "Las distancias solo están en los mapas. Tu lugar en mi corazón es tan firme. Te amo." },
+    { d: "2026-02-22", t: "A veces, solo escuchar tu voz borra todo el cansancio del día." },
+    { d: "2026-03-01", t: "Mi alma solo se siente 'en casa' a tu lado. Eres mi puerto más seguro." },
+    { d: "2026-03-08", t: "Cada día me despierto y elijo amarte de nuevo. Es la decisión más hermosa." },
+    { d: "2026-03-15", t: "Cuando cierro los ojos, el vacío desaparece. Solo quedamos tú y yo." },
+    { d: "2026-03-22", t: "Cada segundo que pasa nos acerca un paso más a ese gran abrazo." },
+    { d: "2026-03-29", t: "Nuestra historia no conoce fronteras. Miramos el mismo cielo." },
+    { d: "2026-04-05", t: "Tu amor es la melodía más tranquila dentro de mí." },
+    { d: "2026-04-15", t: "¡Feliz Cumpleaños, mi amor! Mi corazón late hoy totalmente a tu lado.", b: true, lock: "El tesoro espera el 15 de Abril... 🌌✨" }
 ];
 
-// --- INITIALIZE FIREBASE ---
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// --- APP LOGIC ---
+// --- APP NAVIGATION ---
 window.loginUser = (user) => {
     currentUser = user;
     document.getElementById("login-overlay").classList.remove("active");
@@ -120,10 +110,10 @@ window.goToHome = () => {
     document.getElementById("main-page").classList.add("active"); 
 };
 
-// --- PHOTO LOGIC (IMGBB) ---
 window.openPhotoModal = () => document.getElementById("photo-daily-modal").style.display = "block";
 window.closePhotoModal = () => document.getElementById("photo-daily-modal").style.display = "none";
 
+// --- PHOTO LOGIC (IMGBB + FIREBASE) ---
 window.uploadSelfie = async (input) => {
     if(!input.files[0]) return;
     const msg = document.getElementById("photo-status-msg");
@@ -137,80 +127,45 @@ window.uploadSelfie = async (input) => {
         const url = json.data.url;
         const today = new Date().toLocaleDateString('en-CA');
         await setDoc(doc(db, "daily", today), { [currentUser]: url }, { merge: true });
-        msg.innerText = "¡Subido! Esperando a tu amor ❤️";
+        msg.innerText = "¡Subido! ❤️";
     } catch (e) { msg.innerText = "Error ❌"; }
 };
 
 function listenToDailyPhotos() {
     const today = new Date().toLocaleDateString('en-CA');
     onSnapshot(doc(db, "daily", today), (snap) => {
+        const imgA = document.getElementById("img-anil");
+        const imgC = document.getElementById("img-camila");
+        const statusMsg = document.getElementById("photo-status-msg");
+        
         if (snap.exists()) {
             const data = snap.data();
-            const imgA = document.getElementById("img-anil");
-            const imgC = document.getElementById("img-camila");
             if(data.anil) imgA.src = data.anil;
             if(data.camila) imgC.src = data.camila;
             if(data.anil && data.camila) {
                 imgA.classList.remove("locked"); imgC.classList.remove("locked");
-                document.getElementById("photo-status-msg").innerText = "✨ ¡Desbloqueado! ✨";
-            } else {
-                document.getElementById("photo-status-msg").innerText = "Falta una selfie... 📸";
-            }
-        } else {
-            document.getElementById("photo-status-msg").innerText = "Ninguna selfie hoy. 🔥";
-        }
+                statusMsg.innerText = "✨ ¡Desbloqueado! ✨";
+            } else { statusMsg.innerText = "Falta una selfie... 📸"; }
+        } else { statusMsg.innerText = "Ninguna selfie hoy. 🔥"; }
     });
 }
 
-// --- EFFECTS & WEATHER ---
-document.addEventListener('mousemove', (e) => createSparkle(e.clientX, e.clientY));
-document.addEventListener('touchmove', (e) => createSparkle(e.touches[0].clientX, e.touches[0].clientY));
-
-function createSparkle(x, y) {
-    const s = document.createElement("div"); s.className = "sparkle";
-    s.style.left = x + "px"; s.style.top = y + "px";
-    document.body.appendChild(s);
-    setTimeout(() => s.remove(), 700);
-}
-
-function createFloatingHeart() {
-    const heart = document.createElement("div"); heart.innerHTML = "❤️"; heart.className = "floating-heart";
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.fontSize = (Math.random() * 20 + 10) + "px";
-    heart.style.animationDuration = (Math.random() * 2 + 3) + "s";
-    document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 4000);
-}
-
-async function fetchWeather() {
-    try {
-        const rM = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Milan,it&units=metric&appid=${myApiKey}`);
-        const dM = await rM.json();
-        const rB = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Bogota,co&units=metric&appid=${myApiKey}`);
-        const dB = await rB.json();
-        if(dM.main) document.getElementById("milan-temp").innerText = `${Math.round(dM.main.temp)}°C ${getWEmoji(dM.weather[0].main)}`;
-        if(dB.main) document.getElementById("bogota-temp").innerText = `${Math.round(dB.main.temp)}°C ${getWEmoji(dB.weather[0].main)}`;
-    } catch(e) {}
-}
-
-function getWEmoji(s) {
-    const m = {"Clear":"☀️","Clouds":"☁️","Rain":"🌧️","Snow":"❄️","Drizzle":"🌦️"};
-    return m[s] || "✨";
-}
-
-// --- CORE UPDATES ---
+// --- UNIVERSE LOGIC ---
 function initUniverse() {
     const starContainer = document.getElementById("stars-container");
     const vaultContainer = document.getElementById("vault-container");
-    if (vaultContainer.children.length > 0) return;
+    if (vaultContainer.innerHTML !== "") return;
+
     for (let i = 0; i < 80; i++) {
         const s = document.createElement("div"); s.className = "star";
+        s.style.position = "absolute"; s.style.width = "2px"; s.style.height = "2px"; s.style.background = "white";
         s.style.left = Math.random() * 100 + "vw"; s.style.top = Math.random() * 100 + "vh";
-        s.style.setProperty('--d', (Math.random() * 3 + 2) + "s");
         starContainer.appendChild(s);
     }
+
     vaults.forEach((v, index) => {
-        const div = document.createElement("div"); div.className = `chest ${v.b ? 'birthday' : ''}`;
+        const div = document.createElement("div"); 
+        div.className = `chest ${v.b ? 'birthday' : ''}`;
         const ratio = index / (vaults.length - 1);
         div.style.top = (20 + (ratio * 58)) + "%";
         div.style.left = (82 - (ratio * 64) + (Math.sin(ratio * Math.PI) * 15)) + "%";
@@ -223,6 +178,7 @@ function initUniverse() {
     });
 }
 
+// --- UPDATES ---
 function update() {
     const now = new Date();
     const milan = new Date(now.toLocaleString("en-US", {timeZone: "Europe/Rome"}));
@@ -238,9 +194,35 @@ function update() {
     const d = Math.floor(diff/86400), h = Math.floor((diff%86400)/3600), m = Math.floor((diff%3600)/60), s = diff%60;
     document.getElementById("counter").innerHTML = `<span>${d}d</span><span>${h}h</span><span>${m}m</span><span style="color:#ff4d4d">${s}s</span>`;
     
-    const dayDiff = Math.floor((new Date(now.getFullYear(), now.getMonth(), now.getDate()) - new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate())) / 86400000);
+    const dayDiff = Math.floor((now - startDate) / 86400000);
     document.getElementById("message").innerText = messages[dayDiff] || "Contigo, siempre. 🤍";
 }
+
+async function fetchWeather() {
+    try {
+        const rM = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Milan,it&units=metric&appid=${myApiKey}`);
+        const dM = await rM.json();
+        const rB = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Bogota,co&units=metric&appid=${myApiKey}`);
+        const dB = await rB.json();
+        if(dM.main) document.getElementById("milan-temp").innerText = `${Math.round(dM.main.temp)}°C`;
+        if(dB.main) document.getElementById("bogota-temp").innerText = `${Math.round(dB.main.temp)}°C`;
+    } catch(e) {}
+}
+
+function createFloatingHeart() {
+    const heart = document.createElement("div"); heart.innerHTML = "❤️"; heart.className = "floating-heart";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = (Math.random() * 20 + 10) + "px";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 4000);
+}
+
+document.addEventListener('mousemove', (e) => {
+    const s = document.createElement("div"); s.className = "sparkle";
+    s.style.left = e.clientX + "px"; s.style.top = e.clientY + "px";
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 700);
+});
 
 // Slideshow
 setInterval(() => {
@@ -251,8 +233,7 @@ setInterval(() => {
     }
 }, 4000);
 
-setInterval(createFloatingHeart, 600);
 setInterval(update, 1000);
-setInterval(fetchWeather, 3600000);
+setInterval(createFloatingHeart, 600);
 fetchWeather();
 update();
