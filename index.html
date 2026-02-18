@@ -11,9 +11,9 @@
     <div id="stars-container"></div>
 
     <div id="login-overlay" class="page-layer active">
-        <div class="glass-card login-card">
+        <div class="glass-card">
             <h1>Nuestro Universo</h1>
-            <p class="subtitle">Anıl & Camila</p>
+            <p>Anıl & Camila</p>
             <div class="login-options">
                 <button class="user-btn" onclick="loginUser('anil')">🤵 Soy Anıl</button>
                 <button class="user-btn" onclick="loginUser('camila')">👸 Soy Camila</button>
@@ -22,21 +22,20 @@
     </div>
 
     <div id="main-page" class="page-layer">
-        <div class="glass-card main-ui">
+        <div class="glass-card">
+            <div class="info-header">
+                <span id="milan-time">00:00</span>
+                <span id="milan-temp">--°C</span>
+            </div>
             <div class="heart-container">
-                <div class="heart-shape"><img id="album-photo" src="foto1.jpg"></div>
+                <div class="heart-shape"><img src="foto1.jpg" id="album-photo"></div>
             </div>
-
-            <div id="counter">
-                </div>
-
-            <div class="weather-info-row">
-                <div class="weather-item">☀️ Milan <span id="milan-temp">--°C</span> <span id="milan-time">00:00</span></div>
-                <div class="weather-item">☀️ Bogotá <span id="bogota-temp">--°C</span> <span id="bogota-time">00:00</span></div>
+            <div id="counter"></div>
+            <div class="weather-row">
+                <span>☀️ Milan <b id="m-temp">--°C</b></span>
+                <span>☀️ Bogotá <b id="b-temp">--°C</b></span>
             </div>
-
             <p id="message" class="romantic-text"></p>
-
             <div class="main-nav">
                 <button class="btn-nav primary" onclick="goToUniverse()">✨ Nuestro Universo</button>
                 <button class="btn-nav secondary" onclick="openPhotoModal()">📸 Nuestro Momento</button>
@@ -45,7 +44,7 @@
     </div>
 
     <div id="star-map-page" class="page-layer">
-        <div class="glass-card universe-ui">
+        <div class="glass-card">
             <button class="back-link" onclick="goToHome()">← Volver</button>
             <h3 class="section-title">Nuestra Aventura</h3>
             
@@ -60,8 +59,8 @@
                     <span>Camila (O): <b id="score-camila">0</b></span>
                 </div>
                 <div id="tic-tac-toe-grid"></div>
-                <p id="game-status">Esperando...</p>
-                <button class="reset-btn" onclick="clearBoard()">Reset</button>
+                <p id="game-status">Turno de...</p>
+                <button class="reset-btn" onclick="clearBoard()">Reset Game</button>
             </div>
         </div>
     </div>
