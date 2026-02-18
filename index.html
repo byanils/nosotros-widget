@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Nuestro Universo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -21,28 +20,29 @@
 
     <div id="main-page" class="page-layer">
         <div class="glass-card">
-            <div class="heart-container">
+            <div class="top-info">
+                <span id="m-time">00:00</span>
+                <span id="m-temp">--°C</span>
+            </div>
+
+            <div class="heart-container" onclick="nextPhoto()">
                 <div class="heart-shape">
-                    <img src="" id="album-photo" alt="Nuestro Momento">
+                    <img src="foto1.jpg" id="album-photo">
                 </div>
             </div>
 
             <div id="counter" class="counter-grid"></div>
 
-            <div class="info-row">
-                <div class="info-item">
-                    <span class="city">☀️ Milan</span>
-                    <span id="m-temp" class="temp">--°C</span>
-                    <span id="m-time" class="time">00:00</span>
+            <div class="selfie-slots">
+                <div class="slot">
+                    <small>Anıl</small>
+                    <div class="slot-img" id="slot-anil">📸</div>
                 </div>
-                <div class="info-item">
-                    <span class="city">☀️ Bogotá</span>
-                    <span id="b-temp" class="temp">--°C</span>
-                    <span id="b-time" class="time">00:00</span>
+                <div class="slot">
+                    <small>Camila</small>
+                    <div class="slot-img" id="slot-camila">📸</div>
                 </div>
             </div>
-
-            <p class="quote">"No sé hacia dónde vamos, pero me gusta el camino."</p>
 
             <div class="actions">
                 <button class="btn-primary" onclick="goToUniverse()">✨ Nuestro Universo (Juego)</button>
@@ -55,7 +55,11 @@
     <div id="game-page" class="page-layer">
         <div class="glass-card">
             <button class="back-btn" onclick="goToHome()">← Volver</button>
-            <h2 id="game-status">Cargando...</h2>
+            
+            <div class="adventure-row" id="chest-container">
+                </div>
+
+            <h3 id="game-status">Turno de: --</h3>
             <div id="tic-tac-toe-grid"></div>
             <button class="reset-btn" onclick="clearBoard()">Reset</button>
         </div>
