@@ -2,39 +2,50 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: var(--bg); color: white; font-family: 'Poppins', sans-serif; overflow: hidden; height: 100vh; }
 
-.page-layer { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; z-index: 10; background: radial-gradient(circle, #1a1a2e, #05070a); overflow-y: auto; padding: 20px 0; }
+.page-layer { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10; background: radial-gradient(circle, #1a1a2e, #05070a); }
 .page-layer.active { display: flex; }
 
-/* GİRİŞ */
-.login-card { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); padding: 40px 20px; border-radius: 30px; text-align: center; width: 85%; max-width: 350px; border: 1px solid rgba(255,255,255,0.1); margin-top: 100px; }
-.user-btn { width: 100%; padding: 15px; margin: 10px 0; border: none; border-radius: 15px; background: rgba(255,255,255,0.1); color: white; font-weight: 600; cursor: pointer; transition: 0.3s; }
-.user-btn:hover { background: var(--primary); }
+/* ORTAK KART TASARIMI (ESKİ ANA SAYFA STİLİ) */
+.glass-card { 
+    background: rgba(255, 255, 255, 0.08); 
+    backdrop-filter: blur(20px); 
+    border-radius: 35px; 
+    border: 1px solid rgba(255, 255, 255, 0.1); 
+    padding: 25px; 
+    width: 92%; 
+    max-width: 360px; 
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
 
-/* ANA SAYFA */
-.main-card { background: rgba(255,255,255,0.08); backdrop-filter: blur(15px); border-radius: 35px; padding: 25px; width: 90%; max-width: 360px; border: 1px solid rgba(255,255,255,0.1); text-align: center; }
+/* ANA SAYFA ÖZEL */
 .heart-shape { width: 180px; height: 160px; margin: 0 auto 15px; clip-path: path('M90,25 C90,25 80,0 45,0 C15,0 0,35 0,60 C0,110 90,165 90,165 C90,165 180,110 180,60 C180,35 165,0 135,0 C100,0 90,25 90,25 Z'); overflow: hidden; background: #111; }
 .heart-shape img { width: 100%; height: 100%; object-fit: cover; transition: 0.8s; }
-.weather-clock-row { background: rgba(0,0,0,0.6); border-radius: 20px; padding: 12px; display: grid; grid-template-columns: 1fr 1fr; margin: 15px 0; }
+.weather-clock-row { background: rgba(0,0,0,0.5); border-radius: 20px; padding: 12px; display: grid; grid-template-columns: 1fr 1fr; margin: 15px 0; border: 1px solid rgba(255,255,255,0.05); }
 
-/* SANDIK YOLU (Amazon Style) */
-.vault-section { width: 90%; max-width: 400px; margin-top: 40px; position: relative; }
-.progress-track-container { position: relative; display: flex; justify-content: space-between; padding: 20px 0; }
-.progress-line { position: absolute; top: 50%; left: 0; width: 100%; height: 3px; background: rgba(255,255,255,0.1); transform: translateY(-50%); }
+/* İKİNCİ SAYFA ÖZEL (UNIVERSE CARD) */
+.universe-card { padding: 20px 15px; }
+.section-title { font-size: 1rem; color: var(--gold); margin-bottom: 10px; font-family: 'Dancing Script', cursive; }
+
+.progress-track-container { position: relative; display: flex; justify-content: space-between; padding: 15px 0; margin-bottom: 10px; }
+.progress-line { position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.1); transform: translateY(-50%); }
 #vault-grid { display: flex; justify-content: space-between; width: 100%; z-index: 2; position: relative; }
-.chest { width: 50px; height: 50px; background: url('sandik.png') center/contain no-repeat; cursor: pointer; transition: 0.3s; filter: grayscale(1) opacity(0.5); position: relative; }
-.chest.unlocked { filter: grayscale(0) opacity(1) drop-shadow(0 0 10px var(--gold)); }
-.chest::after { content: attr(data-label); position: absolute; top: 110%; left: 50%; transform: translateX(-50%); font-size: 0.6rem; color: var(--gold); white-space: nowrap; }
+.chest { width: 45px; height: 45px; background: url('sandik.png') center/contain no-repeat; cursor: pointer; transition: 0.3s; filter: grayscale(1) opacity(0.5); position: relative; }
+.chest.unlocked { filter: grayscale(0) opacity(1) drop-shadow(0 0 8px var(--gold)); }
+.chest::after { content: attr(data-label); position: absolute; top: 110%; left: 50%; transform: translateX(-50%); font-size: 0.55rem; color: white; }
 
-/* XOX 8x8 */
-.game-section { width: 95%; max-width: 380px; margin: 30px 0; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 20px; }
-#tic-tac-toe-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 3px; background: rgba(255,255,255,0.05); padding: 5px; border-radius: 10px; }
-.cell { aspect-ratio: 1; background: #1a1a2e; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: bold; cursor: pointer; }
+/* XOX OYUNU */
+.game-section { background: rgba(0,0,0,0.3); border-radius: 20px; padding: 10px; margin-top: 10px; }
+#tic-tac-toe-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 2px; background: rgba(255,255,255,0.05); padding: 4px; border-radius: 8px; }
+.cell { aspect-ratio: 1; background: #111; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; cursor: pointer; }
 .cell.x { color: var(--primary); }
 .cell.o { color: #448aff; }
-.score-board { display: flex; justify-content: space-around; font-size: 0.75rem; margin-bottom: 10px; }
+.score-board { display: flex; justify-content: space-around; font-size: 0.7rem; margin-bottom: 8px; opacity: 0.8; }
+#game-status { font-size: 0.7rem; margin: 5px 0; color: var(--gold); }
+.reset-btn-small { background: none; border: 1px solid rgba(255,255,255,0.2); color: #666; font-size: 0.6rem; padding: 2px 8px; border-radius: 5px; }
 
-/* MODAL */
-.modal-content { background: #111; padding: 30px; border-radius: 30px; width: 90%; max-width: 380px; margin: 15% auto; text-align: center; border: 1px solid var(--primary); position: relative; }
-.photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
-.frame { aspect-ratio: 1; border-radius: 10px; overflow: hidden; background: #222; }
-.locked { filter: blur(10px); }
+/* BUTONLAR */
+.btn-nav { width: 100%; padding: 12px; border-radius: 50px; border: none; margin-top: 10px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+.btn-nav.primary { background: var(--primary); color: white; }
+.btn-nav.secondary { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.1); }
+#back-btn { position: absolute; top: 20px; left: 20px; background: rgba(255,255,255,0.1); border: none; color: white; padding: 8px 15px; border-radius: 20px; cursor: pointer; z-index: 100; }
