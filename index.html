@@ -2,83 +2,61 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Nuestro Universo | Anıl & Camila</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div id="login-overlay" class="page-layer active">
         <div class="login-box">
-            <h2>¿Quién eres? ❤️</h2>
-            <button onclick="loginUser('anil')">Soy Anıl</button>
-            <button onclick="loginUser('camila')">Soy Camila</button>
+            <h2>¿Quién eres hoy? ❤️</h2>
+            <div class="login-btns">
+                <button onclick="loginUser('anil')">Soy Anıl</button>
+                <button onclick="loginUser('camila')">Soy Camila</button>
+            </div>
         </div>
     </div>
 
     <div id="main-page" class="page-layer">
-        <div class="container">
-            <div id="photo-daily-modal" class="modal">
-                <div class="modal-content">
-                    <span class="close" onclick="closePhotoModal()">&times;</span>
-                    <h3>Quitapenas Diario 📸</h3>
-                    <p id="photo-status-msg">Cargando...</p>
-                    <div class="photo-display">
-                        <div class="photo-slot">
-                            <p>Anıl</p>
-                            <img id="img-anil" src="https://via.placeholder.com/150?text=Bloqueado" class="locked">
-                        </div>
-                        <div class="photo-slot">
-                            <p>Camila</p>
-                            <img id="img-camila" src="https://via.placeholder.com/150?text=Bloqueado" class="locked">
-                        </div>
-                    </div>
-                    <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="uploadSelfie(this)">
-                    <button class="upload-btn" onclick="document.getElementById('photo-input').click()">Subir mi Selfie</button>
-                </div>
-            </div>
+        <div class="heart-container">
+            <img id="album-photo" src="foto1.jpg">
+        </div>
+        
+        <div id="counter"></div>
 
-            <div class="heart-container">
-                <img id="album-photo" src="foto1.jpg">
-            </div>
-            
-            <div id="counter"></div>
-
-            <div class="status-board">
-                <div class="status-card">
-                    <span class="city-name">Milán</span>
-                    <span id="milan-time" class="city-time">00:00</span>
-                    <span id="milan-temp" class="city-weather">--°C</span>
-                </div>
-                <div class="status-divider">✈️</div>
-                <div class="status-card">
-                    <span class="city-name">Bogotá</span>
-                    <span id="bogota-time" class="city-time">00:00</span>
-                    <span id="bogota-temp" class="city-weather">--°C</span>
-                </div>
-            </div>
-
-            <div id="message"></div>
-            
-            <div class="action-buttons">
-                <div class="btn-nav" onclick="goToUniverse()">✨ Nuestro Universo</div>
-                <div class="btn-nav" onclick="openPhotoModal()">📸 Quitapenas</div>
-            </div>
+        <div id="message"></div>
+        
+        <div class="main-nav">
+            <button class="btn-nav" onclick="goToUniverse()">✨ Nuestro Universo</button>
+            <button class="btn-nav" onclick="openPhotoModal()">📸 Nuestro Momento</button>
         </div>
     </div>
 
     <div id="star-map-page" class="page-layer">
         <button id="back-btn" onclick="goToHome()">← Volver</button>
         <div id="stars-container"></div>
-        
-        <div id="star-content">
-            <div class="city-label milan-pos">📍 Milán</div>
-            <div id="plane-path">
-                <div id="moving-plane">✈️</div>
+        <div id="vault-container"></div>
+    </div>
+
+    <div id="photo-daily-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closePhotoModal()">&times;</span>
+            <h3>Nuestro Momento 📸</h3>
+            <p id="photo-status-msg">Sube tu foto para desbloquear la de hoy</p>
+            <div class="photo-display">
+                <div class="photo-slot">
+                    <p>Anıl</p>
+                    <img id="img-anil" src="placeholder.png" class="locked">
+                </div>
+                <div class="photo-slot">
+                    <p>Camila</p>
+                    <img id="img-camila" src="placeholder.png" class="locked">
+                </div>
             </div>
-            <div id="vault-container"></div>
-            <div class="city-label bogota-pos">📍 Bogotá</div>
+            <input type="file" id="photo-input" style="display:none" accept="image/*" onchange="uploadSelfie(this)">
+            <button class="upload-button" onclick="document.getElementById('photo-input').click()">Subir mi Foto</button>
         </div>
     </div>
 
