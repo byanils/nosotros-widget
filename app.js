@@ -1,68 +1,147 @@
-:root { 
-    --primary: #ff4d4d; 
-    --gold: #ffd700;
-    --bg: #0b0e14;
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+import { messages } from "./messages.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCv12bIT9P0Ezho4CidHYfRLMqCN3LVq1o",
+    authDomain: "nuestro-universo-70d52.firebaseapp.com",
+    projectId: "nuestro-universo-70d52",
+    storageBucket: "nuestro-universo-70d52.firebasestorage.app",
+    messagingSenderId: "979401273604",
+    appId: "1:979401273604:web:ca547072488f746ca7e051",
+    measurementId: "G-NY9FG93DSY"
+};
+
+const imgbbKey = "072b34aeea28d1eab7f3865e6dcae66b";
+const startDate = new Date("2025-12-27T10:45:00");
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+let currentUser = "";
+
+// Sandıklar - Derin ve Uzun Mesajlar
+const vaults = [
+    { d: "2026-02-15", t: "A veces me quedo mirando el mapa y me doy cuenta de que la distancia es solo un número. Porque no importa cuántos kilómetros nos separen, mi mente siempre encuentra el camino de regreso a ti. Eres mi hogar, sin importar en qué parte del mundo estemos. ❤️" },
+    { d: "2026-02-22", t: "Dicen que el amor a distancia es para valientes, y nosotros lo somos. Cada videollamada, cada 'te extraño' y cada sueño compartido nos hace más fuertes. No estamos lejos, solo nos estamos preparando para el momento en que el 'hola' sea para siempre. ✨" },
+    { d: "2026-03-01", t: "Mi alma se siente en paz cuando te escucho reír. Es increíble cómo alguien que está a miles de kilómetros puede hacerme sentir más acompañado que cualquier persona que tenga cerca. Gracias por ser mi lugar seguro, mi paz y mi mayor motivación todos los días. 🌊" },
+    { d: "2026-03-15", t: "Cuando el silencio me rodea, cierro los ojos y puedo sentir tu mano junto a la mía. Esta distancia es temporal, pero lo que hemos construido es eterno. Cada día que pasa es un día menos para volver a abrazarte y no soltarte nunca más. 💍" },
+    { d: "2026-04-15", t: "¡FELIZ CUMPLEAÑOS, MI VIDA! 🎂 Hoy el universo celebra el día en que naciste, y yo celebro la fortuna de tenerte. Desearía estar ahí para llenarte de besos, pero prometo que recuperaremos cada segundo. Eres el regalo más hermoso que la vida me ha dado. ¡Te amo! 🥳💖" }
+];
+
+// LOGIN
+window.loginUser = (user) => {
+    currentUser = user;
+    document.getElementById("login-overlay").classList.remove("active");
+    document.getElementById("main-page").classList.add("active");
+    listenToDailyPhotos();
+};
+
+window.goToUniverse = () => {
+    document.getElementById("main-page").classList.remove("active");
+    document.getElementById("star-map-page").classList.add("active");
+    initUniverse();
+};
+
+window.goToHome = () => {
+    document.getElementById("star-map-page").classList.remove("active");
+    document.getElementById("main-page").classList.add("active");
+};
+
+window.openPhotoModal = () => document.getElementById("photo-daily-modal").style.display = "block";
+window.closePhotoModal = () => document.getElementById("photo-daily-modal").style.display = "none";
+
+// SAYAÇ (İSPANYOLCA)
+function update() {
+    const now = new Date();
+    const diff = Math.floor((now - startDate) / 1000);
+    const d = Math.floor(diff/86400), h = Math.floor((diff%86400)/3600), m = Math.floor((diff%3600)/60), s = diff%60;
+    
+    document.getElementById("counter").innerHTML = `
+        <div class="time-unit"><span>${d}</span><small>DÍAS</small></div>
+        <div class="time-unit"><span>${h}</span><small>HORAS</small></div>
+        <div class="time-unit"><span>${m}</span><small>MIN</small></div>
+        <div class="time-unit" style="color:#ff4d4d"><span>${s}</span><small>SEG</small></div>
+    `;
+
+    const dayDiff = Math.floor((now - startDate) / 86400000);
+    document.getElementById("message").innerText = messages[dayDiff] || "Nuestro viaje continúa... 🤍";
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+// EVREN - S YOLU DİZİLİMİ
+function initUniverse() {
+    const container = document.getElementById("vault-container");
+    if (container.innerHTML !== "") return;
 
-body { 
-    background-color: var(--bg);
-    color: white; font-family: 'Poppins', sans-serif;
-    overflow: hidden; height: 100vh;
+    vaults.forEach((v, i) => {
+        const div = document.createElement("div");
+        div.className = "chest";
+        const progress = i / (vaults.length - 1);
+        const yPos = 10 + (progress * 80);
+        const xPos = 50 + (Math.sin(progress * Math.PI * 2.5) * 35);
+        
+        div.style.top = yPos + "%";
+        div.style.left = xPos + "%";
+        div.setAttribute("data-date", v.d);
+
+        div.onclick = (e) => {
+            e.stopPropagation();
+            if (new Date() < new Date(v.d)) alert("🔒 Bloqueado hasta: " + v.d);
+            else alert(v.t);
+        };
+        container.appendChild(div);
+    });
+
+    // Yıldızlar
+    const stars = document.getElementById("stars-container");
+    for(let i=0; i<100; i++) {
+        const s = document.createElement("div");
+        s.style.position = "absolute";
+        s.style.width = "2px"; s.style.height = "2px"; s.style.background = "white";
+        s.style.left = Math.random() * 100 + "%"; s.style.top = Math.random() * 200 + "%";
+        s.style.opacity = Math.random();
+        stars.appendChild(s);
+    }
 }
 
-.page-layer { 
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    display: none; flex-direction: column; align-items: center; justify-content: center;
-    background: radial-gradient(circle at center, #1a1a2e 0%, #0b0e14 100%);
+// FOTOĞRAF YÜKLEME VE SENKRONİZASYON
+function getTodayKey() {
+    const d = new Date();
+    return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
 }
-.page-layer.active { display: flex; }
 
-/* LOGIN */
-.login-box { background: rgba(255,255,255,0.05); padding: 40px; border-radius: 40px; backdrop-filter: blur(15px); text-align: center; border: 1px solid rgba(255,255,255,0.1); }
-.login-btns { margin-top: 20px; }
-.login-btns button { background: var(--primary); color: white; border: none; padding: 15px 30px; border-radius: 50px; cursor: pointer; font-weight: bold; margin: 5px; transition: 0.3s; }
+window.uploadSelfie = async (input) => {
+    if(!input.files[0]) return;
+    const status = document.getElementById("photo-status-msg");
+    status.innerText = "Subiendo foto... ⏳";
 
-/* SAYAÇ (İSPANYOLCA) */
-#counter { display: flex; gap: 15px; margin: 30px 0; }
-.time-unit { display: flex; flex-direction: column; align-items: center; min-width: 70px; }
-.time-unit span { font-size: 2.5rem; font-weight: 700; color: white; }
-.time-unit small { font-size: 0.7rem; letter-spacing: 2px; opacity: 0.6; text-transform: uppercase; }
+    const formData = new FormData();
+    formData.append("image", input.files[0]);
 
-/* KALP VE MESAJ */
-.heart-container { 
-    width: 250px; height: 230px; margin-bottom: 20px;
-    -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
-    mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
-    mask-size: contain; mask-repeat: no-repeat; mask-position: center;
+    try {
+        const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbKey}`, { method: "POST", body: formData });
+        const json = await res.json();
+        const today = getTodayKey();
+        
+        await setDoc(doc(db, "daily", today), { [currentUser]: json.data.url }, { merge: true });
+        status.innerText = "¡Foto enviada! ✨";
+    } catch (e) { status.innerText = "Error al subir ❌"; }
+};
+
+function listenToDailyPhotos() {
+    const today = getTodayKey();
+    onSnapshot(doc(db, "daily", today), (snap) => {
+        if (snap.exists()) {
+            const data = snap.data();
+            const imgA = document.getElementById("img-anil"), imgC = document.getElementById("img-camila");
+            if(data.anil) imgA.src = data.anil;
+            if(data.camila) imgC.src = data.camila;
+            if(data.anil && data.camila) {
+                imgA.classList.remove("locked"); imgC.classList.remove("locked");
+                document.getElementById("photo-status-msg").innerText = "✨ ¡Momento Desbloqueado! ✨";
+            }
+        }
+    });
 }
-.heart-container img { width: 100%; height: 100%; object-fit: cover; }
-#message { font-family: 'Dancing Script', cursive; font-size: 1.4rem; text-align: center; padding: 0 20px; max-width: 400px; min-height: 60px; color: #ffb3b3; }
 
-/* NAV */
-.main-nav { margin-top: 30px; display: flex; flex-direction: column; gap: 10px; }
-.btn-nav { background: transparent; border: 1px solid var(--primary); color: white; padding: 12px 25px; border-radius: 50px; cursor: pointer; transition: 0.3s; font-weight: 600; }
-.btn-nav:hover { background: var(--primary); }
-
-/* EVREN VE S-YOLU */
-#star-map-page { overflow-y: auto; display: block; }
-#vault-container { position: relative; width: 100%; min-height: 150vh; padding: 100px 0; }
-.chest { 
-    position: absolute; width: 60px; height: 60px; 
-    background: url('sandik.png') no-repeat center/contain;
-    transform: translate(-50%, -50%); cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    filter: drop-shadow(0 0 10px var(--gold));
-}
-.chest:hover { transform: translate(-50%, -50%) scale(1.3); filter: drop-shadow(0 0 20px var(--gold)); }
-.chest::after { content: attr(data-date); position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: 0.6rem; opacity: 0.5; white-space: nowrap; }
-
-/* MODAL */
-.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; }
-.modal-content { background: white; color: #333; margin: 10% auto; padding: 30px; border-radius: 30px; width: 90%; max-width: 400px; text-align: center; position: relative; }
-.photo-display { display: flex; justify-content: space-around; margin: 20px 0; }
-.photo-slot img { width: 120px; height: 120px; border-radius: 15px; object-fit: cover; }
-.locked { filter: blur(15px) grayscale(1); }
-.upload-button { background: var(--primary); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: bold; width: 100%; cursor: pointer; }
-.close { position: absolute; right: 20px; top: 15px; font-size: 1.5rem; cursor: pointer; color: #999; }
-#back-btn { position: fixed; top: 20px; left: 20px; background: rgba(255,255,255,0.1); border: none; color: white; padding: 10px 15px; border-radius: 20px; z-index: 2000; cursor: pointer; }
+setInterval(update, 1000);
+update();
