@@ -11,7 +11,7 @@
     <div id="stars-container"></div>
 
     <div id="login-overlay" class="page-layer active">
-        <div class="login-card">
+        <div class="glass-card login-card">
             <h1>Nuestro Universo</h1>
             <p>Anıl & Camila</p>
             <div class="login-options">
@@ -22,7 +22,7 @@
     </div>
 
     <div id="main-page" class="page-layer">
-        <div class="main-card">
+        <div class="glass-card main-card">
             <div class="heart-container"><div class="heart-shape"><img id="album-photo" src="foto1.jpg"></div></div>
             <div id="counter"></div>
             
@@ -42,27 +42,29 @@
     <div id="star-map-page" class="page-layer">
         <button id="back-btn" onclick="goToHome()">← Volver</button>
         
-        <div class="vault-section">
-            <h3 class="section-title">Nuestra Aventura</h3>
-            <div class="progress-track-container">
-                <div class="progress-line"></div>
-                <div id="vault-grid"></div>
+        <div class="glass-card universe-card">
+            <div class="vault-section">
+                <h3 class="section-title">Nuestra Aventura</h3>
+                <div class="progress-track-container">
+                    <div class="progress-line"></div>
+                    <div id="vault-grid"></div>
+                </div>
             </div>
-        </div>
 
-        <div class="game-section">
-            <div class="score-board">
-                <div>Anıl (X): <span id="score-anil">0</span></div>
-                <div>Camila (O): <span id="score-camila">0</span></div>
+            <div class="game-section">
+                <div class="score-board">
+                    <div>Anıl (X): <span id="score-anil">0</span></div>
+                    <div>Camila (O): <span id="score-camila">0</span></div>
+                </div>
+                <div id="tic-tac-toe-grid"></div>
+                <div id="game-status">Turno de...</div>
+                <button class="reset-btn-small" onclick="clearBoard()">Reset</button>
             </div>
-            <div id="game-status">Cargando partida...</div>
-            <div id="tic-tac-toe-grid"></div>
-            <button class="reset-btn" onclick="clearBoard()">Reset Tablero</button>
         </div>
     </div>
 
     <div id="photo-daily-modal" class="modal">
-        <div class="modal-content">
+        <div class="glass-card modal-content">
             <span class="close" onclick="closePhotoModal()">&times;</span>
             <div class="photo-grid">
                 <div class="photo-item"><span>Anıl</span><div class="frame"><img id="img-anil" src="placeholder.png" class="locked"></div></div>
