@@ -3,6 +3,7 @@ import { getFirestore, doc, setDoc, onSnapshot, getDoc, updateDoc } from "https:
 import { messages } from "./messages.js";
 import { vaults } from "./vaults.js";
 
+// --- FIREBASE YAPILANDIRMASI ---
 const firebaseConfig = {
     apiKey: "AIzaSyCv12bIT9P0Ezho4CidHYfRLMqCN3LVq1o",
     authDomain: "nuestro-universo-70d52.firebaseapp.com",
@@ -14,165 +15,240 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+// --- AYARLAR VE DEĞİŞKENLER ---
 const imgbbKey = "072b34aeea28d1eab7f3865e6dcae66b";
 const startDate = new Date("2025-12-27T10:45:00");
-const photoList = ["foto1.jpg", "foto2.jpg", "foto3.jpg"];
-let photoIdx = 0, currentUser = "";
-const todayKey = new Date().toISOString().split('T')[0];
+const photoList = ["foto1.jpg", "foto2.jpg", "foto3.jpg"]; // Slayt gösterisi resimleri
+let photoIdx = 0;
+let currentUser = "";
+const todayKey = new Date().toISOString().split('T')[0]; // Günlük oyun ve foto takibi için
 
-window.loginUser = (u) => { 
-    currentUser = u; 
-    document.getElementById("login-overlay").classList.remove("active"); 
-    document.getElementById("main-page").classList.add("active"); 
-    startSystems(); 
+// --- NAVİGASYON VE GİRİŞ ---
+window.loginUser = (user) => {
+    currentUser = user;
+    document.getElementById("login-overlay").classList.remove("active");
+    document.getElementById("main-page").classList.add("active");
+    initGlobalSystems();
 };
 
-window.goToUniverse = () => { 
-    document.getElementById("main-page").classList.remove("active"); 
-    document.getElementById("star-map-page").classList.add("active"); 
-    renderVaults(); 
-    initXOX();
+window.goToUniverse = () => {
+    document.getElementById("main-page").classList.remove("active");
+    document.getElementById("star-map-page").classList.add("active");
+    renderVaults();
+    initXOXGame();
 };
 
-window.goToHome = () => { 
-    document.getElementById("star-map-page").classList.remove("active"); 
-    document.getElementById("main-page").classList.add("active"); 
+window.goToHome = () => {
+    document.getElementById("star-map-page").classList.remove("active");
+    document.getElementById("main-page").classList.add("active");
 };
 
 window.openPhotoModal = () => document.getElementById("photo-daily-modal").style.display = "block";
 window.closePhotoModal = () => document.getElementById("photo-daily-modal").style.display = "none";
 
-function startSystems() {
+// --- SİSTEMLERİ BAŞLAT ---
+function initGlobalSystems() {
     updateWeather();
     setInterval(updateClocks, 1000);
     setInterval(updateCounter, 1000);
     setInterval(slideshow, 5000);
-    listenPhotos();
+    listenDailyPhotos();
     createStars();
 }
 
+// --- HAVA DURUMU VE SAATLER ---
+async function updateWeather() {
+    const cities = [
+        { id: "milan", lat: 45.46, lon: 9.18 },
+        { id: "bogota", lat: 4.71, lon: -74.07 }
+    ];
+    for (let c of cities) {
+        try {
+            const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current_weather=true`);
+            const d = await r.json();
+            const tempEl = document.getElementById(`${c.id}-temp`);
+            if (tempEl) tempEl.innerText = Math.round(d.current_weather.temperature) + "°C";
+            const iconEl = document.getElementById(`${c.id}-icon`);
+            if (iconEl) iconEl.innerText = d.current_weather.weathercode <= 3 ? "☀️" : "☁️";
+        } catch (e) { console.error("Hava durumu hatası:", e); }
+    }
+}
+
+function updateClocks() {
+    const now = new Date();
+    const milanTime = document.getElementById("milan-time");
+    const bogotaTime = document.getElementById("bogota-time");
+    
+    if (milanTime) milanTime.innerText = now.toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit', timeZone: "Europe/Rome" });
+    if (bogotaTime) bogotaTime.innerText = now.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: "America/Bogota" });
+}
+
+// --- SAYAÇ VE MESAJ ---
+function updateCounter() {
+    const now = new Date();
+    const diff = Math.floor((now - startDate) / 1000);
+    
+    const d = Math.floor(diff / 86400);
+    const h = Math.floor((diff % 86400) / 3600);
+    const m = Math.floor((diff % 3600) / 60);
+    const s = diff % 60;
+
+    const counterEl = document.getElementById("counter");
+    if (counterEl) {
+        counterEl.innerHTML = `
+            <div class="time-unit"><span>${d}</span><small>DÍAS</small></div>
+            <div class="time-unit"><span>${h}</span><small>HORAS</small></div>
+            <div class="time-unit"><span>${m}</span><small>MIN</small></div>
+            <div class="time-unit"><span>${s}</span><small>SEG</small></div>
+        `;
+    }
+
+    const msgEl = document.getElementById("message");
+    if (msgEl) {
+        const dayIdx = Math.floor(diff / 86400);
+        msgEl.innerText = messages[dayIdx] || "No sé hazia dónde vamos, pero me gusta el camino.";
+    }
+}
+
+// --- SANDIK SİSTEMİ (AÇILIR DURUMDA) ---
 function renderVaults() {
     const grid = document.getElementById("vault-grid");
+    if (!grid) return;
     grid.innerHTML = "";
     const now = new Date();
-    // Vaults listesinden ilk 5 sandığı Amazon stili yolda göster
-    vaults.slice(0, 5).forEach(v => {
+
+    vaults.slice(0, 5).forEach((v) => {
         const div = document.createElement("div");
         div.className = "chest";
-        const target = new Date(v.d);
-        
-        if (now >= target) div.classList.add("unlocked");
-        
+        const targetDate = new Date(v.d);
+
+        if (now >= targetDate) div.classList.add("unlocked");
+
         div.setAttribute("data-label", v.secret ? "???" : v.d.split("-").slice(1).join("/"));
         
         div.onclick = () => {
-            // Tarih kontrolü: Bugünün tarihi sandık tarihinden büyük veya eşitse açılır
-            if (now >= target) {
-                alert("💖 " + v.t);
+            if (now >= targetDate) {
+                alert("💖 Mensaje: " + v.t);
             } else {
-                alert(v.secret ? "✨ Hay que saber esperar..." : "🔒 " + v.d);
+                alert(v.secret ? "✨ Algo especial se está preparando..." : "🔒 Estará disponible el: " + v.d);
             }
         };
         grid.appendChild(div);
     });
 }
 
-async function initXOX() {
+// --- REAL-TIME XOX (8x8) ---
+async function initXOXGame() {
     const grid = document.getElementById("tic-tac-toe-grid");
+    if (!grid) return;
     grid.innerHTML = "";
+    
     for (let i = 0; i < 64; i++) {
         const cell = document.createElement("div");
         cell.className = "cell";
         cell.dataset.index = i;
-        cell.onclick = () => handleMove(i);
+        cell.onclick = () => handleXOXMove(i);
         grid.appendChild(cell);
     }
+
     onSnapshot(doc(db, "games", todayKey), (snap) => {
-        const data = snap.exists() ? snap.data() : { board: Array(64).fill(""), turn: "anil", sA: 0, sC: 0 };
-        updateUI(data);
+        if (snap.exists()) {
+            updateXOXUI(snap.data());
+        } else {
+            setDoc(doc(db, "games", todayKey), {
+                board: Array(64).fill(""),
+                turn: "anil",
+                sA: 0, sC: 0
+            });
+        }
     });
 }
 
-async function handleMove(i) {
+async function handleXOXMove(idx) {
     const ref = doc(db, "games", todayKey);
     const snap = await getDoc(ref);
-    const data = snap.exists() ? snap.data() : { board: Array(64).fill(""), turn: "anil", sA: 0, sC: 0 };
-    if (data.board[i] !== "" || data.turn !== currentUser) return;
-    data.board[i] = currentUser === "anil" ? "X" : "O";
-    data.turn = currentUser === "anil" ? "camila" : "anil";
-    await setDoc(ref, data);
+    const data = snap.data();
+
+    if (data.board[idx] !== "" || data.turn !== currentUser) return;
+
+    const newBoard = [...data.board];
+    newBoard[idx] = currentUser === "anil" ? "X" : "O";
+    const nextTurn = currentUser === "anil" ? "camila" : "anil";
+
+    await updateDoc(ref, { board: newBoard, turn: nextTurn });
 }
 
-function updateUI(data) {
+function updateXOXUI(data) {
     const cells = document.querySelectorAll(".cell");
-    data.board.forEach((v, i) => { cells[i].innerText = v; cells[i].className = "cell " + (v ? v.toLowerCase() : ""); });
-    document.getElementById("score-anil").innerText = data.sA || 0;
-    document.getElementById("score-camila").innerText = data.sC || 0;
-    document.getElementById("game-status").innerText = "Turno: " + data.turn.toUpperCase();
+    data.board.forEach((val, i) => {
+        cells[i].innerText = val;
+        cells[i].className = "cell " + (val ? val.toLowerCase() : "");
+    });
+    const status = document.getElementById("game-status");
+    if (status) status.innerText = "Turno de: " + data.turn.toUpperCase();
 }
 
-window.clearBoard = async () => { if(confirm("Reset?")) await setDoc(doc(db, "games", todayKey), { board: Array(64).fill(""), turn: "anil" }, {merge: true}); };
-
-// DİĞER FONKSİYONLAR (Hava durumu, saat, foto yükleme vs.)
-async function updateWeather() {
-    const cities = [{ id: "milan", lat: 45.46, lon: 9.18 }, { id: "bogota", lat: 4.71, lon: -74.07 }];
-    for (let c of cities) {
-        try {
-            const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current_weather=true`);
-            const d = await r.json();
-            document.getElementById(`${c.id}-temp`).innerText = Math.round(d.current_weather.temperature) + "°C";
-            document.getElementById(`${c.id}-icon`).innerText = d.current_weather.weathercode <= 3 ? "☀️" : "☁️";
-        } catch (e) {}
+window.clearBoard = async () => {
+    if(confirm("¿Reiniciar tablero?")) {
+        await setDoc(doc(db, "games", todayKey), { board: Array(64).fill(""), turn: "anil" }, { merge: true });
     }
-}
+};
 
-function updateClocks() {
-    const now = new Date();
-    document.getElementById("milan-time").innerText = now.toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit', timeZone: "Europe/Rome" });
-    document.getElementById("bogota-time").innerText = now.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: "America/Bogota" });
-}
-
-function updateCounter() {
-    const now = new Date();
-    const diff = Math.floor((now - startDate) / 1000);
-    const d = Math.floor(diff/86400), h = Math.floor((diff%86400)/3600), m = Math.floor((diff%3600)/60), s = diff%60;
-    document.getElementById("counter").innerHTML = `<div class="time-unit"><span>${d}</span><small>DÍAS</small></div><div class="time-unit"><span>${h}</span><small>HORAS</small></div><div class="time-unit"><span>${m}</span><small>MIN</small></div><div class="time-unit"><span>${s}</span><small>SEG</small></div>`;
-    document.getElementById("message").innerText = messages[Math.floor((now - startDate) / 86400000)] || "🤍";
-}
-
-function slideshow() { photoIdx = (photoIdx + 1) % photoList.length; const el = document.getElementById("album-photo"); if(el){ el.style.opacity = 0; setTimeout(() => { el.src = photoList[photoIdx]; el.style.opacity = 1; }, 800); } }
-
+// --- FOTOĞRAF YÜKLEME ---
 window.uploadSelfie = async (input) => {
     if(!input.files[0]) return;
     const status = document.getElementById("photo-status-msg");
     status.innerText = "⏳";
-    const fd = new FormData(); fd.append("image", input.files[0]);
+    const formData = new FormData();
+    formData.append("image", input.files[0]);
     try {
-        const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbKey}`, { method: "POST", body: fd });
+        const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbKey}`, { method: "POST", body: formData });
         const json = await res.json();
         await setDoc(doc(db, "daily", todayKey), { [currentUser]: json.data.url }, { merge: true });
         status.innerText = "✨";
     } catch (e) { status.innerText = "❌"; }
 };
 
-function listenPhotos() {
+function listenDailyPhotos() {
     onSnapshot(doc(db, "daily", todayKey), (snap) => {
         if (snap.exists()) {
             const d = snap.data();
-            if(d.anil) document.getElementById("img-anil").src = d.anil;
-            if(d.camila) document.getElementById("img-camila").src = d.camila;
-            if(d.anil && d.camila) { document.querySelectorAll(".frame img").forEach(i => i.classList.remove("locked")); }
+            const imgA = document.getElementById("img-anil");
+            const imgC = document.getElementById("img-camila");
+            if(d.anil && imgA) imgA.src = d.anil;
+            if(d.camila && imgC) imgC.src = d.camila;
+            if(d.anil && d.camila) {
+                if(imgA) imgA.classList.remove("locked");
+                if(imgC) imgC.classList.remove("locked");
+            }
         }
     });
 }
 
+// --- SLAYT VE YILDIZLAR ---
+function slideshow() {
+    photoIdx = (photoIdx + 1) % photoList.length;
+    const el = document.getElementById("album-photo");
+    if(el) {
+        el.style.opacity = 0.5;
+        setTimeout(() => {
+            el.src = photoList[photoIdx];
+            el.style.opacity = 1;
+        }, 500);
+    }
+}
+
 function createStars() {
-    const c = document.getElementById("stars-container");
-    if(c.children.length > 0) return;
-    for(let i=0; i<80; i++) {
+    const container = document.getElementById("stars-container");
+    if(!container || container.children.length > 0) return;
+    for(let i=0; i<100; i++) {
         const s = document.createElement("div");
-        s.style.position = "absolute"; s.style.width = s.style.height = "2px"; s.style.background = "white";
-        s.style.left = Math.random() * 100 + "%"; s.style.top = Math.random() * 100 + "%";
-        s.style.borderRadius = "50%"; s.style.opacity = Math.random(); c.appendChild(s);
+        s.className = "star";
+        s.style.left = Math.random() * 100 + "%";
+        s.style.top = Math.random() * 100 + "%";
+        s.style.opacity = Math.random();
+        s.style.animationDuration = (Math.random() * 3 + 2) + "s";
+        container.appendChild(s);
     }
 }
