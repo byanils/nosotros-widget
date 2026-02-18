@@ -4,23 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Nuestro Universo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="stars-container"></div>
-
     <div id="login-overlay" class="page-layer active">
-        <div class="login-glass-card">
-            <div class="login-header">
-                <div class="glow-circle">✨</div>
-                <h1>Nuestro Universo</h1>
-                <p>Anıl & Camila</p>
-            </div>
+        <div class="login-card">
+            <h1>Nuestro Universo</h1>
+            <p>Anıl & Camila</p>
             <div class="user-selection">
-                <button class="choice-btn anil" onclick="loginUser('anil')">🤵 Soy Anıl</button>
-                <div class="divider"><span>❤</span></div>
-                <button class="choice-btn camila" onclick="loginUser('camila')">👸 Soy Camila</button>
+                <button onclick="loginUser('anil')">🤵 Soy Anıl</button>
+                <button onclick="loginUser('camila')">👸 Soy Camila</button>
             </div>
         </div>
     </div>
@@ -29,46 +23,41 @@
         <div class="glass-card">
             <div class="heart-container">
                 <div class="heart-shape">
-                    <img src="https://via.placeholder.com/300x300?text=Cargando..." id="album-photo">
+                    <img src="" id="album-photo" alt="Nuestro Momento">
                 </div>
             </div>
 
-            <div id="counter" class="counter-row"></div>
+            <div id="counter" class="counter-grid"></div>
 
-            <div class="info-grid">
-                <div class="info-box">
-                    <span class="label">☀️ Milan</span>
-                    <span id="m-temp" class="val">--°C</span>
-                    <span id="m-time" class="sub-val">00:00</span>
+            <div class="info-row">
+                <div class="info-item">
+                    <span class="city">☀️ Milan</span>
+                    <span id="m-temp" class="temp">--°C</span>
+                    <span id="m-time" class="time">00:00</span>
                 </div>
-                <div class="info-box">
-                    <span class="label">☀️ Bogotá</span>
-                    <span id="b-temp" class="val">--°C</span>
-                    <span id="b-time" class="sub-val">00:00</span>
+                <div class="info-item">
+                    <span class="city">☀️ Bogotá</span>
+                    <span id="b-temp" class="temp">--°C</span>
+                    <span id="b-time" class="time">00:00</span>
                 </div>
             </div>
 
-            <p class="romantic-quote">No sé hacia dónde vamos, pero me gusta el camino.</p>
+            <p class="quote">"No sé hacia dónde vamos, pero me gusta el camino."</p>
 
-            <div class="nav-stack">
-                <button class="btn-main" onclick="goToUniverse()">✨ Nuestro Universo (Juego)</button>
-                
+            <div class="actions">
+                <button class="btn-primary" onclick="goToUniverse()">✨ Nuestro Universo (Juego)</button>
                 <button class="btn-secondary" onclick="triggerUpload()">📸 Subir Nuestro Momento</button>
                 <input type="file" id="photo-input" style="display:none" accept="image/*" onchange="uploadPhoto(event)">
             </div>
         </div>
     </div>
 
-    <div id="star-map-page" class="page-layer">
-        <div class="glass-card game-card">
-            <div class="game-header-top">
-                <button class="back-link" onclick="goToHome()">← Volver</button>
-                <span id="game-status">Cargando...</span>
-            </div>
+    <div id="game-page" class="page-layer">
+        <div class="glass-card">
+            <button class="back-btn" onclick="goToHome()">← Volver</button>
+            <h2 id="game-status">Cargando...</h2>
             <div id="tic-tac-toe-grid"></div>
-            <div class="game-footer">
-                <button class="reset-btn" onclick="clearBoard()">Reiniciar Tablero</button>
-            </div>
+            <button class="reset-btn" onclick="clearBoard()">Reset</button>
         </div>
     </div>
 
