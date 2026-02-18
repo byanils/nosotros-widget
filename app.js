@@ -18,7 +18,7 @@ const imgbbKey = "072b34aeea28d1eab7f3865e6dcae66b";
 const startDate = new Date("2025-12-27T10:45:00");
 let currentUser = "";
 
-// --- Fonksiyonları Global Yap (Butonlar İçin Şart) ---
+// BUTONLARI ÇALIŞTIRAN GLOBAL BAĞLANTILAR
 window.loginUser = (user) => {
     currentUser = user;
     document.getElementById("login-overlay").classList.remove("active");
@@ -41,11 +41,10 @@ window.goToHome = () => {
 window.openPhotoModal = () => document.getElementById("photo-daily-modal").style.display = "block";
 window.closePhotoModal = () => document.getElementById("photo-daily-modal").style.display = "none";
 
-// --- Sayaç ---
+// SAYAÇ
 function update() {
     const now = new Date();
     const diff = Math.floor((now - startDate) / 1000);
-    if (diff < 0) return;
     const d = Math.floor(diff/86400), h = Math.floor((diff%86400)/3600), m = Math.floor((diff%3600)/60), s = diff%60;
     
     const counter = document.getElementById("counter");
@@ -57,58 +56,77 @@ function update() {
             <div class="time-unit"><span>${s}</span><small>SEG</small></div>
         `;
     }
-    const dayDiff = Math.floor((now - startDate) / 86400000);
     const msg = document.getElementById("message");
-    if(msg) msg.innerText = messages[dayDiff] || "Nuestro viaje continúa... 🤍";
+    if(msg) {
+        const dayDiff = Math.floor((now - startDate) / 86400000);
+        msg.innerText = messages[dayDiff] || "Cada día es un paso más en nuestra historia. 🤍";
+    }
 }
 
-// --- Evren ve Yıldızlar ---
+// ARKA PLAN YILDIZLARI
 function createStars() {
     const container = document.getElementById("stars-container");
     if (container.innerHTML !== "") return;
-    for(let i=0; i<100; i++) {
+    for(let i=0; i<150; i++) {
         const s = document.createElement("div");
-        s.className = "star";
         s.style.position = "absolute";
-        s.style.width = "2px"; s.style.height = "2px"; s.style.background = "white";
-        s.style.left = Math.random() * 100 + "%"; s.style.top = Math.random() * 100 + "%";
+        s.style.width = Math.random() * 3 + "px";
+        s.style.height = s.style.width;
+        s.style.background = "white";
+        s.style.left = Math.random() * 100 + "%";
+        s.style.top = Math.random() * 100 + "%";
         s.style.opacity = Math.random();
+        s.style.borderRadius = "50%";
         container.appendChild(s);
     }
 }
 
+// SANDIKLARIN OLUŞTURULMASI (S YOLU)
 function initUniverse() {
     const container = document.getElementById("vault-container");
     if (container.children.length > 0) return;
+
     vaults.forEach((v, i) => {
         const div = document.createElement("div");
         div.className = "chest";
+        
         const progress = i / (vaults.length - 1 || 1);
-        const yPos = 10 + (progress * 80);
-        const xPos = 50 + (Math.sin(progress * Math.PI * 3) * 35);
-        div.style.top = yPos + "%"; div.style.left = xPos + "%";
-        div.innerHTML = "✨";
-        div.onclick = () => {
-            if (new Date() < new Date(v.d)) alert("🔒 Bloqueado hasta: " + v.d);
-            else alert(v.t);
+        const yPos = 5 + (progress * 90); // Yükseklik %5'ten %95'e
+        const xPos = 50 + (Math.sin(progress * Math.PI * 4) * 35); // S kıvrımı
+        
+        div.style.top = yPos + "%";
+        div.style.left = xPos + "%";
+        div.setAttribute("data-date", v.d);
+        div.innerHTML = "🎁";
+
+        div.onclick = (e) => {
+            e.stopPropagation();
+            if (new Date() < new Date(v.d)) {
+                alert("🔒 Bloqueado hasta: " + v.d);
+            } else {
+                alert("💖 " + v.t);
+            }
         };
         container.appendChild(div);
     });
 }
 
-// --- Fotoğraflar ---
+// FOTOĞRAF YÜKLEME
 window.uploadSelfie = async (input) => {
     if(!input.files[0]) return;
     const status = document.getElementById("photo-status-msg");
-    status.innerText = "Subiendo... ⏳";
+    status.innerText = "Subiendo a las estrellas... ⏳";
+    
     const formData = new FormData();
     formData.append("image", input.files[0]);
+
     try {
         const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbKey}`, { method: "POST", body: formData });
         const json = await res.json();
         const today = new Date().toISOString().split('T')[0];
+        
         await setDoc(doc(db, "daily", today), { [currentUser]: json.data.url }, { merge: true });
-        status.innerText = "¡Enviado! ✨";
+        status.innerText = "¡Foto enviada! ✨";
     } catch (e) { status.innerText = "Error ❌"; }
 };
 
@@ -121,7 +139,8 @@ function listenToDailyPhotos() {
             if(data.anil) imgA.src = data.anil;
             if(data.camila) imgC.src = data.camila;
             if(data.anil && data.camila) {
-                imgA.classList.remove("locked"); imgC.classList.remove("locked");
+                imgA.classList.remove("locked"); 
+                imgC.classList.remove("locked");
             }
         }
     });
