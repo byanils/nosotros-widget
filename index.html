@@ -3,13 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nuestro Universo</title>
+    <title>Nuestro Universo - Premium</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="stars-container"></div>
-
     <div id="login-overlay" class="page-layer active">
         <div class="glass-card main-ui">
             <h1 class="hero-title">Nuestro Universo</h1>
@@ -31,25 +29,26 @@
                 <input type="file" id="photo-input" style="display:none" onchange="uploadPhoto(event)">
             </div>
 
-            <div id="counter" class="grid-layout"></div>
+            <div id="counter" class="info-grid"></div>
 
             <div class="info-grid">
                 <div class="info-box">
-                    <span class="label">Milan</span>
+                    <span class="label">☀️ Milan</span>
                     <span id="m-temp" class="val">--°C</span>
                     <span id="m-time" class="sub-val">00:00</span>
                 </div>
                 <div class="info-box">
-                    <span class="label">Bogotá</span>
+                    <span class="label">☀️ Bogotá</span>
                     <span id="b-temp" class="val">--°C</span>
                     <span id="b-time" class="sub-val">00:00</span>
                 </div>
             </div>
 
-            <p id="message" class="romantic-quote"></p>
+            <p id="message" class="romantic-quote">No sé hacia dónde vamos, pero me gusta el camino.</p>
 
             <div class="nav-stack">
                 <button class="btn-primary" onclick="goToUniverse()">✨ Nuestro Universo</button>
+                <button class="btn-secondary" onclick="triggerUpload()">📸 Nuestro Momento</button>
             </div>
         </div>
     </div>
@@ -58,22 +57,17 @@
         <div class="glass-card main-ui">
             <div class="header-row">
                 <button class="back-link" onclick="goToHome()">← Volver</button>
-                <h3>Nuestra Aventura</h3>
+                <h3 class="section-title">Nuestra Aventura</h3>
             </div>
             
-            <div class="vault-track">
-                <div class="line"></div>
-                <div id="vault-grid"></div>
-            </div>
-
             <div class="game-container">
                 <div class="game-header">
                     <span>X: <b id="score-anil">0</b></span>
-                    <span id="game-status">Turno...</span>
+                    <span id="game-status">Turno de: --</span>
                     <span>O: <b id="score-camila">0</b></span>
                 </div>
                 <div id="tic-tac-toe-grid"></div>
-                <button class="reset-link" onclick="clearBoard()">Reiniciar Juego</button>
+                <button class="reset-link" onclick="clearBoard()">Reiniciar Tablero</button>
             </div>
         </div>
     </div>
