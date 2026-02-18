@@ -1,8 +1,25 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+
+// --- CONFIG & CONSTANTS ---
+const firebaseConfig = {
+  apiKey: "AIzaSyCv12bIT9P0Ezho4CidHYfRLMqCN3LVq1o",
+  authDomain: "nuestro-universo-70d52.firebaseapp.com",
+  projectId: "nuestro-universo-70d52",
+  storageBucket: "nuestro-universo-70d52.firebasestorage.app",
+  messagingSenderId: "979401273604",
+  appId: "1:979401273604:web:ca547072488f746ca7e051",
+  measurementId: "G-NY9FG93DSY"
+};
+
+const imgbbKey = "072b34aeea28d1eab7f3865e6dcae66b";
 const myApiKey = "2e2dcf335d4c97a7c182b0c041eea672";
 const startDate = new Date("2025-12-27T10:45:00");
 const photos = ["foto1.jpg", "foto2.jpg", "foto3.jpg", "foto4.jpg", "foto5.jpg", "foto6.jpg", "foto7.jpg", "foto8.jpg", "foto9.jpg", "foto10.jpg"];
 let currentIdx = 0;
+let currentUser = "";
 
+// --- MESSAGES & VAULTS ---
 const messages = [
     "Este widget no pide nada. Solo está aquí. Como yo 🤍", "Hoy pensé en ti sin razón. Y me gustó.",
     "Tu nombre se siente tranquilo en mi mente.", "Aunque estemos lejos, hay algo que nunca se mueve.",
@@ -80,25 +97,84 @@ const vaults = [
     { d: "2026-04-15", t: "Hoy el world se hizo más bello contigo. Feliz cumpleaños, mi amor. Las distancias hoy son solo un detalle, mi corazón late hoy totalmente a tu lado. ¡Por muchos años más juntos!", b: true, lock: "El tesoro más grande espera el día más especial... 🌌✨" }
 ];
 
-function goToUniverse() { document.getElementById("main-page").classList.remove("active"); document.getElementById("star-map-page").classList.add("active"); initUniverse(); }
-function goToHome() { document.getElementById("star-map-page").classList.remove("active"); document.getElementById("main-page").classList.add("active"); }
+// --- INITIALIZE FIREBASE ---
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-// SİHİRLİ YILDIZ TOZU (MOUSE & TOUCH)
+// --- APP LOGIC ---
+window.loginUser = (user) => {
+    currentUser = user;
+    document.getElementById("login-overlay").classList.remove("active");
+    document.getElementById("main-page").classList.add("active");
+    listenToDailyPhotos();
+};
+
+window.goToUniverse = () => { 
+    document.getElementById("main-page").classList.remove("active"); 
+    document.getElementById("star-map-page").classList.add("active"); 
+    initUniverse(); 
+};
+
+window.goToHome = () => { 
+    document.getElementById("star-map-page").classList.remove("active"); 
+    document.getElementById("main-page").classList.add("active"); 
+};
+
+// --- PHOTO LOGIC (IMGBB) ---
+window.openPhotoModal = () => document.getElementById("photo-daily-modal").style.display = "block";
+window.closePhotoModal = () => document.getElementById("photo-daily-modal").style.display = "none";
+
+window.uploadSelfie = async (input) => {
+    if(!input.files[0]) return;
+    const msg = document.getElementById("photo-status-msg");
+    msg.innerText = "Subiendo... ⏳";
+    const formData = new FormData();
+    formData.append("image", input.files[0]);
+
+    try {
+        const res = await fetch(`https://api.imgbb.com/1/upload?expiration=86400&key=${imgbbKey}`, { method: "POST", body: formData });
+        const json = await res.json();
+        const url = json.data.url;
+        const today = new Date().toLocaleDateString('en-CA');
+        await setDoc(doc(db, "daily", today), { [currentUser]: url }, { merge: true });
+        msg.innerText = "¡Subido! Esperando a tu amor ❤️";
+    } catch (e) { msg.innerText = "Error ❌"; }
+};
+
+function listenToDailyPhotos() {
+    const today = new Date().toLocaleDateString('en-CA');
+    onSnapshot(doc(db, "daily", today), (snap) => {
+        if (snap.exists()) {
+            const data = snap.data();
+            const imgA = document.getElementById("img-anil");
+            const imgC = document.getElementById("img-camila");
+            if(data.anil) imgA.src = data.anil;
+            if(data.camila) imgC.src = data.camila;
+            if(data.anil && data.camila) {
+                imgA.classList.remove("locked"); imgC.classList.remove("locked");
+                document.getElementById("photo-status-msg").innerText = "✨ ¡Desbloqueado! ✨";
+            } else {
+                document.getElementById("photo-status-msg").innerText = "Falta una selfie... 📸";
+            }
+        } else {
+            document.getElementById("photo-status-msg").innerText = "Ninguna selfie hoy. 🔥";
+        }
+    });
+}
+
+// --- EFFECTS & WEATHER ---
 document.addEventListener('mousemove', (e) => createSparkle(e.clientX, e.clientY));
 document.addEventListener('touchmove', (e) => createSparkle(e.touches[0].clientX, e.touches[0].clientY));
 
 function createSparkle(x, y) {
-    const s = document.createElement("div");
-    s.className = "sparkle";
+    const s = document.createElement("div"); s.className = "sparkle";
     s.style.left = x + "px"; s.style.top = y + "px";
     document.body.appendChild(s);
     setTimeout(() => s.remove(), 700);
 }
 
-// KALP YAĞMURU
 function createFloatingHeart() {
-    const heart = document.createElement("div");
-    heart.innerHTML = "❤️"; heart.className = "floating-heart";
+    const heart = document.createElement("div"); heart.innerHTML = "❤️"; heart.className = "floating-heart";
     heart.style.left = Math.random() * 100 + "vw";
     heart.style.fontSize = (Math.random() * 20 + 10) + "px";
     heart.style.animationDuration = (Math.random() * 2 + 3) + "s";
@@ -106,17 +182,15 @@ function createFloatingHeart() {
     setTimeout(() => heart.remove(), 4000);
 }
 
-// GERÇEK HAVA DURUMU VERİSİ
 async function fetchWeather() {
     try {
-        const rMilan = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Milan,it&units=metric&appid=${myApiKey}`);
-        const dMilan = await rMilan.json();
-        const rBogota = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Bogota,co&units=metric&appid=${myApiKey}`);
-        const dBogota = await rBogota.json();
-        
-        if(dMilan.main) document.getElementById("milan-temp").innerText = `${Math.round(dMilan.main.temp)}°C ${getWEmoji(dMilan.weather[0].main)}`;
-        if(dBogota.main) document.getElementById("bogota-temp").innerText = `${Math.round(dBogota.main.temp)}°C ${getWEmoji(dBogota.weather[0].main)}`;
-    } catch(e) { console.log("Hava durumu verisi şu an alınamıyor."); }
+        const rM = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Milan,it&units=metric&appid=${myApiKey}`);
+        const dM = await rM.json();
+        const rB = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Bogota,co&units=metric&appid=${myApiKey}`);
+        const dB = await rB.json();
+        if(dM.main) document.getElementById("milan-temp").innerText = `${Math.round(dM.main.temp)}°C ${getWEmoji(dM.weather[0].main)}`;
+        if(dB.main) document.getElementById("bogota-temp").innerText = `${Math.round(dB.main.temp)}°C ${getWEmoji(dB.weather[0].main)}`;
+    } catch(e) {}
 }
 
 function getWEmoji(s) {
@@ -124,31 +198,22 @@ function getWEmoji(s) {
     return m[s] || "✨";
 }
 
-// İKİNCİ SAYFA VE SANDIKLARIN OLUŞUMU
+// --- CORE UPDATES ---
 function initUniverse() {
     const starContainer = document.getElementById("stars-container");
     const vaultContainer = document.getElementById("vault-container");
-    const now = new Date();
-
     if (vaultContainer.children.length > 0) return;
-
-    // Yıldızlar
     for (let i = 0; i < 80; i++) {
         const s = document.createElement("div"); s.className = "star";
         s.style.left = Math.random() * 100 + "vw"; s.style.top = Math.random() * 100 + "vh";
-        s.style.width = "2px"; s.style.height = "2px"; s.style.position = "absolute"; s.style.background = "white"; s.style.borderRadius = "50%";
         s.style.setProperty('--d', (Math.random() * 3 + 2) + "s");
         starContainer.appendChild(s);
     }
-
-    // Sandıklar (Hatalar düzeltildi)
     vaults.forEach((v, index) => {
-        const div = document.createElement("div"); 
-        div.className = `chest ${v.b ? 'birthday' : ''}`;
+        const div = document.createElement("div"); div.className = `chest ${v.b ? 'birthday' : ''}`;
         const ratio = index / (vaults.length - 1);
         div.style.top = (20 + (ratio * 58)) + "%";
         div.style.left = (82 - (ratio * 64) + (Math.sin(ratio * Math.PI) * 15)) + "%";
-
         div.onclick = (e) => { 
             e.stopPropagation(); 
             if (new Date() < new Date(v.d)) alert(v.b ? v.lock : "Se abrirá el: " + v.d); 
@@ -158,7 +223,6 @@ function initUniverse() {
     });
 }
 
-// SAAT VE SAYAÇ GÜNCELLEME
 function update() {
     const now = new Date();
     const milan = new Date(now.toLocaleString("en-US", {timeZone: "Europe/Rome"}));
@@ -170,15 +234,15 @@ function update() {
     if(bogota.getHours() >= 18 || bogota.getHours() < 6) document.body.classList.add("night-mode");
     else document.body.classList.remove("night-mode");
 
-    const diff = Math.floor((bogota - startDate) / 1000);
+    const diff = Math.floor((now - startDate) / 1000);
     const d = Math.floor(diff/86400), h = Math.floor((diff%86400)/3600), m = Math.floor((diff%3600)/60), s = diff%60;
     document.getElementById("counter").innerHTML = `<span>${d}d</span><span>${h}h</span><span>${m}m</span><span style="color:#ff4d4d">${s}s</span>`;
     
-    const dayDiff = Math.floor((new Date(bogota.getFullYear(), bogota.getMonth(), bogota.getDate()) - new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate())) / 86400000);
+    const dayDiff = Math.floor((new Date(now.getFullYear(), now.getMonth(), now.getDate()) - new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate())) / 86400000);
     document.getElementById("message").innerText = messages[dayDiff] || "Contigo, siempre. 🤍";
 }
 
-// Fotoğraf Değiştirici
+// Slideshow
 setInterval(() => {
     const img = document.getElementById("album-photo");
     if(img && document.getElementById("main-page").classList.contains("active")) {
@@ -187,11 +251,8 @@ setInterval(() => {
     }
 }, 4000);
 
-// Döngüsel Başlatıcılar
 setInterval(createFloatingHeart, 600);
-window.onload = () => { 
-    update(); 
-    setInterval(update, 1000); 
-    fetchWeather(); 
-    setInterval(fetchWeather, 3600000); 
-};
+setInterval(update, 1000);
+setInterval(fetchWeather, 3600000);
+fetchWeather();
+update();
