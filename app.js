@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
 import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
 
-// --- CONFIG & CONSTANTS ---
+// --- CONFIGURATION ---
 const firebaseConfig = {
   apiKey: "AIzaSyCv12bIT9P0Ezho4CidHYfRLMqCN3LVq1o",
   authDomain: "nuestro-universo-70d52.firebaseapp.com",
@@ -20,7 +20,7 @@ const photos = ["foto1.jpg", "foto2.jpg", "foto3.jpg", "foto4.jpg", "foto5.jpg",
 let currentIdx = 0;
 let currentUser = "";
 
-// --- ROMANTİK MESAJLAR LİSTESİ ---
+// --- TÜM GÜNLÜK MESAJLAR ---
 const messages = [
     "Este widget no pide nada. Solo está aquí. Como yo 🤍", "Hoy pensé en ti sin razón. Y me gustó.",
     "Tu nombre se siente tranquilo en mi mente.", "Aunque estemos lejos, hay algo que nunca se mueve.",
@@ -28,7 +28,7 @@ const messages = [
     "Hay días normales, y días donde apareces tú.", "Te pienso en silencio, y eso dice mucho.",
     "No necesito escribirte. Ya estás aquí.", "Diez días... y ya pareces una costumbre bonita.",
     "Hay personas que llegan despacio. Tú te quedaste.", "Me gusta cómo existes en mi vida.",
-    "No prome-to perfección. Prometo verdad.", "A veces el amor no habla. Acompaña.",
+    "No prome-to perfection. Prometo verdad.", "A veces el amor no habla. Acompaña.",
     "Quince días... ve ya te siento hogar.", "Milán aún no pasa, pero algo ya empieza.",
     "Hoy el world fue un poco más suave.", "No hiciste nada spezial hoy. Y aún así...",
     "Hay calma cuando pienso en ti.", "Si esto es esperar, no me quejo.",
@@ -47,12 +47,7 @@ const messages = [
     "No nezesito razones para pensarte.", "El tiempo no nos separa. Nos prueba.",
     "Hay recuerdos ki aún no existen.", "Y aun así ya duelen bonito.",
     "Me quedo.", 
-    `Hoy es San Valentín 🤍
-Y no estás aquí, pero estás en todo.
-En cada segundo que pasa,
-en cada recuerdo de Milán,
-en cada latido silencioso.
-Feliz San Valentín, Camila.`,
+    `Hoy es San Valentín 🤍. No estás aquí, pero estás en todo. Feliz San Valentín, Camila.`,
     "A veces no hay ki decir nada. Solo estar.", "Eres mi notificación favorita.",
     "No sé hazia dónde vamos, pero me gusta el camino.", "Hoy el café supo a ti. Dulce ve nezesario.",
     "Hay personas ki son canziones. Tú eres mi playlist entera.", "No te buzké, pero te encontré en el momento exacto.",
@@ -63,17 +58,17 @@ Feliz San Valentín, Camila.`,
     "Eres ese rincón de luz en mis días grises.", "Pensarte es como un abrazo a distanzia.",
     "No hay kilómetros ki puedan con lo ki hemos creado.", "Hoy Bogotá se sintió más cerca de ti.",
     "Ochenta días... ve la magia sigue intacta.", "Me gusta cómo me hazes sentir, incluso sin estar cerca.",
-    "Eres mi pensamiento más recurrente.", "A veces el amor es saber ki alguien te espera.",
+    "Eres mi de pensamiento más recurrente.", "A veces el amor es saber ki alguien te espera.",
     "No importa el mapa, importa el destino. Y mi destino eres tú.", "Grazias por ser mi lugar seguro.",
     "Noventa días... tres meses de pura verdad.", "Cada día es una página nueva. Me gusta nuestra historia.",
     "No eres un sueño, eres mi reality favorita.", "Incluso en el silenzio, te escucho.",
     "No te idealizo, te elijo.", "Eres mi pausa favorita en este world ruidoso.",
     "Cien días... ve mi corazón sigue diziendo tu nombre.", "Me gusta lo ki somos, así sin filtros.",
-    "Hay días ki solo se arreglan hablándote.", "Eres el motivo de mi mejor sonrisa hoy.",
+    "Hay días ki solo se arreglan hablándote.", "Eres el motivo de mi de mejor sonrisa hoy.",
     "No importa qué tan lejos, te llevo en cada paso.", "Tu paz mi refugio favorito.",
     "Eres la casualidad más bonita de mi vida.", "A veces solo nezesito saber ki estás ahí.",
     "A veces lo más valiente es quedarse.", "Contigo la vida no pesa.",
-    "Eres mi mejor 'hola' ve mi 'adiós' daha diffizil.", "Tu amor es mi calma en medio del ruido.",
+    "Eres mi de mejor 'hola' ve mi 'adiós' daha diffizil.", "Tu amor es mi calma en medio del ruido.",
     "No eres perfecta, eres real. Y eso me encanta.", "Grazias por elegirme a mí de nuevo.",
     "108 días... ve esto es solo el comienzo. 🤍"
 ];
@@ -85,17 +80,15 @@ const vaults = [
     { d: "2026-03-01", t: "Mi alma solo se siente 'en casa' a tu lado. Eres mi puerto más seguro." },
     { d: "2026-03-08", t: "Cada día me despierto y elijo amarte de nuevo. Es la decisión más hermosa." },
     { d: "2026-03-15", t: "Cuando cierro los ojos, el vacío desaparece. Solo quedamos tú y yo." },
-    { d: "2026-03-22", t: "Cada segundo que pasa nos acerca un paso más a ese gran abrazo." },
     { d: "2026-03-29", t: "Nuestra historia no conoce fronteras. Miramos el mismo cielo." },
-    { d: "2026-04-05", t: "Tu amor es la melodía más tranquila dentro de mí." },
-    { d: "2026-04-15", t: "¡Feliz Cumpleaños, mi amor! Mi corazón late hoy totalmente a tu lado.", b: true, lock: "El tesoro espera el 15 de Abril... 🌌✨" }
+    { d: "2026-04-15", t: "¡Feliz Cumpleaños, mi amor! Mi tesoro eres tú.", b: true, lock: "Abrir el 15 de Abril... 🌌" }
 ];
 
-// --- INITIALIZE FIREBASE ---
+// --- INITIALIZE ---
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// --- NAVIGATION & LOGIN ---
+// --- NAVIGATION ---
 window.loginUser = (user) => {
     currentUser = user;
     document.getElementById("login-overlay").style.display = "none";
@@ -103,202 +96,131 @@ window.loginUser = (user) => {
     listenToDailyPhotos();
 };
 
-window.goToUniverse = () => { 
-    document.getElementById("main-page").classList.remove("active"); 
-    document.getElementById("star-map-page").classList.add("active"); 
-    initUniverse(); 
+window.goToUniverse = () => {
+    document.getElementById("main-page").classList.remove("active");
+    document.getElementById("star-map-page").classList.add("active");
+    initUniverse();
 };
 
-window.goToHome = () => { 
-    document.getElementById("star-map-page").classList.remove("active"); 
-    document.getElementById("main-page").classList.add("active"); 
+window.goToHome = () => {
+    document.getElementById("star-map-page").classList.remove("active");
+    document.getElementById("main-page").classList.add("active");
 };
 
 window.openPhotoModal = () => document.getElementById("photo-daily-modal").style.display = "block";
 window.closePhotoModal = () => document.getElementById("photo-daily-modal").style.display = "none";
 
-// --- PHOTO UPLOAD LOGIC ---
-window.uploadSelfie = async (input) => {
-    if(!input.files[0]) return;
-    const msg = document.getElementById("photo-status-msg");
-    msg.innerText = "Subiendo... ⏳";
-    
-    const formData = new FormData();
-    formData.append("image", input.files[0]);
-
-    try {
-        const res = await fetch(`https://api.imgbb.com/1/upload?expiration=86400&key=${imgbbKey}`, { 
-            method: "POST", 
-            body: formData 
-        });
-        const json = await res.json();
-        const url = json.data.url;
-        
-        const today = new Date().toLocaleDateString('en-CA');
-        await setDoc(doc(db, "daily", today), { [currentUser]: url }, { merge: true });
-        msg.innerText = "¡Subido con éxito! ❤️";
-    } catch (e) { 
-        msg.innerText = "Error al subir ❌";
-        console.error(e);
-    }
-};
-
-function listenToDailyPhotos() {
-    const today = new Date().toLocaleDateString('en-CA');
-    onSnapshot(doc(db, "daily", today), (snap) => {
-        const imgA = document.getElementById("img-anil");
-        const imgC = document.getElementById("img-camila");
-        const statusMsg = document.getElementById("photo-status-msg");
-        
-        if (snap.exists()) {
-            const data = snap.data();
-            if(data.anil) imgA.src = data.anil;
-            if(data.camila) imgC.src = data.camila;
-            
-            if(data.anil && data.camila) {
-                imgA.classList.remove("locked"); 
-                imgC.classList.remove("locked");
-                statusMsg.innerText = "✨ ¡Ambos han subido fotos hoy! ✨";
-            } else {
-                statusMsg.innerText = "Falta una selfie para desbloquear... 📸";
-            }
-        } else {
-            statusMsg.innerText = "Nadie ha subido selfie hoy. 🔥";
-        }
-    });
-}
-
-// --- CLOCK & COUNTER ---
+// --- SAYAÇ VE SAAT ---
 function update() {
     const now = new Date();
     
-    // Saatleri ayarla (Milan ve Bogota)
+    // Saatler
     const milanTime = new Date(now.toLocaleString("en-US", {timeZone: "Europe/Rome"}));
     const bogotaTime = new Date(now.toLocaleString("en-US", {timeZone: "America/Bogota"}));
     
     document.getElementById("milan-time").innerText = milanTime.getHours() + ":" + String(milanTime.getMinutes()).padStart(2, '0');
     document.getElementById("bogota-time").innerText = bogotaTime.getHours() + ":" + String(bogotaTime.getMinutes()).padStart(2, '0');
 
-    // Gece modu kontrolü (Bogota saatine göre)
-    if(bogotaTime.getHours() >= 18 || bogotaTime.getHours() < 6) {
-        document.body.classList.add("night-mode");
-    } else {
-        document.body.classList.remove("night-mode");
-    }
-
-    // Sayaç Hesaplama
+    // Büyük Sayaç
     const diff = Math.floor((now - startDate) / 1000);
     const d = Math.floor(diff/86400);
     const h = Math.floor((diff%86400)/3600);
     const m = Math.floor((diff%3600)/60);
     const s = diff%60;
     
-    // Sayaç HTML güncelleme (Yeni büyük tasarım)
     document.getElementById("counter").innerHTML = `
         <span>${d}<small>Gün</small></span>
         <span>${h}<small>Saat</small></span>
         <span>${m}<small>Dak</small></span>
-        <span style="color:var(--primary-pink)">${s}<small>Sn</small></span>
+        <span style="color:#ff4d4d">${s}<small>Sn</small></span>
     `;
-    
-    // Günlük Mesaj Seçimi
-    const dayDiff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+
+    // Günlük Mesaj
+    const dayDiff = Math.floor((now - startDate) / 86400000);
     document.getElementById("message").innerText = messages[dayDiff] || "Contigo, siempre. 🤍";
 }
 
-// --- WEATHER & EFFECTS ---
+// --- HAVA DURUMU ---
 async function fetchWeather() {
     try {
         const rM = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Milan,it&units=metric&appid=${myApiKey}`);
         const dM = await rM.json();
         const rB = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Bogota,co&units=metric&appid=${myApiKey}`);
         const dB = await rB.json();
-        
         if(dM.main) document.getElementById("milan-temp").innerText = `${Math.round(dM.main.temp)}°C`;
         if(dB.main) document.getElementById("bogota-temp").innerText = `${Math.round(dB.main.temp)}°C`;
-    } catch(e) { console.log("Hava durumu hatası."); }
+    } catch(e) { console.error("Hava durumu çekilemedi."); }
 }
 
-function createFloatingHeart() {
-    const heart = document.createElement("div");
-    heart.innerHTML = "❤️";
-    heart.className = "floating-heart";
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.fontSize = (Math.random() * 20 + 10) + "px";
-    heart.style.animationDuration = (Math.random() * 2 + 3) + "s";
-    document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 4000);
-}
-
-// --- UNIVERSE INITIALIZATION ---
+// --- EVREN DÜZENİ ---
 function initUniverse() {
-    const starContainer = document.getElementById("stars-container");
     const vaultContainer = document.getElementById("vault-container");
-    
-    if (vaultContainer.innerHTML !== "") return; // Tekrar oluşmasını engelle
+    if (vaultContainer.innerHTML !== "") return;
 
-    // Yıldızları oluştur
-    for (let i = 0; i < 80; i++) {
-        const s = document.createElement("div");
-        s.style.position = "absolute";
-        s.style.width = "2px";
-        s.style.height = "2px";
-        s.style.background = "white";
-        s.style.borderRadius = "50%";
-        s.style.left = Math.random() * 100 + "vw";
-        s.style.top = Math.random() * 100 + "vh";
-        s.style.opacity = Math.random();
-        starContainer.appendChild(s);
-    }
-
-    // Sandıkları yerleştir
+    // Sandıkları Bogotá'dan Milán'a doğru diyagonal diz
     vaults.forEach((v, index) => {
         const div = document.createElement("div");
-        div.className = `chest ${v.b ? 'birthday' : ''}`;
-        
+        div.className = "chest";
         const ratio = index / (vaults.length - 1);
-        div.style.top = (20 + (ratio * 58)) + "%";
-        div.style.left = (82 - (ratio * 64) + (Math.sin(ratio * Math.PI) * 15)) + "%";
+        
+        // Çapraz pozisyonlama: Sol alt (Bogota) -> Sağ üst (Milan)
+        div.style.bottom = (20 + (ratio * 60)) + "%";
+        div.style.left = (20 + (ratio * 60)) + "%";
 
-        div.onclick = (e) => { 
-            e.stopPropagation(); 
-            if (new Date() < new Date(v.d)) {
-                alert(v.b ? v.lock : "Se abrirá el: " + v.d); 
-            } else {
-                alert(v.t); 
-            }
+        div.onclick = (e) => {
+            e.stopPropagation();
+            if (new Date() < new Date(v.d)) alert("🔒 Se abrirá el: " + v.d);
+            else alert("❤️ " + v.t);
         };
         vaultContainer.appendChild(div);
     });
+
+    // Yıldızlar
+    const starWrap = document.getElementById("stars-container");
+    for(let i=0; i<100; i++) {
+        const s = document.createElement("div");
+        s.className = "star";
+        s.style.left = Math.random() * 100 + "vw";
+        s.style.top = Math.random() * 100 + "vh";
+        s.style.opacity = Math.random();
+        starWrap.appendChild(s);
+    }
 }
 
-// --- MOUSE TRACKING SPARKLE ---
-document.addEventListener('mousemove', (e) => {
-    const s = document.createElement("div");
-    s.className = "sparkle";
-    s.style.left = e.clientX + "px";
-    s.style.top = e.clientY + "px";
-    document.body.appendChild(s);
-    setTimeout(() => s.remove(), 700);
-});
+// --- FOTOĞRAF YÖNETİMİ ---
+window.uploadSelfie = async (input) => {
+    if(!input.files[0]) return;
+    const status = document.getElementById("photo-status-msg");
+    status.innerText = "Subiendo... ⏳";
 
-// --- SLIDESHOW ---
-setInterval(() => {
-    const img = document.getElementById("album-photo");
-    if(img && document.getElementById("main-page").classList.contains("active")) {
-        img.style.opacity = 0;
-        setTimeout(() => {
-            currentIdx = (currentIdx + 1) % photos.length;
-            img.src = photos[currentIdx];
-            img.style.opacity = 1;
-        }, 500);
-    }
-}, 4000);
+    const formData = new FormData();
+    formData.append("image", input.files[0]);
 
-// --- START APP ---
+    try {
+        const res = await fetch(`https://api.imgbb.com/1/upload?expiration=86400&key=${imgbbKey}`, { method: "POST", body: formData });
+        const json = await res.json();
+        const today = new Date().toLocaleDateString('en-CA');
+        await setDoc(doc(db, "daily", today), { [currentUser]: json.data.url }, { merge: true });
+        status.innerText = "¡Listo! ❤️";
+    } catch (e) { status.innerText = "Error ❌"; }
+};
+
+function listenToDailyPhotos() {
+    const today = new Date().toLocaleDateString('en-CA');
+    onSnapshot(doc(db, "daily", today), (snap) => {
+        const data = snap.data() || {};
+        const imgA = document.getElementById("img-anil"), imgC = document.getElementById("img-camila");
+        if(data.anil) imgA.src = data.anil;
+        if(data.camila) imgC.src = data.camila;
+        if(data.anil && data.camila) {
+            imgA.classList.remove("locked");
+            imgC.classList.remove("locked");
+            document.getElementById("photo-status-msg").innerText = "✨ ¡Desbloqueado! ✨";
+        }
+    });
+}
+
+// --- START ---
 setInterval(update, 1000);
-setInterval(createFloatingHeart, 600);
-setInterval(fetchWeather, 3600000); // Saat başı hava durumu güncelle
-
-update();
 fetchWeather();
+update();
