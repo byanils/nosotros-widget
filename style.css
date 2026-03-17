@@ -11,6 +11,29 @@ body.night-mode { background: #1a1a2e; color: white; }
 
 .container { text-align: center; width: 90%; max-width: 400px; z-index: 20; position: relative; }
 
+/* LOGIN SCREEN */
+.login-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 1000; opacity: 0; pointer-events: none; transition: 0.5s;
+}
+.login-overlay.active { opacity: 1; pointer-events: auto; }
+.login-card {
+    background: white; padding: 30px; border-radius: 20px;
+    text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    color: #333; transform: scale(0.9); transition: 0.5s;
+}
+.login-overlay.active .login-card { transform: scale(1); }
+.login-card h2 { margin-bottom: 20px; font-size: 2rem; color: #ff4d4d; }
+.login-options { display: flex; gap: 15px; justify-content: center; }
+.login-options button {
+    padding: 10px 25px; border: 2px solid #ff4d4d; background: none;
+    border-radius: 50px; cursor: pointer; font-size: 1.2rem;
+    transition: 0.3s; color: #ff4d4d;
+}
+.login-options button:hover { background: #ff4d4d; color: white; }
+
 /* KALP VE FOTOĞRAF KORUMASI */
 .heart-container { 
     width: 220px; height: 200px; margin: 0 auto 15px; position: relative; animation: heartbeat 1.5s infinite; 
@@ -34,8 +57,15 @@ body.night-mode { background: #1a1a2e; color: white; }
 
 #counter { display: flex; justify-content: space-around; font-size: 1.4rem; margin: 10px 0; font-weight: bold; }
 #message { font-size: 1rem; margin-bottom: 15px; white-space: pre-line; line-height: 1.3; min-height: 40px; padding: 0 5px; }
-#star-portal { cursor: pointer; border: 1px solid #ff4d4d; padding: 8px 20px; border-radius: 50px; display: inline-block; transition: 0.3s; }
-#star-portal:hover { background: rgba(255, 77, 77, 0.2); }
+
+#selfie-portal, #star-portal { 
+    cursor: pointer; border: 1px solid #ff4d4d; padding: 8px 20px; border-radius: 50px; 
+    display: inline-block; transition: 0.3s; margin: 5px;
+}
+#selfie-portal:hover, #star-portal:hover { background: rgba(255, 77, 77, 0.2); }
+
+.portal-star { font-size: 1.2rem; }
+.portal-text { font-size: 0.9rem; margin: 0; }
 
 /* ETKİLEŞİMLİ EFEKTLER */
 .sparkle { position: absolute; width: 5px; height: 5px; background: gold; border-radius: 50%; pointer-events: none; z-index: 9999; box-shadow: 0 0 8px gold; animation: sparkle-fade 0.7s ease-out forwards; }
@@ -67,4 +97,38 @@ body.night-mode { background: #1a1a2e; color: white; }
 .city-star { color: white; position: absolute; font-weight: bold; text-shadow: 0 0 10px black; z-index: 10; }
 #milan-star { top: 10%; right: 10%; }
 #bogota-star { bottom: 8%; left: 10%; }
-#back-btn { position: absolute; top: 25px; left: 20px; color: white; background: none; border: none; font-size: 24px; z-index: 200; cursor: pointer; }
+#back-btn, #selfie-back-btn { position: absolute; top: 25px; left: 20px; color: white; background: none; border: none; font-size: 24px; z-index: 200; cursor: pointer; }
+
+/* SELFIE PAGE */
+#selfie-page { background: #f8f9fa; color: #333; }
+body.night-mode #selfie-page { background: #1a1a2e; color: white; }
+
+.selfie-container { text-align: center; width: 90%; max-width: 500px; }
+.selfie-container h3 { font-size: 2rem; margin-bottom: 10px; }
+.reset-text { font-size: 0.8rem; opacity: 0.6; margin-bottom: 20px; }
+
+.selfie-grid { display: flex; gap: 20px; justify-content: center; margin-bottom: 30px; }
+.selfie-box { flex: 1; display: flex; flex-direction: column; align-items: center; }
+.selfie-box span { font-size: 1.2rem; margin-bottom: 10px; font-weight: bold; }
+.photo-wrapper { 
+    width: 150px; height: 150px; border-radius: 15px; overflow: hidden; 
+    background: rgba(0,0,0,0.1); position: relative; border: 2px dashed #ff4d4d;
+}
+.photo-wrapper img { width: 100%; height: 100%; object-fit: cover; display: none; }
+.photo-wrapper img.active { display: block; }
+.photo-wrapper img.blurred { filter: blur(15px); }
+.placeholder { 
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+    display: flex; justify-content: center; align-items: center; font-size: 0.8rem; opacity: 0.5;
+}
+
+#upload-btn {
+    padding: 12px 30px; background: #ff4d4d; color: white; border: none;
+    border-radius: 50px; font-size: 1.1rem; cursor: pointer; transition: 0.3s;
+}
+#upload-btn:hover { background: #ff3333; transform: scale(1.05); }
+
+@media (max-width: 480px) {
+    .selfie-grid { flex-direction: column; align-items: center; }
+    .photo-wrapper { width: 200px; height: 200px; }
+}

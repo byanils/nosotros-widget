@@ -9,7 +9,18 @@
 </head>
 <body>
 
-    <div id="main-page" class="page-layer active">
+    <!-- Giriş Ekranı -->
+    <div id="login-screen" class="login-overlay active">
+        <div class="login-card">
+            <h2>¿Quién eres? ✨</h2>
+            <div class="login-options">
+                <button onclick="login('Anıl')">Anıl</button>
+                <button onclick="login('Camila')">Camila</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-page" class="page-layer">
         <div class="container">
             <div class="heart-container">
                 <img id="album-photo" src="foto1.jpg" alt="Nosotros">
@@ -33,6 +44,12 @@
 
             <div id="message">Cargando...</div>
             
+            <!-- Selfie Butonu -->
+            <div id="selfie-portal" onclick="openSelfie()">
+                <span class="portal-star">📸</span>
+                <p class="portal-text">Daily Selfie</p>
+            </div>
+
             <div id="star-portal" onclick="goToUniverse()">
                 <span class="portal-star">✨</span>
                 <p class="portal-text">Nuestro Universo</p>
@@ -51,6 +68,37 @@
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <!-- Selfie Ekranı -->
+    <div id="selfie-page" class="page-layer">
+        <button id="selfie-back-btn" onclick="closeSelfie()">← Volver</button>
+        <div class="selfie-container">
+            <h3>Nuestros Momentos 🤳</h3>
+            <p id="reset-info" class="reset-text"></p>
+            
+            <div class="selfie-grid">
+                <div class="selfie-box" id="anil-selfie-box">
+                    <span>Anıl</span>
+                    <div class="photo-wrapper">
+                        <img id="anil-photo" src="" alt="Anıl Selfie" class="blurred">
+                        <div id="anil-placeholder" class="placeholder">No photo yet</div>
+                    </div>
+                </div>
+                <div class="selfie-box" id="camila-selfie-box">
+                    <span>Camila</span>
+                    <div class="photo-wrapper">
+                        <img id="camila-photo" src="" alt="Camila Selfie" class="blurred">
+                        <div id="camila-placeholder" class="placeholder">No photo yet</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="upload-section">
+                <input type="file" id="selfie-input" accept="image/*" style="display: none;">
+                <button id="upload-btn" onclick="document.getElementById('selfie-input').click()">Subir mi foto de hoy</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
 </body>
 </html>
