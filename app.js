@@ -7,6 +7,11 @@ const photos = ["foto1.jpg", "foto2.jpg", "foto3.jpg", "foto4.jpg", "foto5.jpg",
 let currentIdx = 0;
 let currentUser = null;
 
+// OYUN DEĞİŞKENLERİ
+let board = Array(9).fill("");
+let turn = "Anıl"; // Oyuna Anıl başlar (varsayılan)
+let scores = { "Anıl": 0, "Camila": 0 };
+
 // GİRİŞ FONKSİYONU
 function login(user) {
     currentUser = user;
@@ -15,6 +20,7 @@ function login(user) {
     localStorage.setItem("nosotros_user", user);
     checkDailyReset();
     updateSelfieUI();
+    loadGameState();
 }
 
 function goToUniverse() { 
@@ -39,12 +45,146 @@ function closeSelfie() {
     document.getElementById("main-page").classList.add("active");
 }
 
+function openGame() {
+    document.getElementById("main-page").classList.remove("active");
+    document.getElementById("game-page").classList.add("active");
+    loadGameState();
+    updateGameUI();
+}
+
+function closeGame() {
+    document.getElementById("game-page").classList.remove("active");
+    document.getElementById("main-page").classList.add("active");
+}
+
 // Export functions to window for onclick handlers
 window.login = login;
 window.goToUniverse = goToUniverse;
 window.goToHome = goToHome;
 window.openSelfie = openSelfie;
 window.closeSelfie = closeSelfie;
+window.openGame = openGame;
+window.closeGame = closeGame;
+window.resetBoard = resetBoard;
+
+// XOX OYUN MANTIĞI
+function loadGameState() {
+    const savedBoard = localStorage.getItem("nosotros_game_board");
+    const savedTurn = localStorage.getItem("nosotros_game_turn");
+    const savedScores = localStorage.getItem("nosotros_game_scores");
+
+    if (savedBoard) board = JSON.parse(savedBoard);
+    if (savedTurn) turn = savedTurn;
+    if (savedScores) scores = JSON.parse(savedScores);
+    
+    updateGameUI();
+}
+
+function saveGameState() {
+    localStorage.setItem("nosotros_game_board", JSON.stringify(board));
+    localStorage.setItem("nosotros_game_turn", turn);
+    localStorage.setItem("nosotros_game_scores", JSON.stringify(scores));
+}
+
+function updateGameUI() {
+    const cells = document.querySelectorAll(".cell");
+    const winningPattern = getWinningPattern();
+
+    cells.forEach((cell, i) => {
+        cell.innerText = board[i];
+        cell.className = "cell" + (board[i] ? " taken" : "");
+        if (winningPattern && winningPattern.includes(i)) {
+            cell.classList.add("winner");
+        }
+    });
+
+    const turnEl = document.getElementById("game-turn");
+    const scoreEl = document.getElementById("game-score");
+    
+    if (turnEl) {
+        if (checkWinner()) {
+            const winner = board[getWinningPattern()[0]] === "X" ? "Anıl" : "Camila";
+            turnEl.innerText = `¡${winner} ha ganado! 🎉`;
+        } else if (board.every(cell => cell !== "")) {
+            turnEl.innerText = "¡Empate! 🤝";
+        } else if (turn === currentUser) {
+            turnEl.innerText = "¡Es tu turno! ✨";
+        } else {
+            turnEl.innerText = `Turno de ${turn} ⏳`;
+        }
+    }
+
+    if (scoreEl) scoreEl.innerText = `Anıl: ${scores["Anıl"]} - Camila: ${scores["Camila"]}`;
+}
+
+function makeMove(index) {
+    if (board[index] !== "" || turn !== currentUser || checkWinner()) return;
+
+    board[index] = (turn === "Anıl" ? "X" : "O");
+    
+    if (checkWinner()) {
+        scores[turn]++;
+        saveGameState();
+        updateGameUI();
+        // 2 saniye sonra otomatik tahtayı temizle (skor kalsın)
+        setTimeout(() => resetBoard(false), 2000);
+    } else if (board.every(cell => cell !== "")) {
+        saveGameState();
+        updateGameUI();
+        setTimeout(() => resetBoard(false), 2000);
+    } else {
+        turn = (turn === "Anıl" ? "Camila" : "Anıl");
+        saveGameState();
+        updateGameUI();
+    }
+}
+
+function getWinningPattern() {
+    const winPatterns = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8], // Satırlar
+        [0, 3, 6], [1, 4, 7], [2, 5, 8], // Sütunlar
+        [0, 4, 8], [2, 4, 6]             // Çaprazlar
+    ];
+    for (let pattern of winPatterns) {
+        const [a, b, c] = pattern;
+        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+            return pattern;
+        }
+    }
+    return null;
+}
+
+function checkWinner() {
+    return getWinningPattern() !== null;
+}
+
+function resetBoard(resetScores = true) {
+    board = Array(9).fill("");
+    if (resetScores) {
+        scores = { "Anıl": 0, "Camila": 0 };
+    }
+    saveGameState();
+    updateGameUI();
+}
+
+// Cell click events
+document.addEventListener("DOMContentLoaded", () => {
+    const boardEl = document.getElementById("game-board");
+    if (boardEl) {
+        boardEl.addEventListener("click", (e) => {
+            if (e.target.classList.contains("cell")) {
+                makeMove(parseInt(e.target.dataset.index));
+            }
+        });
+    }
+});
+
+// Depolama değişikliğini dinle (Diğer sekme/kullanıcı oynarsa güncelle)
+window.addEventListener('storage', (e) => {
+    if (e.key && e.key.startsWith('nosotros_game_')) {
+        loadGameState();
+    }
+});
 
 // SİHİRLİ YILDIZ TOZU (MOUSE & TOUCH)
 document.addEventListener('mousemove', (e) => createSparkle(e.clientX, e.clientY));

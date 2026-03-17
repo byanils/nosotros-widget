@@ -34,6 +34,18 @@ body.night-mode { background: #1a1a2e; color: white; }
 }
 .login-options button:hover { background: #ff4d4d; color: white; }
 
+/* GAME BUTTON */
+#game-portal {
+    position: absolute; top: 20px; right: 20px;
+    cursor: pointer; z-index: 50; transition: 0.3s;
+    background: rgba(255, 255, 255, 0.2);
+    width: 50px; height: 50px; border-radius: 50%;
+    display: flex; justify-content: center; align-items: center;
+    backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.3);
+}
+#game-portal:hover { transform: scale(1.1) rotate(15deg); background: rgba(255, 255, 255, 0.3); }
+.game-icon { font-size: 1.5rem; }
+
 /* KALP VE FOTOĞRAF KORUMASI */
 .heart-container { 
     width: 220px; height: 200px; margin: 0 auto 15px; position: relative; animation: heartbeat 1.5s infinite; 
@@ -97,14 +109,48 @@ body.night-mode { background: #1a1a2e; color: white; }
 .city-star { color: white; position: absolute; font-weight: bold; text-shadow: 0 0 10px black; z-index: 10; }
 #milan-star { top: 10%; right: 10%; }
 #bogota-star { bottom: 8%; left: 10%; }
-#back-btn, #selfie-back-btn { position: absolute; top: 25px; left: 20px; color: white; background: none; border: none; font-size: 24px; z-index: 200; cursor: pointer; }
+#back-btn, #selfie-back-btn, #game-back-btn { position: absolute; top: 25px; left: 20px; color: white; background: none; border: none; font-size: 24px; z-index: 200; cursor: pointer; }
 
 /* SELFIE PAGE */
-#selfie-page { background: #f8f9fa; color: #333; }
-body.night-mode #selfie-page { background: #1a1a2e; color: white; }
+#selfie-page, #game-page { background: #f8f9fa; color: #333; }
+body.night-mode #selfie-page, body.night-mode #game-page { background: #1a1a2e; color: white; }
 
-.selfie-container { text-align: center; width: 90%; max-width: 500px; }
-.selfie-container h3 { font-size: 2rem; margin-bottom: 10px; }
+.selfie-container, .game-container { text-align: center; width: 90%; max-width: 500px; display: flex; flex-direction: column; align-items: center; }
+.selfie-container h3, .game-container h3 { font-size: 2.5rem; margin-bottom: 20px; color: #ff4d4d; }
+
+/* TIC TAC TOE BOARD */
+#game-info { margin-bottom: 20px; }
+#game-turn { font-size: 1.5rem; font-weight: bold; margin-bottom: 5px; color: #ff4d4d; }
+#game-score { font-size: 1.1rem; opacity: 0.8; }
+
+.tic-tac-toe-board {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    width: 320px; height: 320px; margin-bottom: 30px;
+}
+.cell {
+    background: white; border: 2px solid #ff4d4d; border-radius: 15px;
+    display: flex; justify-content: center; align-items: center;
+    font-size: 3rem; font-weight: bold; cursor: pointer; transition: 0.2s;
+    color: #ff4d4d; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+body.night-mode .cell { background: #1a1a2e; color: #ff4d4d; border-color: #ff4d4d; }
+.cell:hover { background: rgba(255, 77, 77, 0.1); transform: translateY(-2px); }
+.cell.taken { cursor: not-allowed; }
+.cell.winner { background: #ff4d4d !important; color: white !important; animation: win-pulse 0.5s infinite alternate; }
+@keyframes win-pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
+
+#reset-game-btn {
+    padding: 10px 25px; background: #ff4d4d; color: white; border: none;
+    border-radius: 50px; cursor: pointer; font-size: 1rem; transition: 0.3s;
+}
+#reset-game-btn:hover { background: #ff3333; transform: scale(1.05); }
+
+@media (max-width: 480px) {
+    .tic-tac-toe-board { width: 280px; height: 280px; }
+    .cell { font-size: 2.5rem; }
+}
+
+/* SELFIE PAGE ADDITIONAL */
 .reset-text { font-size: 0.8rem; opacity: 0.6; margin-bottom: 20px; }
 
 .selfie-grid { display: flex; gap: 20px; justify-content: center; margin-bottom: 30px; }

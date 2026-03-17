@@ -21,6 +21,10 @@
     </div>
 
     <div id="main-page" class="page-layer">
+        <!-- Oyun Butonu (Sağ Üst) -->
+        <div id="game-portal" onclick="openGame()">
+            <span class="game-icon">🎮</span>
+        </div>
         <div class="container">
             <div class="heart-container">
                 <img id="album-photo" src="foto1.jpg" alt="Nosotros">
@@ -96,6 +100,31 @@
                 <input type="file" id="selfie-input" accept="image/*" style="display: none;">
                 <button id="upload-btn" onclick="document.getElementById('selfie-input').click()">Subir mi foto de hoy</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Oyun Ekranı (XOX) -->
+    <div id="game-page" class="page-layer">
+        <button id="game-back-btn" onclick="closeGame()">← Volver</button>
+        <div class="game-container">
+            <h3>Tic-Tac-Toe 🎮</h3>
+            <div id="game-info">
+                <p id="game-turn">Cargando...</p>
+                <p id="game-score">Anıl: 0 - Camila: 0</p>
+            </div>
+            <div class="tic-tac-toe-board" id="game-board">
+                <!-- 9 cells -->
+                <div class="cell" data-index="0"></div>
+                <div class="cell" data-index="1"></div>
+                <div class="cell" data-index="2"></div>
+                <div class="cell" data-index="3"></div>
+                <div class="cell" data-index="4"></div>
+                <div class="cell" data-index="5"></div>
+                <div class="cell" data-index="6"></div>
+                <div class="cell" data-index="7"></div>
+                <div class="cell" data-index="8"></div>
+            </div>
+            <button id="reset-game-btn" onclick="resetBoard()">Reiniciar Juego</button>
         </div>
     </div>
 
