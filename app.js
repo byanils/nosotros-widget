@@ -5,6 +5,7 @@ import { vaults } from './vaults.js';
 const firebaseConfig = { 
   apiKey: "AIzaSyCv12bIT9P0Ezho4CidHYfRLMqCN3LVq1o", 
   authDomain: "nuestro-universo-70d52.firebaseapp.com", 
+  databaseURL: "https://nuestro-universo-70d52-default-rtdb.firebaseio.com/",
   projectId: "nuestro-universo-70d52", 
   storageBucket: "nuestro-universo-70d52.firebasestorage.app", 
   messagingSenderId: "979401273604", 
@@ -14,7 +15,7 @@ const firebaseConfig = {
 
 // Firebase'i başlat
 firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+const db = firebase.database();
 const storage = firebase.storage();
 
 const myApiKey = "2e2dcf335d4c97a7c182b0c041eea672";
@@ -34,31 +35,38 @@ function login(user) {
     document.getElementById("login-screen").classList.remove("active");
     document.getElementById("main-page").classList.add("active");
     localStorage.setItem("nosotros_user", user);
-    checkDailyReset();
-    updateSelfieUI();
     
-    // Firebase dinleyicilerini başlat
+    startFirebaseListeners();
+}
+
+// Firebase dinleyicilerini ayrı bir fonksiyon yapalım
+function startFirebaseListeners() {
+    if (!db) return;
+
     // Oyun dinleyicisi
-    db.collection("game").doc("state").onSnapshot((doc) => {
-        if (doc.exists()) {
-            const data = doc.data();
-            board = data.board;
-            turn = data.turn;
-            scores = data.scores;
+    db.ref("game/state").on("value", (snapshot) => {
+        if (snapshot.exists()) {
+            const data = snapshot.val();
+            board = data.board || Array(9).fill("");
+            turn = data.turn || "Anıl";
+            scores = data.scores || { "Anıl": 0, "Camila": 0 };
             updateGameUI();
+        } else {
+            // Eğer veritabanında hiç oyun yoksa, ilk defa oluştur
+            saveGameState();
         }
-    });
+    }, (error) => console.error("Oyun senkronizasyon hatası:", error));
 
     // Selfie dinleyicisi
-    const today = new Date().toLocaleDateString("en-US", {timeZone: "America/Bogota"});
-    db.collection("selfies").doc(today).onSnapshot((doc) => {
-        if (doc.exists()) {
-            const data = doc.data();
+    const today = new Date().toLocaleDateString("en-US", {timeZone: "America/Bogota"}).replace(/\//g, "-");
+    db.ref("selfies/" + today).on("value", (snapshot) => {
+        if (snapshot.exists()) {
+            const data = snapshot.val();
             if (data.anil) localStorage.setItem("nosotros_anil_photo", data.anil);
             if (data.camila) localStorage.setItem("nosotros_camila_photo", data.camila);
             updateSelfieUI();
         }
-    });
+    }, (error) => console.error("Selfie senkronizasyon hatası:", error));
 }
 
 function goToUniverse() { 
@@ -119,11 +127,11 @@ function loadGameState() {
 }
 
 function saveGameState() {
-    db.collection("game").doc("state").set({
+    db.ref("game/state").set({
         board: board,
         turn: turn,
         scores: scores,
-        lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+        lastUpdated: firebase.database.ServerValue.TIMESTAMP
     });
 }
 
@@ -406,11 +414,11 @@ document.getElementById("selfie-input")?.addEventListener("change", function(e) 
     const reader = new FileReader();
     reader.onload = function(event) {
         const base64 = event.target.result;
-        const today = new Date().toLocaleDateString("en-US", {timeZone: "America/Bogota"});
+        const today = new Date().toLocaleDateString("en-US", {timeZone: "America/Bogota"}).replace(/\//g, "-");
 
         const updateData = {};
         updateData[currentUser === "Anıl" ? "anil" : "camila"] = base64;
-        db.collection("selfies").doc(today).set(updateData, { merge: true });
+        db.ref("selfies/" + today).update(updateData);
     };
     reader.readAsDataURL(file);
 });
@@ -432,7 +440,9 @@ window.onload = () => {
     fetchWeather(); 
     setInterval(fetchWeather, 3600000); 
 
-    // Otomatik login kontrolü (isteğe bağlı ama kullanıcı her seferinde seçmek isteyebilir)
-    // const savedUser = localStorage.getItem("nosotros_user");
-    // if (savedUser) login(savedUser);
+    // Otomatik login kontrolü (İşte bu verilerin sıfırlanmasını engelleyecek olan kısım)
+    const savedUser = localStorage.getItem("nosotros_user");
+    if (savedUser) {
+        login(savedUser);
+    }
 };
