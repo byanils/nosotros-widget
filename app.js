@@ -22,56 +22,73 @@ let scores = { "Anıl": 0, "Camila": 0 };
 // GİRİŞ FONKSİYONU
 function login(user) {
     currentUser = user;
-    document.getElementById("login-screen").classList.remove("active");
-    document.getElementById("main-page").classList.add("active");
     localStorage.setItem("nosotros_user", user);
     
+    // UI Güncelleme
+    document.getElementById("login-screen").classList.remove("active");
+    document.getElementById("main-page").classList.add("active");
+    
     startSupabaseListeners();
+    checkDailyReset();
+    updateSelfieUI();
 }
+
+// Çıkış Fonksiyonu (Eğer kullanıcı değiştirmek istenirse)
+function logout() {
+    localStorage.removeItem("nosotros_user");
+    location.reload();
+}
+window.logout = logout;
 
 // Supabase dinleyicilerini başlatalım
 async function startSupabaseListeners() {
     if (!supabase) return;
 
-    // --- OYUN VERİLERİNİ ÇEK VE DİNLE ---
-    const { data: initialGame } = await supabase.from('game_state').select('*').eq('id', 1).single();
-    if (initialGame) {
-        board = initialGame.board || Array(9).fill("");
-        turn = initialGame.turn || "Anıl";
-        scores = initialGame.scores || { "Anıl": 0, "Camila": 0 };
-        updateGameUI();
-    } else {
-        // Eğer tabloda hiç veri yoksa ilk satırı oluştur (Supabase'de 'id' 1 olan bir satır olmalı)
-        await supabase.from('game_state').insert([{ id: 1, board: board, turn: turn, scores: scores }]);
+    try {
+        // --- OYUN VERİLERİNİ ÇEK VE DİNLE ---
+        const { data: initialGame, error: gameError } = await supabase.from('game_state').select('*').eq('id', 1).maybeSingle();
+        
+        if (initialGame) {
+            board = initialGame.board || Array(9).fill("");
+            turn = initialGame.turn || "Anıl";
+            scores = initialGame.scores || { "Anıl": 0, "Camila": 0 };
+            updateGameUI();
+        } else {
+            // Eğer tabloda hiç veri yoksa ilk satırı oluştur
+            await supabase.from('game_state').insert([{ id: 1, board: board, turn: turn, scores: scores }]);
+        }
+
+        // Gerçek zamanlı oyun takibi
+        supabase.channel('game_state_changes')
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'game_state', filter: 'id=eq.1' }, payload => {
+            const data = payload.new;
+            board = data.board;
+            turn = data.turn;
+            scores = data.scores;
+            updateGameUI();
+        }).subscribe();
+
+        // --- SELFIE VERİLERİNİ ÇEK VE DİNLE ---
+        const today = new Date().toLocaleDateString("en-US", {timeZone: "America/Bogota"}).replace(/\//g, "-");
+        const { data: initialSelfie, error: selfieError } = await supabase.from('selfies').select('*').eq('day', today).maybeSingle();
+        
+        if (initialSelfie) {
+            if (initialSelfie.anil) localStorage.setItem("nosotros_anil_photo", initialSelfie.anil);
+            if (initialSelfie.camila) localStorage.setItem("nosotros_camila_photo", initialSelfie.camila);
+            updateSelfieUI();
+        }
+
+        // Gerçek zamanlı selfie takibi
+        supabase.channel('selfies_changes')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'selfies', filter: `day=eq.${today}` }, payload => {
+            const data = payload.new;
+            if (data.anil) localStorage.setItem("nosotros_anil_photo", data.anil);
+            if (data.camila) localStorage.setItem("nosotros_camila_photo", data.camila);
+            updateSelfieUI();
+        }).subscribe();
+    } catch (err) {
+        console.error("Supabase başlatma hatası:", err);
     }
-
-    // Gerçek zamanlı oyun takibi
-    supabase.channel('game_state_changes')
-    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'game_state', filter: 'id=eq.1' }, payload => {
-        const data = payload.new;
-        board = data.board;
-        turn = data.turn;
-        scores = data.scores;
-        updateGameUI();
-    }).subscribe();
-
-    // --- SELFIE VERİLERİNİ ÇEK VE DİNLE ---
-    const today = new Date().toLocaleDateString("en-US", {timeZone: "America/Bogota"}).replace(/\//g, "-");
-    const { data: initialSelfie } = await supabase.from('selfies').select('*').eq('day', today).single();
-    if (initialSelfie) {
-        if (initialSelfie.anil) localStorage.setItem("nosotros_anil_photo", initialSelfie.anil);
-        if (initialSelfie.camila) localStorage.setItem("nosotros_camila_photo", initialSelfie.camila);
-        updateSelfieUI();
-    }
-
-    // Gerçek zamanlı selfie takibi
-    supabase.channel('selfies_changes')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'selfies', filter: `day=eq.${today}` }, payload => {
-        const data = payload.new;
-        if (data.anil) localStorage.setItem("nosotros_anil_photo", data.anil);
-        if (data.camila) localStorage.setItem("nosotros_camila_photo", data.camila);
-        updateSelfieUI();
-    }).subscribe();
 }
 
 function goToUniverse() { 
@@ -419,22 +436,48 @@ document.getElementById("selfie-input")?.addEventListener("change", function(e) 
 
     const reader = new FileReader();
     reader.onload = async function(event) {
-        const base64 = event.target.result;
-        const today = new Date().toLocaleDateString("en-US", {timeZone: "America/Bogota"}).replace(/\//g, "-");
+        let base64 = event.target.result;
+        
+        // FOTOĞRAFI SIKIŞTIRMA (Supabase ve veritabanı performansı için)
+        const img = new Image();
+        img.src = base64;
+        img.onload = async function() {
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 600; // Genişliği 600px ile sınırla
+            let width = img.width;
+            let height = img.height;
 
-        if (supabase) {
-            const updateData = {};
-            updateData[currentUser === "Anıl" ? "anil" : "camila"] = base64;
-            updateData["day"] = today;
-
-            // Önce bugün için kayıt var mı kontrol et, varsa güncelle yoksa ekle
-            const { data } = await supabase.from('selfies').select('*').eq('day', today).single();
-            if (data) {
-                await supabase.from('selfies').update(updateData).eq('day', today);
-            } else {
-                await supabase.from('selfies').insert([updateData]);
+            if (width > MAX_WIDTH) {
+                height *= MAX_WIDTH / width;
+                width = MAX_WIDTH;
             }
-        }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            // Kaliteyi %60'a düşürerek boyutu küçült
+            const compressedBase64 = canvas.toDataURL('image/jpeg', 0.6);
+            
+            const today = new Date().toLocaleDateString("en-US", {timeZone: "America/Bogota"}).replace(/\//g, "-");
+
+            if (supabase) {
+                const updateData = {};
+                updateData[currentUser === "Anıl" ? "anil" : "camila"] = compressedBase64;
+                updateData["day"] = today;
+
+                console.log("Selfie yükleniyor...");
+                const { data, error } = await supabase.from('selfies').upsert(updateData, { onConflict: 'day' }).select();
+                
+                if (error) {
+                    console.error("Yükleme hatası:", error);
+                    alert("Error al subir la foto: " + error.message);
+                } else {
+                    console.log("Yükleme başarılı!");
+                }
+            }
+        };
     };
     reader.readAsDataURL(file);
 });
@@ -459,6 +502,11 @@ window.onload = () => {
     // Otomatik login kontrolü (İşte bu verilerin sıfırlanmasını engelleyecek olan kısım)
     const savedUser = localStorage.getItem("nosotros_user");
     if (savedUser) {
+        // Login ekranını hemen gizle, login() fonksiyonu geri kalan her şeyi yapacak
+        document.getElementById("login-screen").classList.remove("active");
         login(savedUser);
+    } else {
+        // Eğer kullanıcı yoksa giriş ekranını göster
+        document.getElementById("login-screen").classList.add("active");
     }
 };
