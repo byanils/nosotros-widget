@@ -1,22 +1,12 @@
 import { messages } from './messages.js';
 import { vaults } from './vaults.js';
 
-// --- FIREBASE CONFIGURATION ---
-const firebaseConfig = { 
-  apiKey: "AIzaSyCv12bIT9P0Ezho4CidHYfRLMqCN3LVq1o", 
-  authDomain: "nuestro-universo-70d52.firebaseapp.com", 
-  databaseURL: "https://nuestro-universo-70d52-default-rtdb.firebaseio.com/",
-  projectId: "nuestro-universo-70d52", 
-  storageBucket: "nuestro-universo-70d52.firebasestorage.app", 
-  messagingSenderId: "979401273604", 
-  appId: "1:979401273604:web:ca547072488f746ca7e051", 
-  measurementId: "G-NY9FG93DSY" 
-}; 
+// --- SUPABASE CONFIGURATION ---
+const supabaseUrl = "https://keghnzprzywaszfxludu.supabase.co"; 
+const supabaseKey = "sb_publishable_WvNvlJRpO0w2tAIXGXuOmA_Kkwqc_4f";
 
-// Firebase'i başlat
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-const storage = firebase.storage();
+// Supabase'i başlat
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 const myApiKey = "2e2dcf335d4c97a7c182b0c041eea672";
 const startDate = new Date("2025-12-27T10:45:00");
@@ -36,37 +26,52 @@ function login(user) {
     document.getElementById("main-page").classList.add("active");
     localStorage.setItem("nosotros_user", user);
     
-    startFirebaseListeners();
+    startSupabaseListeners();
 }
 
-// Firebase dinleyicilerini ayrı bir fonksiyon yapalım
-function startFirebaseListeners() {
-    if (!db) return;
+// Supabase dinleyicilerini başlatalım
+async function startSupabaseListeners() {
+    if (!supabase) return;
 
-    // Oyun dinleyicisi
-    db.ref("game/state").on("value", (snapshot) => {
-        if (snapshot.exists()) {
-            const data = snapshot.val();
-            board = data.board || Array(9).fill("");
-            turn = data.turn || "Anıl";
-            scores = data.scores || { "Anıl": 0, "Camila": 0 };
-            updateGameUI();
-        } else {
-            // Eğer veritabanında hiç oyun yoksa, ilk defa oluştur
-            saveGameState();
-        }
-    }, (error) => console.error("Oyun senkronizasyon hatası:", error));
+    // --- OYUN VERİLERİNİ ÇEK VE DİNLE ---
+    const { data: initialGame } = await supabase.from('game_state').select('*').eq('id', 1).single();
+    if (initialGame) {
+        board = initialGame.board || Array(9).fill("");
+        turn = initialGame.turn || "Anıl";
+        scores = initialGame.scores || { "Anıl": 0, "Camila": 0 };
+        updateGameUI();
+    } else {
+        // Eğer tabloda hiç veri yoksa ilk satırı oluştur (Supabase'de 'id' 1 olan bir satır olmalı)
+        await supabase.from('game_state').insert([{ id: 1, board: board, turn: turn, scores: scores }]);
+    }
 
-    // Selfie dinleyicisi
+    // Gerçek zamanlı oyun takibi
+    supabase.channel('game_state_changes')
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'game_state', filter: 'id=eq.1' }, payload => {
+        const data = payload.new;
+        board = data.board;
+        turn = data.turn;
+        scores = data.scores;
+        updateGameUI();
+    }).subscribe();
+
+    // --- SELFIE VERİLERİNİ ÇEK VE DİNLE ---
     const today = new Date().toLocaleDateString("en-US", {timeZone: "America/Bogota"}).replace(/\//g, "-");
-    db.ref("selfies/" + today).on("value", (snapshot) => {
-        if (snapshot.exists()) {
-            const data = snapshot.val();
-            if (data.anil) localStorage.setItem("nosotros_anil_photo", data.anil);
-            if (data.camila) localStorage.setItem("nosotros_camila_photo", data.camila);
-            updateSelfieUI();
-        }
-    }, (error) => console.error("Selfie senkronizasyon hatası:", error));
+    const { data: initialSelfie } = await supabase.from('selfies').select('*').eq('day', today).single();
+    if (initialSelfie) {
+        if (initialSelfie.anil) localStorage.setItem("nosotros_anil_photo", initialSelfie.anil);
+        if (initialSelfie.camila) localStorage.setItem("nosotros_camila_photo", initialSelfie.camila);
+        updateSelfieUI();
+    }
+
+    // Gerçek zamanlı selfie takibi
+    supabase.channel('selfies_changes')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'selfies', filter: `day=eq.${today}` }, payload => {
+        const data = payload.new;
+        if (data.anil) localStorage.setItem("nosotros_anil_photo", data.anil);
+        if (data.camila) localStorage.setItem("nosotros_camila_photo", data.camila);
+        updateSelfieUI();
+    }).subscribe();
 }
 
 function goToUniverse() { 
@@ -127,12 +132,13 @@ function loadGameState() {
 }
 
 function saveGameState() {
-    db.ref("game/state").set({
-        board: board,
-        turn: turn,
-        scores: scores,
-        lastUpdated: firebase.database.ServerValue.TIMESTAMP
-    });
+    if (supabase) {
+        supabase.from('game_state').update({
+            board: board,
+            turn: turn,
+            scores: scores
+        }).eq('id', 1).then();
+    }
 }
 
 function updateGameUI() {
@@ -412,13 +418,23 @@ document.getElementById("selfie-input")?.addEventListener("change", function(e) 
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = function(event) {
+    reader.onload = async function(event) {
         const base64 = event.target.result;
         const today = new Date().toLocaleDateString("en-US", {timeZone: "America/Bogota"}).replace(/\//g, "-");
 
-        const updateData = {};
-        updateData[currentUser === "Anıl" ? "anil" : "camila"] = base64;
-        db.ref("selfies/" + today).update(updateData);
+        if (supabase) {
+            const updateData = {};
+            updateData[currentUser === "Anıl" ? "anil" : "camila"] = base64;
+            updateData["day"] = today;
+
+            // Önce bugün için kayıt var mı kontrol et, varsa güncelle yoksa ekle
+            const { data } = await supabase.from('selfies').select('*').eq('day', today).single();
+            if (data) {
+                await supabase.from('selfies').update(updateData).eq('day', today);
+            } else {
+                await supabase.from('selfies').insert([updateData]);
+            }
+        }
     };
     reader.readAsDataURL(file);
 });
