@@ -1,6 +1,22 @@
 import { messages } from './messages.js';
 import { vaults } from './vaults.js';
 
+// --- FIREBASE CONFIGURATION ---
+const firebaseConfig = { 
+  apiKey: "AIzaSyCv12bIT9P0Ezho4CidHYfRLMqCN3LVq1o", 
+  authDomain: "nuestro-universo-70d52.firebaseapp.com", 
+  projectId: "nuestro-universo-70d52", 
+  storageBucket: "nuestro-universo-70d52.firebasestorage.app", 
+  messagingSenderId: "979401273604", 
+  appId: "1:979401273604:web:ca547072488f746ca7e051", 
+  measurementId: "G-NY9FG93DSY" 
+}; 
+
+// Firebase'i başlat
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const storage = firebase.storage();
+
 const myApiKey = "2e2dcf335d4c97a7c182b0c041eea672";
 const startDate = new Date("2025-12-27T10:45:00");
 const photos = ["foto1.jpg", "foto2.jpg", "foto3.jpg", "foto4.jpg", "foto5.jpg", "foto6.jpg", "foto7.jpg", "foto8.jpg", "foto9.jpg", "foto10.jpg"];
@@ -20,7 +36,29 @@ function login(user) {
     localStorage.setItem("nosotros_user", user);
     checkDailyReset();
     updateSelfieUI();
-    loadGameState();
+    
+    // Firebase dinleyicilerini başlat
+    // Oyun dinleyicisi
+    db.collection("game").doc("state").onSnapshot((doc) => {
+        if (doc.exists()) {
+            const data = doc.data();
+            board = data.board;
+            turn = data.turn;
+            scores = data.scores;
+            updateGameUI();
+        }
+    });
+
+    // Selfie dinleyicisi
+    const today = new Date().toLocaleDateString("en-US", {timeZone: "America/Bogota"});
+    db.collection("selfies").doc(today).onSnapshot((doc) => {
+        if (doc.exists()) {
+            const data = doc.data();
+            if (data.anil) localStorage.setItem("nosotros_anil_photo", data.anil);
+            if (data.camila) localStorage.setItem("nosotros_camila_photo", data.camila);
+            updateSelfieUI();
+        }
+    });
 }
 
 function goToUniverse() { 
@@ -81,9 +119,12 @@ function loadGameState() {
 }
 
 function saveGameState() {
-    localStorage.setItem("nosotros_game_board", JSON.stringify(board));
-    localStorage.setItem("nosotros_game_turn", turn);
-    localStorage.setItem("nosotros_game_scores", JSON.stringify(scores));
+    db.collection("game").doc("state").set({
+        board: board,
+        turn: turn,
+        scores: scores,
+        lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+    });
 }
 
 function updateGameUI() {
@@ -365,12 +406,11 @@ document.getElementById("selfie-input")?.addEventListener("change", function(e) 
     const reader = new FileReader();
     reader.onload = function(event) {
         const base64 = event.target.result;
-        if (currentUser === "Anıl") {
-            localStorage.setItem("nosotros_anil_photo", base64);
-        } else {
-            localStorage.setItem("nosotros_camila_photo", base64);
-        }
-        updateSelfieUI();
+        const today = new Date().toLocaleDateString("en-US", {timeZone: "America/Bogota"});
+
+        const updateData = {};
+        updateData[currentUser === "Anıl" ? "anil" : "camila"] = base64;
+        db.collection("selfies").doc(today).set(updateData, { merge: true });
     };
     reader.readAsDataURL(file);
 });
