@@ -131,6 +131,13 @@ body.night-mode #selfie-page, body.night-mode #game-page { background: #1a1a2e; 
 #game-info { margin-bottom: 20px; width: 100%; }
 #game-turn { font-size: 1.5rem; font-weight: bold; margin-bottom: 15px; color: #ff4d4d; }
 
+#enable-notifications {
+    background: #ff4d4d; color: white; border: none; padding: 8px 15px;
+    border-radius: 20px; font-size: 0.9rem; cursor: pointer; margin-bottom: 15px;
+    animation: pulse 2s infinite;
+}
+@keyframes pulse { 0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; } }
+
 .scores-display { display: flex; gap: 15px; justify-content: center; width: 100%; }
 .score-box { 
     background: rgba(255, 77, 77, 0.1); padding: 10px; border-radius: 12px; flex: 1;

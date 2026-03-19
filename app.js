@@ -32,22 +32,21 @@ function login(user) {
     document.getElementById("login-screen").classList.remove("active");
     document.getElementById("main-page").classList.add("active");
     
-    // Bildirim izni iste
-    if ("Notification" in window) {
-        Notification.requestPermission();
-    }
-
     startSupabaseListeners();
     checkDailyReset();
     updateSelfieUI();
 }
 
-// Çıkış Fonksiyonu (Eğer kullanıcı değiştirmek istenirse)
-function logout() {
-    localStorage.removeItem("nosotros_user");
-    location.reload();
+function requestNotificationPermission() {
+    if ("Notification" in window) {
+        Notification.requestPermission().then(permission => {
+            if (permission === "granted") {
+                document.getElementById("enable-notifications").style.display = "none";
+            }
+        });
+    }
 }
-window.logout = logout;
+window.requestNotificationPermission = requestNotificationPermission;
 
 // Supabase dinleyicilerini başlatalım
 async function startSupabaseListeners() {
@@ -58,36 +57,33 @@ async function startSupabaseListeners() {
         const { data: initialGame, error: gameError } = await supabase.from('game_state').select('*').eq('id', 1).maybeSingle();
         
         if (initialGame) {
-            // Haftalık reset kontrolü
-            const currentWeek = getISOWeek();
-            if (initialGame.last_reset_week !== currentWeek) {
-                lastResetWeek = currentWeek;
-                weeklyScores = { "Anıl": 0, "Camila": 0 };
-                // Veritabanını yeni hafta için güncelle
-                await supabase.from('game_state').update({ 
-                    last_reset_week: currentWeek, 
-                    weekly_scores: weeklyScores 
-                }).eq('id', 1);
-            } else {
-                weeklyScores = initialGame.weekly_scores || { "Anıl": 0, "Camila": 0 };
-                lastResetWeek = initialGame.last_reset_week;
-            }
-
-            // Eğer gelen board 9 karelik ise veya eksikse 25'e tamamla
-            if (!initialGame.board || initialGame.board.length !== GRID_SIZE * GRID_SIZE) {
-                board = Array(GRID_SIZE * GRID_SIZE).fill("");
-                saveGameState(); 
-            } else {
-                board = initialGame.board;
-            }
+            // Önce tüm verileri yerel değişkenlere ata
+            board = initialGame.board || Array(GRID_SIZE * GRID_SIZE).fill("");
             turn = initialGame.turn || "Anıl";
             scores = initialGame.scores || { "Anıl": 0, "Camila": 0 };
+            weeklyScores = initialGame.weekly_scores || { "Anıl": 0, "Camila": 0 };
+            lastResetWeek = initialGame.last_reset_week;
+
+            // Haftalık reset kontrolü
+            const currentWeek = getISOWeek();
+            if (lastResetWeek !== currentWeek) {
+                lastResetWeek = currentWeek;
+                weeklyScores = { "Anıl": 0, "Camila": 0 };
+                saveGameState();
+            }
+
+            // Eğer board boyutu yanlışsa düzelt
+            if (board.length !== GRID_SIZE * GRID_SIZE) {
+                board = Array(GRID_SIZE * GRID_SIZE).fill("");
+                saveGameState();
+            }
+            
             updateGameUI();
         } else {
             // Eğer tabloda hiç veri yoksa ilk satırı oluştur
             board = Array(GRID_SIZE * GRID_SIZE).fill("");
             lastResetWeek = getISOWeek();
-            await supabase.from('game_state').insert([{ 
+            const { error: insertError } = await supabase.from('game_state').insert([{ 
                 id: 1, 
                 board: board, 
                 turn: turn, 
@@ -95,6 +91,7 @@ async function startSupabaseListeners() {
                 weekly_scores: weeklyScores,
                 last_reset_week: lastResetWeek
             }]);
+            if (insertError) console.error("Insert hatası:", insertError);
         }
 
         // Gerçek zamanlı oyun takibi
@@ -111,7 +108,7 @@ async function startSupabaseListeners() {
             
             updateGameUI();
 
-            // Bildirim gönder: Sıra sana geçtiyse ve sayfa açıksa
+            // Bildirim gönder: Sıra sana geçtiyse
             if (turn === currentUser && oldTurn !== currentUser) {
                 sendTurnNotification();
             }
@@ -201,6 +198,16 @@ function saveGameState() {
 function updateGameUI() {
     const cells = document.querySelectorAll(".cell");
     const winningPattern = getWinningPattern();
+
+    // Bildirim butonu kontrolü
+    const notifyBtn = document.getElementById("enable-notifications");
+    if (notifyBtn) {
+        if ("Notification" in window && Notification.permission === "default") {
+            notifyBtn.style.display = "inline-block";
+        } else {
+            notifyBtn.style.display = "none";
+        }
+    }
 
     cells.forEach((cell, i) => {
         cell.innerText = board[i];
