@@ -14,10 +14,12 @@ const photos = ["foto1.jpg", "foto2.jpg", "foto3.jpg", "foto4.jpg", "foto5.jpg",
 let currentIdx = 0;
 let currentUser = null;
 
-// OYUN DEĞİŞKENLERİ
-let board = Array(9).fill("");
-let turn = "Anıl"; // Oyuna Anıl başlar (varsayılan)
+// OYUN DEĞİŞKENLERİ (5x5 Grid)
+let board = Array(25).fill("");
+let turn = "Anıl"; 
 let scores = { "Anıl": 0, "Camila": 0 };
+const WIN_COUNT = 4; // 4 yan yana gelen kazanır
+const GRID_SIZE = 5; 
 
 // GİRİŞ FONKSİYONU
 function login(user) {
@@ -49,12 +51,19 @@ async function startSupabaseListeners() {
         const { data: initialGame, error: gameError } = await supabase.from('game_state').select('*').eq('id', 1).maybeSingle();
         
         if (initialGame) {
-            board = initialGame.board || Array(9).fill("");
+            // Eğer gelen board 9 karelik ise veya eksikse 25'e tamamla
+            if (!initialGame.board || initialGame.board.length !== GRID_SIZE * GRID_SIZE) {
+                board = Array(GRID_SIZE * GRID_SIZE).fill("");
+                saveGameState(); // Veritabanını 25 kareye güncelle
+            } else {
+                board = initialGame.board;
+            }
             turn = initialGame.turn || "Anıl";
             scores = initialGame.scores || { "Anıl": 0, "Camila": 0 };
             updateGameUI();
         } else {
             // Eğer tabloda hiç veri yoksa ilk satırı oluştur
+            board = Array(GRID_SIZE * GRID_SIZE).fill("");
             await supabase.from('game_state').insert([{ id: 1, board: board, turn: turn, scores: scores }]);
         }
 
@@ -116,7 +125,8 @@ function closeSelfie() {
 function openGame() {
     document.getElementById("main-page").classList.remove("active");
     document.getElementById("game-page").classList.add("active");
-    loadGameState();
+    // Artık loadGameState (localStorage) kullanmıyoruz, 
+    // startSupabaseListeners zaten verileri canlı tutuyor.
     updateGameUI();
 }
 
@@ -136,18 +146,6 @@ window.closeGame = closeGame;
 window.resetBoard = resetBoard;
 
 // XOX OYUN MANTIĞI
-function loadGameState() {
-    const savedBoard = localStorage.getItem("nosotros_game_board");
-    const savedTurn = localStorage.getItem("nosotros_game_turn");
-    const savedScores = localStorage.getItem("nosotros_game_scores");
-
-    if (savedBoard) board = JSON.parse(savedBoard);
-    if (savedTurn) turn = savedTurn;
-    if (savedScores) scores = JSON.parse(savedScores);
-    
-    updateGameUI();
-}
-
 function saveGameState() {
     if (supabase) {
         supabase.from('game_state').update({
@@ -212,15 +210,40 @@ function makeMove(index) {
 }
 
 function getWinningPattern() {
-    const winPatterns = [
-        [0, 1, 2], [3, 4, 5], [6, 7, 8], // Satırlar
-        [0, 3, 6], [1, 4, 7], [2, 5, 8], // Sütunlar
-        [0, 4, 8], [2, 4, 6]             // Çaprazlar
-    ];
-    for (let pattern of winPatterns) {
-        const [a, b, c] = pattern;
-        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-            return pattern;
+    // 5x5 tahtada her hücre için 4 yöne doğru 4-lü kontrolü
+    for (let r = 0; r < GRID_SIZE; r++) {
+        for (let c = 0; c < GRID_SIZE; c++) {
+            const startIdx = r * GRID_SIZE + c;
+            const symbol = board[startIdx];
+            if (!symbol) continue;
+
+            // Kontrol edilecek 4 yön: Sağ, Aşağı, Çapraz Sağ-Aşağı, Çapraz Sol-Aşağı
+            const directions = [
+                { dr: 0, dc: 1 },  // Sağ
+                { dr: 1, dc: 0 },  // Aşağı
+                { dr: 1, dc: 1 },  // Çapraz Sağ-Aşağı
+                { dr: 1, dc: -1 }  // Çapraz Sol-Aşağı
+            ];
+
+            for (const { dr, dc } of directions) {
+                let pattern = [startIdx];
+                let match = true;
+                for (let step = 1; step < WIN_COUNT; step++) {
+                    const nr = r + dr * step;
+                    const nc = c + dc * step;
+                    if (nr < 0 || nr >= GRID_SIZE || nc < 0 || nc >= GRID_SIZE) {
+                        match = false;
+                        break;
+                    }
+                    const nextIdx = nr * GRID_SIZE + nc;
+                    if (board[nextIdx] !== symbol) {
+                        match = false;
+                        break;
+                    }
+                    pattern.push(nextIdx);
+                }
+                if (match) return pattern;
+            }
         }
     }
     return null;
@@ -231,7 +254,7 @@ function checkWinner() {
 }
 
 function resetBoard(resetScores = true) {
-    board = Array(9).fill("");
+    board = Array(GRID_SIZE * GRID_SIZE).fill("");
     if (resetScores) {
         scores = { "Anıl": 0, "Camila": 0 };
     }
@@ -248,13 +271,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 makeMove(parseInt(e.target.dataset.index));
             }
         });
-    }
-});
-
-// Depolama değişikliğini dinle (Diğer sekme/kullanıcı oynarsa güncelle)
-window.addEventListener('storage', (e) => {
-    if (e.key && e.key.startsWith('nosotros_game_')) {
-        loadGameState();
     }
 });
 

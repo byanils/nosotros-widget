@@ -109,28 +109,37 @@ body.night-mode { background: #1a1a2e; color: white; }
 .city-star { color: white; position: absolute; font-weight: bold; text-shadow: 0 0 10px black; z-index: 10; }
 #milan-star { top: 10%; right: 10%; }
 #bogota-star { bottom: 8%; left: 10%; }
-#back-btn, #selfie-back-btn, #game-back-btn { position: absolute; top: 25px; left: 20px; color: white; background: none; border: none; font-size: 24px; z-index: 200; cursor: pointer; }
+#back-btn, #selfie-back-btn, #game-back-btn { 
+    position: absolute; top: 25px; left: 20px; 
+    color: #ff4d4d; /* Light mode'da görünmesi için renk değişti */
+    background: none; border: none; font-size: 24px; 
+    z-index: 200; cursor: pointer; transition: 0.3s;
+}
+body.night-mode #back-btn, body.night-mode #selfie-back-btn, body.night-mode #game-back-btn {
+    color: white; /* Gece modunda beyaz kalsın */
+}
+#back-btn:hover, #selfie-back-btn:hover, #game-back-btn:hover { transform: scale(1.1); }
 
 /* SELFIE PAGE */
 #selfie-page, #game-page { background: #f8f9fa; color: #333; }
 body.night-mode #selfie-page, body.night-mode #game-page { background: #1a1a2e; color: white; }
 
-.selfie-container, .game-container { text-align: center; width: 90%; max-width: 500px; display: flex; flex-direction: column; align-items: center; }
+.selfie-container, .game-container { text-align: center; width: 95%; max-width: 600px; display: flex; flex-direction: column; align-items: center; }
 .selfie-container h3, .game-container h3 { font-size: 2.5rem; margin-bottom: 20px; color: #ff4d4d; }
 
-/* TIC TAC TOE BOARD */
+/* TIC TAC TOE BOARD (5x5) */
 #game-info { margin-bottom: 20px; }
 #game-turn { font-size: 1.5rem; font-weight: bold; margin-bottom: 5px; color: #ff4d4d; }
 #game-score { font-size: 1.1rem; opacity: 0.8; }
 
 .tic-tac-toe-board {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
-    width: 320px; height: 320px; margin-bottom: 30px;
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px;
+    width: 350px; height: 350px; margin-bottom: 30px;
 }
 .cell {
-    background: white; border: 2px solid #ff4d4d; border-radius: 15px;
+    background: white; border: 2px solid #ff4d4d; border-radius: 10px;
     display: flex; justify-content: center; align-items: center;
-    font-size: 3rem; font-weight: bold; cursor: pointer; transition: 0.2s;
+    font-size: 2rem; font-weight: bold; cursor: pointer; transition: 0.2s;
     color: #ff4d4d; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 body.night-mode .cell { background: #1a1a2e; color: #ff4d4d; border-color: #ff4d4d; }
@@ -146,8 +155,8 @@ body.night-mode .cell { background: #1a1a2e; color: #ff4d4d; border-color: #ff4d
 #reset-game-btn:hover { background: #ff3333; transform: scale(1.05); }
 
 @media (max-width: 480px) {
-    .tic-tac-toe-board { width: 280px; height: 280px; }
-    .cell { font-size: 2.5rem; }
+    .tic-tac-toe-board { width: 300px; height: 300px; }
+    .cell { font-size: 1.5rem; }
 }
 
 /* SELFIE PAGE ADDITIONAL */
