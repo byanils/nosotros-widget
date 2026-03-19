@@ -110,8 +110,18 @@
             <h3>Tic-Tac-Toe 🎮</h3>
             <div id="game-info">
                 <p id="game-turn">Cargando...</p>
-                <button id="enable-notifications" style="display: none;" onclick="requestNotificationPermission()">🔔 Activar Notificaciones</button>
+                <div id="reset-timer" style="display: none; color: #ff4d4d; font-weight: bold; margin-bottom: 10px;">
+                    Sıfırlanıyor: <span id="timer-countdown">--:--</span>
+                </div>
+                <div class="game-actions">
+                    <button id="enable-notifications" style="display: none;" onclick="requestNotificationPermission()">🔔 Activar Notificaciones</button>
+                    <button id="test-notification" onclick="testNotification()">🧪 Probar Notif</button>
+                </div>
                 <div class="scores-display">
+                    <div class="score-box">
+                        <span class="score-label">Diario ☀️</span>
+                        <p id="daily-score">Anıl: 0 - Camila: 0</p>
+                    </div>
                     <div class="score-box">
                         <span class="score-label">Semanal 🏆</span>
                         <p id="weekly-score">Anıl: 0 - Camila: 0</p>

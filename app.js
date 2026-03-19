@@ -19,9 +19,14 @@ let board = Array(25).fill("");
 let turn = "Anıl"; 
 let scores = { "Anıl": 0, "Camila": 0 };
 let weeklyScores = { "Anıl": 0, "Camila": 0 };
+let dailyScores = { "Anıl": 0, "Camila": 0 };
 let lastResetWeek = ""; 
-const WIN_COUNT = 4; // 4 yan yana gelen kazanır
+let lastResetDay = "";
+let resetCountdownStart = null; 
+const WIN_COUNT = 3; 
 const GRID_SIZE = 5; 
+const RESET_THRESHOLD = 0.7; // %70 doluluk oranı (18 kare)
+const RESET_DELAY_MS = 4 * 60 * 60 * 1000; // 4 saat (milisaniye)
 
 // GİRİŞ FONKSİYONU
 function login(user) {
@@ -53,26 +58,35 @@ async function startSupabaseListeners() {
     if (!supabase) return;
 
     try {
-        // --- OYUN VERİLERİNİ ÇEK VE DİNLE ---
         const { data: initialGame, error: gameError } = await supabase.from('game_state').select('*').eq('id', 1).maybeSingle();
         
         if (initialGame) {
-            // Önce tüm verileri yerel değişkenlere ata
             board = initialGame.board || Array(GRID_SIZE * GRID_SIZE).fill("");
             turn = initialGame.turn || "Anıl";
             scores = initialGame.scores || { "Anıl": 0, "Camila": 0 };
             weeklyScores = initialGame.weekly_scores || { "Anıl": 0, "Camila": 0 };
+            dailyScores = initialGame.daily_scores || { "Anıl": 0, "Camila": 0 };
             lastResetWeek = initialGame.last_reset_week;
+            lastResetDay = initialGame.last_reset_day;
+            resetCountdownStart = initialGame.reset_countdown_start ? new Date(initialGame.reset_countdown_start) : null;
 
-            // Haftalık reset kontrolü
+            // Haftalık ve Günlük Reset Kontrolü
             const currentWeek = getISOWeek();
+            const today = new Date().toLocaleDateString("en-US", {timeZone: "America/Bogota"}).replace(/\//g, "-");
+            
+            let needsSave = false;
             if (lastResetWeek !== currentWeek) {
                 lastResetWeek = currentWeek;
                 weeklyScores = { "Anıl": 0, "Camila": 0 };
-                saveGameState();
+                needsSave = true;
             }
+            if (lastResetDay !== today) {
+                lastResetDay = today;
+                dailyScores = { "Anıl": 0, "Camila": 0 };
+                needsSave = true;
+            }
+            if (needsSave) saveGameState();
 
-            // Eğer board boyutu yanlışsa düzelt
             if (board.length !== GRID_SIZE * GRID_SIZE) {
                 board = Array(GRID_SIZE * GRID_SIZE).fill("");
                 saveGameState();
@@ -80,39 +94,35 @@ async function startSupabaseListeners() {
             
             updateGameUI();
         } else {
-            // Eğer tabloda hiç veri yoksa ilk satırı oluştur
             board = Array(GRID_SIZE * GRID_SIZE).fill("");
             lastResetWeek = getISOWeek();
-            const { error: insertError } = await supabase.from('game_state').insert([{ 
-                id: 1, 
-                board: board, 
-                turn: turn, 
-                scores: scores,
-                weekly_scores: weeklyScores,
-                last_reset_week: lastResetWeek
+            lastResetDay = new Date().toLocaleDateString("en-US", {timeZone: "America/Bogota"}).replace(/\//g, "-");
+            await supabase.from('game_state').insert([{ 
+                id: 1, board, turn, scores, 
+                weekly_scores: weeklyScores, 
+                daily_scores: dailyScores,
+                last_reset_week: lastResetWeek,
+                last_reset_day: lastResetDay
             }]);
-            if (insertError) console.error("Insert hatası:", insertError);
         }
 
-        // Gerçek zamanlı oyun takibi
         supabase.channel('game_state_changes')
         .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'game_state', filter: 'id=eq.1' }, payload => {
             const data = payload.new;
             const oldTurn = turn;
-            
             board = data.board;
             turn = data.turn;
             scores = data.scores;
             weeklyScores = data.weekly_scores || { "Anıl": 0, "Camila": 0 };
+            dailyScores = data.daily_scores || { "Anıl": 0, "Camila": 0 };
             lastResetWeek = data.last_reset_week;
-            
+            lastResetDay = data.last_reset_day;
+            resetCountdownStart = data.reset_countdown_start ? new Date(data.reset_countdown_start) : null;
             updateGameUI();
-
-            // Bildirim gönder: Sıra sana geçtiyse
-            if (turn === currentUser && oldTurn !== currentUser) {
-                sendTurnNotification();
-            }
+            if (turn === currentUser && oldTurn !== currentUser) sendTurnNotification();
         }).subscribe();
+    } catch (err) { console.error("Supabase error:", err); }
+}
 
         // --- SELFIE VERİLERİNİ ÇEK VE DİNLE ---
         const today = new Date().toLocaleDateString("en-US", {timeZone: "America/Bogota"}).replace(/\//g, "-");
@@ -190,7 +200,10 @@ function saveGameState() {
             turn: turn,
             scores: scores,
             weekly_scores: weeklyScores,
-            last_reset_week: lastResetWeek
+            daily_scores: dailyScores,
+            last_reset_week: lastResetWeek,
+            last_reset_day: lastResetDay,
+            reset_countdown_start: resetCountdownStart ? resetCountdownStart.toISOString() : null
         }).eq('id', 1).then();
     }
 }
@@ -209,6 +222,25 @@ function updateGameUI() {
         }
     }
 
+    // Geri sayım sayacı kontrolü
+    const timerEl = document.getElementById("reset-timer");
+    const countdownEl = document.getElementById("timer-countdown");
+    if (resetCountdownStart) {
+        const now = new Date();
+        const timeLeft = RESET_DELAY_MS - (now - resetCountdownStart);
+        if (timeLeft > 0) {
+            if (timerEl) timerEl.style.display = "block";
+            const h = Math.floor(timeLeft / 3600000);
+            const m = Math.floor((timeLeft % 3600000) / 60000);
+            if (countdownEl) countdownEl.innerText = `${h}h ${m}m`;
+        } else {
+            // Süre doldu, tahtayı sıfırla
+            if (currentUser === "Anıl") resetBoard(false); // Sadece bir kişi tetiklesin
+        }
+    } else {
+        if (timerEl) timerEl.style.display = "none";
+    }
+
     cells.forEach((cell, i) => {
         cell.innerText = board[i];
         cell.className = "cell" + (board[i] ? " taken" : "");
@@ -218,6 +250,7 @@ function updateGameUI() {
     });
 
     const turnEl = document.getElementById("game-turn");
+    const dailyScoreEl = document.getElementById("daily-score");
     const weeklyScoreEl = document.getElementById("weekly-score");
     const totalScoreEl = document.getElementById("total-score");
     
@@ -234,6 +267,7 @@ function updateGameUI() {
         }
     }
 
+    if (dailyScoreEl) dailyScoreEl.innerText = `Anıl: ${dailyScores["Anıl"]} - Camila: ${dailyScores["Camila"]}`;
     if (weeklyScoreEl) weeklyScoreEl.innerText = `Anıl: ${weeklyScores["Anıl"]} - Camila: ${weeklyScores["Camila"]}`;
     if (totalScoreEl) totalScoreEl.innerText = `Anıl: ${scores["Anıl"]} - Camila: ${scores["Camila"]}`;
 }
@@ -243,22 +277,24 @@ function makeMove(index) {
 
     board[index] = (turn === "Anıl" ? "X" : "O");
     
+    // Kazanma kontrolü
     if (checkWinner()) {
         scores[turn]++;
         weeklyScores[turn]++;
-        saveGameState();
-        updateGameUI();
-        // 2 saniye sonra otomatik tahtayı temizle (skor kalsın)
-        setTimeout(() => resetBoard(false), 2000);
-    } else if (board.every(cell => cell !== "")) {
-        saveGameState();
-        updateGameUI();
-        setTimeout(() => resetBoard(false), 2000);
-    } else {
-        turn = (turn === "Anıl" ? "Camila" : "Anıl");
-        saveGameState();
-        updateGameUI();
+        dailyScores[turn]++;
     }
+
+    // Doluluk oranı kontrolü (%70 = 18 kare)
+    const filledCells = board.filter(c => c !== "").length;
+    if (filledCells >= GRID_SIZE * GRID_SIZE * RESET_THRESHOLD) {
+        if (!resetCountdownStart) {
+            resetCountdownStart = new Date();
+        }
+    }
+
+    turn = (turn === "Anıl" ? "Camila" : "Anıl");
+    saveGameState();
+    updateGameUI();
 }
 
 // YARDIMCI FONKSİYONLAR
@@ -275,12 +311,34 @@ function sendTurnNotification() {
     if (!("Notification" in window)) return;
     
     if (Notification.permission === "granted") {
-        new Notification("¡Tu turno! 🎮", {
-            body: `Es momento de jugar Tic-Tac-Toe con ${currentUser === "Anıl" ? "Camila" : "Anıl"}`,
-            icon: "foto1.jpg"
+        const title = "¡Tu turno! 🎮";
+        const options = {
+            body: `Es tu momento de jugar con ${currentUser === "Anıl" ? "Camila" : "Anıl"}`,
+            icon: "foto1.jpg",
+            badge: "foto1.jpg", // Bazı telefonlarda ikon için kullanılır
+            tag: "turn-notification", // Aynı bildirimin tekrar etmemesi için
+            vibrate: [200, 100, 200]
+        };
+        new Notification(title, options);
+    }
+}
+
+// Manuel bildirim testi
+function testNotification() {
+    if ("Notification" in window) {
+        Notification.requestPermission().then(permission => {
+            if (permission === "granted") {
+                new Notification("¡Prueba de Éxito! ✅", {
+                    body: "Las notificaciones están configuradas correctamente.",
+                    icon: "foto1.jpg"
+                });
+            } else {
+                alert("Debes permitir las notificaciones en tu navegador.");
+            }
         });
     }
 }
+window.testNotification = testNotification;
 
 function getWinningPattern() {
     // 5x5 tahtada her hücre için 4 yöne doğru 4-lü kontrolü
@@ -328,8 +386,11 @@ function checkWinner() {
 
 function resetBoard(resetScores = true) {
     board = Array(GRID_SIZE * GRID_SIZE).fill("");
+    resetCountdownStart = null;
     if (resetScores) {
         scores = { "Anıl": 0, "Camila": 0 };
+        weeklyScores = { "Anıl": 0, "Camila": 0 };
+        dailyScores = { "Anıl": 0, "Camila": 0 };
     }
     saveGameState();
     updateGameUI();

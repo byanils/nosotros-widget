@@ -131,11 +131,15 @@ body.night-mode #selfie-page, body.night-mode #game-page { background: #1a1a2e; 
 #game-info { margin-bottom: 20px; width: 100%; }
 #game-turn { font-size: 1.5rem; font-weight: bold; margin-bottom: 15px; color: #ff4d4d; }
 
-#enable-notifications {
+.game-actions { display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; }
+
+#enable-notifications, #test-notification {
     background: #ff4d4d; color: white; border: none; padding: 8px 15px;
-    border-radius: 20px; font-size: 0.9rem; cursor: pointer; margin-bottom: 15px;
-    animation: pulse 2s infinite;
+    border-radius: 20px; font-size: 0.8rem; cursor: pointer; transition: 0.3s;
 }
+#test-notification { background: #6c757d; }
+#test-notification:hover { background: #5a6268; }
+#enable-notifications { animation: pulse 2s infinite; }
 @keyframes pulse { 0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; } }
 
 .scores-display { display: flex; gap: 15px; justify-content: center; width: 100%; }
