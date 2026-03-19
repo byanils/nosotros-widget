@@ -121,12 +121,10 @@ async function startSupabaseListeners() {
             updateGameUI();
             if (turn === currentUser && oldTurn !== currentUser) sendTurnNotification();
         }).subscribe();
-    } catch (err) { console.error("Supabase error:", err); }
-}
 
         // --- SELFIE VERİLERİNİ ÇEK VE DİNLE ---
-        const today = new Date().toLocaleDateString("en-US", {timeZone: "America/Bogota"}).replace(/\//g, "-");
-        const { data: initialSelfie, error: selfieError } = await supabase.from('selfies').select('*').eq('day', today).maybeSingle();
+        const todayStr = new Date().toLocaleDateString("en-US", {timeZone: "America/Bogota"}).replace(/\//g, "-");
+        const { data: initialSelfie } = await supabase.from('selfies').select('*').eq('day', todayStr).maybeSingle();
         
         if (initialSelfie) {
             if (initialSelfie.anil) localStorage.setItem("nosotros_anil_photo", initialSelfie.anil);
@@ -136,15 +134,14 @@ async function startSupabaseListeners() {
 
         // Gerçek zamanlı selfie takibi
         supabase.channel('selfies_changes')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'selfies', filter: `day=eq.${today}` }, payload => {
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'selfies', filter: `day=eq.${todayStr}` }, payload => {
             const data = payload.new;
             if (data.anil) localStorage.setItem("nosotros_anil_photo", data.anil);
             if (data.camila) localStorage.setItem("nosotros_camila_photo", data.camila);
             updateSelfieUI();
         }).subscribe();
-    } catch (err) {
-        console.error("Supabase başlatma hatası:", err);
-    }
+
+    } catch (err) { console.error("Supabase error:", err); }
 }
 
 function goToUniverse() { 
